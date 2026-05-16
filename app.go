@@ -72,7 +72,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m AppModel) View() string {
 	// Render Header
-	header := components.RenderHeader(m.ActiveTab)
+	header := components.RenderHeader(int(m.ActiveTab))
 
 	// Render Active Body Module
 	var body string

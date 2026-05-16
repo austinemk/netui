@@ -4,11 +4,13 @@ import (
 	"netui/config"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/common-nighthawk/go-figure"
 )
 
 // RenderHeader draws the main app banner and menu selections
 func RenderHeader(activeTab int) string {
-	title := config.Styles.Title.Render(" NETUI NETWORK MANAGER ") + "\n\n"
+	banner := figure.NewFigure("netui", "smisome1", true).String()
+	title := config.Styles.Title.Render(banner) + "\n\n"
 
 	var t1, t2, t3 string
 	if activeTab == 0 {
