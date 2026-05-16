@@ -3,8 +3,6 @@ package bluetooth
 import (
 	"fmt"
 
-	"netui/pkg/bluetooth"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -17,13 +15,13 @@ const (
 )
 
 type (
-	DevicesLoadedMsg []bluetooth.Device
+	DevicesLoadedMsg []Device
 	ErrMsg           error
 )
 
 type Model struct {
 	ActiveSubTab SubTab
-	Devices      []bluetooth.Device
+	Devices      []Device
 	Cursor       int
 	Loading      bool
 	Err          error
@@ -38,7 +36,7 @@ func New() Model {
 
 func FetchDevicesCmd() tea.Cmd {
 	return func() tea.Msg {
-		devs, err := bluetooth.ScanDevices()
+		devs, err := ScanDevices()
 		if err != nil {
 			return ErrMsg(err)
 		}

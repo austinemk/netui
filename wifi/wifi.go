@@ -3,8 +3,6 @@ package wifi
 import (
 	"fmt"
 
-	"netui/pkg/wifi"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -19,15 +17,15 @@ const (
 
 // Messages for background threads to talk back to Bubble Tea
 type (
-	NetworksLoadedMsg []wifi.Network
-	ProfilesLoadedMsg []wifi.SavedProfile
+	NetworksLoadedMsg []Network
+	ProfilesLoadedMsg []SavedProfile
 	ErrMsg            error
 )
 
 type Model struct {
 	ActiveSubTab SubTab
-	Available    []wifi.Network
-	Saved        []wifi.SavedProfile
+	Available    []Network
+	Saved        []SavedProfile
 	Cursor       int
 	Loading      bool
 	Err          error
@@ -43,7 +41,7 @@ func New() Model {
 // Commands to trigger background processing
 func FetchNetworksCmd() tea.Cmd {
 	return func() tea.Msg {
-		nets, err := wifi.ScanNetworks()
+		nets, err := ScanNetworks()
 		if err != nil {
 			return ErrMsg(err)
 		}
@@ -53,7 +51,7 @@ func FetchNetworksCmd() tea.Cmd {
 
 func FetchProfilesCmd() tea.Cmd {
 	return func() tea.Msg {
-		profs, err := wifi.GetSavedProfiles()
+		profs, err := GetSavedProfiles()
 		if err != nil {
 			return ErrMsg(err)
 		}

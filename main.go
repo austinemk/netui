@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"netui/ui/components"
-	"netui/ui/views/bluetooth"
-	"netui/ui/views/vpn"
-	"netui/ui/views/wifi"
+	"netui/bluetooth"
+	"netui/components"
+	"netui/vpn"
+	"netui/wifi"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"

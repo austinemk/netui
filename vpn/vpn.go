@@ -3,8 +3,6 @@ package vpn
 import (
 	"fmt"
 
-	"netui/pkg/vpn"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -17,13 +15,13 @@ const (
 )
 
 type (
-	VpnsLoadedMsg []vpn.Connection
+	VpnsLoadedMsg []Connection
 	ErrMsg        error
 )
 
 type Model struct {
 	ActiveSubTab SubTab
-	VPNS         []vpn.Connection
+	VPNS         []Connection
 	Cursor       int
 	Loading      bool
 	Err          error
@@ -38,7 +36,7 @@ func New() Model {
 
 func FetchVpnsCmd() tea.Cmd {
 	return func() tea.Msg {
-		conns, err := vpn.GetVPNConnections()
+		conns, err := GetVPNConnections()
 		if err != nil {
 			return ErrMsg(err)
 		}
