@@ -14,6 +14,8 @@ func RenderFooter(activeTab int, isPopup bool) string {
 	switch activeTab {
 	case 0: // Wi-Fi Tab Instructions
 		return divider + hintStyle.Render(" ↔ Arrows/Tab: Subtabs │ j/k: Select Network │ Enter: Connect │ q: Quit")
+	case 1:
+		return divider + hintStyle.Render("r: refresh | q: quit app")
 	default:
 		return divider + hintStyle.Render(" 1-3: Swap Tabs │ q: Quit App")
 	}
