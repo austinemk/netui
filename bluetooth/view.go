@@ -57,7 +57,10 @@ func FetchDevicesCmd() tea.Cmd {
 
 func StartScanCmd() tea.Cmd {
 	return func() tea.Msg {
-		_ = ControlScan(true)
+		err := ControlScan(true)
+		if err != nil {
+			return ErrMsg(err)
+		}
 		return nil
 	}
 }
@@ -81,7 +84,7 @@ func ExecuteActionCmd(action string, mac string) tea.Cmd {
 		var err error
 		switch action {
 		case "Connect":
-			_ = Trust(mac)
+			_ = Trust(mac) // Keep your auto-trust mechanism
 			err = Connect(mac)
 		case "Disconnect":
 			err = Disconnect(mac)
@@ -130,7 +133,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	case ScanStoppedMsg:
 		m.Status = components.StatusIdle
-		return m, FetchDevicesCmd() // Final catch after stopping scan
+		return m, FetchDevicesCmd()
 
 	case ActionSuccessMsg:
 		m.Status = components.StatusIdle
@@ -138,7 +141,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	case TickMsg:
 		if m.Status == components.StatusScanning {
-			// Pull items concurrently AND spin up the next tick cycle
 			return m, tea.Batch(FetchDevicesCmd(), PollDevicesTicker())
 		}
 		return m, nil
@@ -151,7 +153,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			// Critical: Turn off scanning on abrupt application shutdowns
 			if m.Status == components.StatusScanning {
 				_ = ControlScan(false)
 			}
@@ -159,10 +160,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 		case "s":
 			if m.Status == components.StatusScanning {
-				// User manually requests to stop discovery stream
 				return m, StopScanCmd()
 			} else {
-				// Start infinite scanning state loop until explicitly closed
 				m.Status = components.StatusScanning
 				m.Cursor = 0
 				return m, tea.Batch(StartScanCmd(), PollDevicesTicker())

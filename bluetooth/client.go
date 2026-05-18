@@ -1,6 +1,6 @@
 package bluetooth
 
-import (
+/*import (
 	"bytes"
 	"errors"
 	"fmt"
@@ -112,4 +112,4 @@ func Remove(mac string) error {
 		return fmt.Errorf("device deletion failed: %s", strings.TrimSpace(output))
 	}
 	return nil
-}
+}*/

@@ -84,7 +84,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			bluetooth.CleanupAll() // Instantly kills background bluetoothctl processes safely
+			//bluetooth.CleanupAll() // Instantly kills background bluetoothctl processes safely
 			return m, tea.Quit
 		case "1", "2", "3":
 			m.ActiveTab = Tab(msg.String()[0] - '1')
@@ -115,11 +115,11 @@ func (m AppModel) View() string {
 
 	// B. Render Centralized Live Dashboard Grid
 	// Pulls isolated sub-tab variables automatically!
-	statusGrid := "\n  " + components.RenderStatusGrid(
+	/*statusGrid := "\n  " + components.RenderStatusGrid(
 		m.WifiView.Status, // e.g. components.StatusScanning
 		m.BtView.Status,   // e.g. components.StatusConnected
 		m.VpnView.Status,  // e.g. components.StatusIdle
-	) + "\n"
+	) + "\n"*/
 
 	// C. Render Focused Sub-View Body
 	var body string
@@ -138,14 +138,15 @@ func (m AppModel) View() string {
 		logView = lipgloss.NewStyle().Foreground(lipgloss.Color("#F59E0B")).Render("\n[LOG] " + m.LogMessage)
 	}
 
+	isPopupOpen := m.Focus != MainWindow
 	// E. Render Layout Actions Footer
-	footer := components.RenderFooter(m.ActiveTab, m.Focus)
+	footer := components.RenderFooter(int(m.ActiveTab), isPopupOpen)
 
 	// Stitch our interface frame layers vertically
 	mainLayout := lipgloss.JoinVertical(
 		lipgloss.Left,
 		header,
-		statusGrid,
+		// statusGrid,
 		body,
 		logView,
 		footer,

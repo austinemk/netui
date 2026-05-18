@@ -1,10 +1,10 @@
 package bluetooth
 
 import (
-	"bytes"
-	"io"
-	"os/exec"
+	"fmt"
 	"strings"
+
+	"github.com/godbus/dbus/v5"
 )
 
 type Device struct {
@@ -13,83 +13,172 @@ type Device struct {
 	Connected bool
 	Paired    bool
 	Trusted   bool
+	Icon      string
 }
 
-// isPoweredOn checks if the bluetooth controller is powered on
-func isPoweredOn() bool {
-	cmd := exec.Command("bluetoothctl", "show")
-	var out bytes.Buffer
-	cmd.Stdout = &out
+const (
+	bluezInterface = "org.bluez"
+	adapterPath    = "/org/bluez/hci0" // Default bluetooth adapter path
+)
 
-	if err := cmd.Run(); err != nil {
-		return false
-	}
-
-	return strings.Contains(out.String(), "Powered: yes")
+// Helper to grab a quick handle on the System Bus
+func getSystemBus() (*dbus.Conn, error) {
+	return dbus.ConnectSystemBus()
 }
 
-// ControlScan non-blockingly toggles the background discovery state.
+// ControlScan non-blockingly toggles background discovery state using native D-Bus calls.
 func ControlScan(turnOn bool) error {
-	if turnOn && !isPoweredOn() {
-		return nil
-	}
-
-	cmd := exec.Command("bluetoothctl")
-	stdin, err := cmd.StdinPipe()
+	conn, err := getSystemBus()
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 
-	if err := cmd.Start(); err != nil {
-		return err
-	}
+	obj := conn.Object(bluezInterface, adapterPath)
 
+	var method string
 	if turnOn {
-		_, _ = io.WriteString(stdin, "scan on\n")
+		method = "org.bluez.Adapter1.StartDiscovery"
 	} else {
-		_, _ = io.WriteString(stdin, "scan off\n")
+		method = "org.bluez.Adapter1.StopDiscovery"
 	}
 
-	_, _ = io.WriteString(stdin, "quit\n")
-	stdin.Close()
-	return cmd.Wait()
+	call := obj.Call(method, 0)
+	return call.Err
 }
 
-// FetchCachedDevices fetches live + cached devices while the scan runs in the background.
+// FetchCachedDevices Iterate through the managed objects looking for paths that implement org.bluez.Device1
+// FetchCachedDevices reads the BlueZ ObjectManager hierarchy to extract device listings instantly.
 func FetchCachedDevices() ([]Device, error) {
-	cmd := exec.Command("bluetoothctl", "devices")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-
-	err := cmd.Run()
+	conn, err := getSystemBus()
 	if err != nil {
-		// Fallback mock data for local development
-		return []Device{
-			{MAC: "00:1A:7D:DA:71:11", Name: "Sony WH-1000XM4", Connected: false, Paired: true},
-			{MAC: "04:52:C7:0B:12:34", Name: "Logitech MX Master 3", Connected: true, Paired: true},
-			{MAC: "A4:C1:38:88:99:AA", Name: "Unknown Audio Device", Connected: false, Paired: false},
-		}, nil
+		return nil, err
+	}
+	defer conn.Close()
+
+	// Use ObjectManager to fetch ALL managed objects from BlueZ in one single call
+	obj := conn.Object(bluezInterface, "/")
+	var nodes map[dbus.ObjectPath]map[string]map[string]dbus.Variant
+
+	err = obj.Call("org.freedesktop.DBus.ObjectManager.GetManagedObjects", 0).Store(&nodes)
+	if err != nil {
+		return nil, err
 	}
 
 	var devices []Device
-	lines := strings.Split(out.String(), "\n")
-	for _, line := range lines {
-		if line == "" {
-			continue
-		}
-		parts := strings.SplitN(line, " ", 3)
-		if len(parts) < 3 {
-			continue
-		}
 
-		isPaired := strings.Contains(parts[2], "(paired)")
+	// Fix: Use a blank identifier (_) for the object path since we don't explicitly read it
+	for _, interfaces := range nodes {
+		if props, exists := interfaces["org.bluez.Device1"]; exists {
+			dev := Device{}
 
-		devices = append(devices, Device{
-			MAC:       parts[1],
-			Name:      strings.TrimSpace(parts[2]),
-			Connected: parts[1] == "04:52:C7:0B:12:34", // Keep track via live state mapping
-			Paired:    isPaired || parts[1] == "04:52:C7:0B:12:34" || parts[1] == "00:1A:7D:DA:71:11",
-		})
+			// Extract MAC address from Address property
+			if addr, ok := props["Address"].Value().(string); ok {
+				dev.MAC = addr
+			}
+
+			// Extract Name (Fallback to Alias or Address if Name is empty)
+			if name, ok := props["Name"].Value().(string); ok {
+				dev.Name = name
+			} else if alias, ok := props["Alias"].Value().(string); ok {
+				dev.Name = alias
+			} else {
+				dev.Name = dev.MAC
+			}
+
+			// Extract States
+			if connected, ok := props["Connected"].Value().(bool); ok {
+				dev.Connected = connected
+			}
+			if paired, ok := props["Paired"].Value().(bool); ok {
+				dev.Paired = paired
+			}
+			if trusted, ok := props["Trusted"].Value().(bool); ok {
+				dev.Trusted = trusted
+			}
+			if icon, ok := props["Icon"].Value().(string); ok {
+				dev.Icon = icon
+			}
+
+			devices = append(devices, dev)
+		}
 	}
+
+	// Fallback mock data if BlueZ is completely empty/inaccessible (like local non-linux testing)
+	if len(devices) == 0 {
+		return []Device{}, nil
+	}
+
 	return devices, nil
+}
+
+// ConvertMacToPath turns "00:11:22:33:44:55" into BlueZ object path format "/org/bluez/hci0/dev_00_11_22_33_44_55"
+func ConvertMacToPath(mac string) dbus.ObjectPath {
+	safeMac := strings.ReplaceAll(mac, ":", "_")
+	return dbus.ObjectPath(fmt.Sprintf("%s/dev_%s", adapterPath, safeMac))
+}
+
+// Connect Global action wrapper functions called by view.go actions popup menu
+func Connect(mac string) error {
+	return callDeviceMethod(mac, "Connect")
+}
+
+func Disconnect(mac string) error {
+	return callDeviceMethod(mac, "Disconnect")
+}
+
+func Pair(mac string) error {
+	return callDeviceMethod(mac, "Pair")
+}
+
+func Trust(mac string) error {
+	return setDeviceProperty(mac, "Trusted", true)
+}
+
+func Distrust(mac string) error {
+	return setDeviceProperty(mac, "Trusted", false)
+}
+
+func Remove(mac string) error {
+	conn, err := getSystemBus()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	adapter := conn.Object(bluezInterface, adapterPath)
+	path := ConvertMacToPath(mac)
+
+	call := adapter.Call("org.bluez.Adapter1.RemoveDevice", 0, path)
+	return call.Err
+}
+
+// Helper to trigger commands directly on a device object interface
+func callDeviceMethod(mac string, method string) error {
+	conn, err := getSystemBus()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	path := ConvertMacToPath(mac)
+	obj := conn.Object(bluezInterface, path)
+
+	call := obj.Call(fmt.Sprintf("org.bluez.Device1.%s", method), 0)
+	return call.Err
+}
+
+// Helper to edit BlueZ boolean flags (like Trusted)
+func setDeviceProperty(mac string, propName string, value bool) error {
+	conn, err := getSystemBus()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	path := ConvertMacToPath(mac)
+	obj := conn.Object(bluezInterface, path)
+
+	call := obj.Call("org.freedesktop.DBus.Properties.Set", 0, "org.bluez.Device1", propName, dbus.MakeVariant(value))
+	return call.Err
 }
