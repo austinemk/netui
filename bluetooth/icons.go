@@ -4,37 +4,37 @@ import (
 	"strings"
 )
 
-// DeviceIcon represents the standardized freedesktop/BlueZ icon string type.
+// DeviceIcon represents a specific Unicode glyph mapped from Nerd Fonts.
 type DeviceIcon string
 
 const (
 	// Audio & Sound
-	IconAudioHeadphones DeviceIcon = "audio-headphones"
-	IconAudioHeadset    DeviceIcon = "audio-headset"
-	IconAudioCard       DeviceIcon = "audio-card"
+	IconAudioHeadphones DeviceIcon = "󰋋" // Headphone Glyph
+	IconAudioHeadset    DeviceIcon = "󰋎" // Headset with mic
+	IconAudioCard       DeviceIcon = "󰓃" // Speaker / Audio source
 
 	// Input Devices
-	IconInputKeyboard DeviceIcon = "input-keyboard"
-	IconInputMouse    DeviceIcon = "input-mouse"
-	IconInputGaming   DeviceIcon = "input-gaming"
-	IconInputTablet   DeviceIcon = "input-tablet"
+	IconInputKeyboard DeviceIcon = "󰌌" // Keyboard
+	IconInputMouse    DeviceIcon = "󰍽" // Mouse
+	IconInputGaming   DeviceIcon = "󰊴" // Gamepad Controller
+	IconInputTablet   DeviceIcon = "󰈬" // Drawing / Touch Tablet
 
 	// Personal Electronics
-	IconPhone       DeviceIcon = "phone"
-	IconComputer    DeviceIcon = "computer"
-	IconCameraVideo DeviceIcon = "camera-video"
-	IconCameraPhoto DeviceIcon = "camera-photo"
-	IconSmartwatch  DeviceIcon = "smartwatch"
+	IconPhone       DeviceIcon = "󰏲" // Smartphone
+	IconComputer    DeviceIcon = "󰟀" // Desktop Monitor / Computer
+	IconCameraVideo DeviceIcon = "󰕧" // Video Camera
+	IconCameraPhoto DeviceIcon = "󰄀" // Photo Camera
+	IconSmartwatch  DeviceIcon = "󱎫" // Watch
 
 	// Office & Smart Home
-	IconPrinter         DeviceIcon = "printer"
-	IconScanner         DeviceIcon = "scanner"
-	IconModem           DeviceIcon = "modem"
-	IconNetworkWireless DeviceIcon = "network-wireless"
-	IconDisplay         DeviceIcon = "display"
+	IconPrinter         DeviceIcon = "󰐪" // Printer
+	IconScanner         DeviceIcon = "󰚰" // Scanner
+	IconModem           DeviceIcon = "󰖩" // Network Router / Modem
+	IconNetworkWireless DeviceIcon = "󰖩" // Wireless AP
+	IconDisplay         DeviceIcon = "󰍹" // Monitor display
 
 	// Fallback
-	IconGenericBluetooth DeviceIcon = "bluetooth"
+	IconGenericBluetooth DeviceIcon = "" // Bluetooth Symbol Logo
 )
 
 // String returns the string representation of the DeviceIcon.
@@ -43,9 +43,9 @@ func (i DeviceIcon) String() string {
 }
 
 // FromString normalizes a raw icon string returned by BlueZ/bluetoothctl.
-// It handles case-insensitivity and falls back gracefully to a generic icon.
+// It handles case-insensitivity and falls back gracefully to a generic icon glyph.
 func FromString(iconStr string) DeviceIcon {
-	switch strings.ToLower(strings.TrimSpace(iconStr)) {
+	switch strings.ToLower(iconStr) {
 	case "audio-headphones":
 		return IconAudioHeadphones
 	case "audio-headset":
@@ -85,8 +85,8 @@ func FromString(iconStr string) DeviceIcon {
 	}
 }
 
-// FromClassOfDevice parses a raw Bluetooth CoD (Class of Device) uint32 bitmask.
-// This matches the official Bluetooth SIG Major Device Class specifications.
+// FromClassOfDevice analyzes the CoD parameters provided by
+// SIG Major Device Class specifications and assigns the closest matching Nerd Font glyph.
 func FromClassOfDevice(cod uint32) DeviceIcon {
 	// Major Device Class is stored in bits 8 to 12 of the CoD
 	majorClass := (cod >> 8) & 0x1F
@@ -121,17 +121,19 @@ func FromClassOfDevice(cod uint32) DeviceIcon {
 		default:
 			// If not mouse/keyboard, check minor class bits for joysticks/gamepads
 			minorPeripheral := (cod >> 2) & 0x0F
-			if minorPeripheral == 0x01 || minorPeripheral == 0x02 {
-				return IconInputGaming
+			switch minorPeripheral {
+			case 0x01, 0x02, 0x03:
+				return IconInputGaming // Joysticks, Gamepads
+			case 0x05:
+				return IconInputTablet // Digitizer Tablet
+			default:
+				return IconGenericBluetooth
 			}
-			return IconInputTablet
 		}
-	case 0x06: // Imaging (Cameras, Scanners)
+	case 0x06: // Imaging (Cameras / Scanners)
 		return IconCameraPhoto
 	case 0x07: // Wearable (Smartwatches)
 		return IconSmartwatch
-	case 0x08: // Toy / Gaming
-		return IconInputGaming
 	default:
 		return IconGenericBluetooth
 	}

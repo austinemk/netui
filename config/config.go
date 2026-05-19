@@ -12,6 +12,7 @@ type CustomStyles struct {
 	InactiveSub lipgloss.Style
 	LogFrame    lipgloss.Style
 	CursorColor lipgloss.Style
+	Notice      lipgloss.Style
 }
 
 // Styles is the globally accessible style blueprint
@@ -23,7 +24,7 @@ func init() {
 		Margin(1, 2).
 		Width(72).
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("#4B5563"))
+		BorderForeground(lipgloss.Color("8"))
 
 	// Banner titles
 	Styles.Title = lipgloss.NewStyle().
@@ -34,8 +35,8 @@ func init() {
 
 	// Tab structures
 	Styles.ActiveTab = lipgloss.NewStyle().
-		Background(lipgloss.Color("#4B5563")).
-		Foreground(lipgloss.Color("#FFFFFF")).
+		Background(lipgloss.Color("8")).
+		Foreground(lipgloss.Color("2")).
 		Padding(0, 1)
 
 	Styles.InactiveTab = lipgloss.NewStyle().
@@ -45,8 +46,7 @@ func init() {
 
 	// Subtabs structures
 	Styles.ActiveSub = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#3B82F6")).
-		Underline(true).
+		Foreground(lipgloss.Color("4")).
 		Bold(true).
 		Padding(0, 1)
 
@@ -61,4 +61,8 @@ func init() {
 
 	Styles.CursorColor = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#3B82F6"))
+
+	// Noficication
+	Styles.Notice = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("0"))
 }
