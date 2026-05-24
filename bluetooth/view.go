@@ -10,17 +10,9 @@ import (
 )
 
 func (m Model) View() string {
-	var header string
 	var bodyLines []string
 
-	// 1. Setup Active Dynamic Headers
-	if m.Scanning {
-		header = lipgloss.NewStyle().Foreground(lipgloss.Color("#10B981")).Bold(true).Render("✨ Scanning Mode: Active Live Discovery Feed...")
-	} else {
-		header = lipgloss.NewStyle().Foreground(lipgloss.Color("#3B82F6")).Bold(true).Render("📦 Saved Devices Storage (Offline Configuration Manager)")
-	}
-
-	// SPACE SAVING MECHANISM: Hide general settings entirely while actively scanning
+	// --- SECTION 1: HEADER & CONFIGURATION CONTROLS ---
 	if !m.Scanning {
 		powStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("#EF4444")).Render("Off")
 		if m.Powered {
@@ -44,69 +36,43 @@ func (m Model) View() string {
 		bodyLines = append(bodyLines, "", "  Discovered Devices In Range:")
 	}
 
-	// --- EXCEPTION INTERCEPT DISPLAY ---
+	// --- SECTION 2: EXCEPTION INTERCEPT DISPLAY ---
 	if m.Err != nil {
 		errorStyle := config.Styles.Notice
 		bodyLines = append(bodyLines, fmt.Sprintf("  ⚠️  Problem: %s", errorStyle.Render(m.Err.Error())))
 	}
 
+	// --- SECTION 3: DATA GRID MATRIX VIEW ---
 	visibleDevices := m.getFilteredDevices()
-	deviceLineOffsets := make(map[int]int)
 
 	if len(visibleDevices) == 0 {
 		if m.Scanning {
-			bodyLines = append(bodyLines, "  🔄 Listening for local broadcasts over interfaces...")
+			bodyLines = append(bodyLines, " "+config.Styles.Notice.Render("listening for local broadcasts over interfaces..."))
 		} else {
-			bodyLines = append(bodyLines, "    No saved devices found in storage cache. Press [s] to scan.")
+			bodyLines = append(bodyLines, "  No saved devices found in storage cache. Press [s] to scan.")
 		}
 	} else {
-		for i, dev := range visibleDevices {
-			cursor := " "
-			if m.Cursor == i {
-				cursor = lipgloss.NewStyle().Foreground(lipgloss.Color("5")).Render(">")
-			}
-
-			iconSymbol := IconGenericBluetooth.String()
-			if dev.Icon != "" {
-				iconSymbol = FromString(dev.Icon).String()
-			}
-
-			status := fmt.Sprintf(" %s ", iconSymbol)
-			if dev.Connected {
-				status = lipgloss.NewStyle().Foreground(lipgloss.Color("#10B981")).Render("")
-			}
-
-			// Save the precise layout line coordinate array index for this entry
-			deviceLineOffsets[i] = len(bodyLines)
-			bodyLines = append(bodyLines, fmt.Sprintf("  %s%s%-25s \t[%s]", cursor, status, dev.Name, dev.MAC))
-		}
+		// Output the active interactive table layout instead of plain arrays
+		bodyLines = append(bodyLines, m.Table.View())
 
 		if m.Scanning {
 			bodyLines = append(bodyLines, "", lipgloss.NewStyle().Foreground(lipgloss.Color("#6B7280")).Render("  🔄 Scanning actively... Press [s] to lock listings and manage configurations offline."))
 		}
 	}
 
-	// 2. IN-LINE POPUP RENDERING INTERCEPTOR
+	// --- SECTION 4: MODAL OVERLAY INJECTION ---
 	if m.PopupMenu.Active {
+		bodyLines = append(bodyLines, "", "  ─── Options Menu Active ─────────────────────────────")
 		popupRaw := m.PopupMenu.View()
-		popupLines := strings.Split(popupRaw, "\n")
-
-		if targetLineIdx, ok := deviceLineOffsets[m.Cursor]; ok {
-			startOverlayLine := targetLineIdx + 1
-
-			for offset, pLine := range popupLines {
-				destIdx := startOverlayLine + offset
-				styledPopupLine := "      " + pLine
-
-				if destIdx < len(bodyLines) {
-					// Overwrite upcoming list rows without moving layout targets down
-					bodyLines[destIdx] = styledPopupLine
-				} else {
-					bodyLines = append(bodyLines, styledPopupLine)
-				}
-			}
+		for _, pLine := range strings.Split(popupRaw, "\n") {
+			bodyLines = append(bodyLines, "      "+pLine)
 		}
+		bodyLines = append(bodyLines, "  ─────────────────────────────────────────────────────")
 	}
 
-	return fmt.Sprintf("%s\n%s", header, strings.Join(bodyLines, "\n"))
+	// --- SECTION 5: CONTAINER PACKAGING ---
+	fullContent := strings.Join(bodyLines, "\n")
+	m.Viewport.SetContent(fullContent)
+
+	return m.Viewport.View()
 }

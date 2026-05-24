@@ -4,7 +4,10 @@ package wifi
 import (
 	"time"
 
+	"github.com/charmbracelet/bubbles/table"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/godbus/dbus/v5"
 )
 
@@ -62,8 +65,12 @@ type Model struct {
 	Saved     []SavedProfile
 	ActiveAPs []AccessPoint
 
+	// Dynamic Layout Elements
+	Table    table.Model
+	Viewport viewport.Model
+
 	// Navigation & Component UI states
-	Cursor     int
+	Cursor     int // Kept for backend array mapping compatibility
 	MenuCursor int
 	UIState    UIState
 	Scanning   bool
@@ -76,11 +83,39 @@ type Model struct {
 }
 
 func New() Model {
+	// Initialize default columns structure
+	columns := []table.Column{
+		{Title: "Status", Width: 8},
+		{Title: "Network Name (SSID)", Width: 26},
+		{Title: "Signal", Width: 8},
+		{Title: "Security", Width: 12},
+	}
+
+	t := table.New(
+		table.WithColumns(columns),
+		table.WithFocused(true),
+	)
+
+	// Apply beautiful theme defaults
+	s := table.DefaultStyles()
+	s.Header = s.Header.
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("240")).
+		BorderBottom(true).
+		Bold(true)
+	s.Selected = s.Selected.
+		Foreground(lipgloss.Color("229")).
+		Background(lipgloss.Color("57")).
+		Bold(true)
+	t.SetStyles(s)
+
 	return Model{
 		Client:   &DBusClient{Conn: nil},
 		Scanning: false,
 		Loading:  true,
 		UIState:  StateNormal,
+		Table:    t,
+		Viewport: viewport.New(0, 0),
 	}
 }
 
@@ -103,10 +138,5 @@ func (m Model) Init() tea.Cmd {
 		aps, _ := GetActiveAccessPoints(m.Client)
 
 		return InfoLoadedMsg(InfoLoadedData{Adapter: adapter, Saved: saved, APs: aps})
-	}
-}
-
-func CleanWifi(m Model) bool {
-	if m.Scanning {
 	}
 }

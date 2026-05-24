@@ -4,15 +4,16 @@ import "github.com/charmbracelet/lipgloss"
 
 // CustomStyles aggregates the look and feel elements of netui
 type CustomStyles struct {
-	Container   lipgloss.Style
-	Title       lipgloss.Style
-	ActiveTab   lipgloss.Style
-	InactiveTab lipgloss.Style
-	ActiveSub   lipgloss.Style
-	InactiveSub lipgloss.Style
-	LogFrame    lipgloss.Style
-	CursorColor lipgloss.Style
-	Notice      lipgloss.Style
+	Container     lipgloss.Style
+	Title         lipgloss.Style
+	ActiveTab     lipgloss.Style
+	InactiveTab   lipgloss.Style
+	ActiveSub     lipgloss.Style
+	InactiveSub   lipgloss.Style
+	HighlightText lipgloss.Style
+	LogFrame      lipgloss.Style
+	CursorColor   lipgloss.Style
+	Notice        lipgloss.Style
 }
 
 // Styles is the globally accessible style blueprint
@@ -54,6 +55,8 @@ func init() {
 		Foreground(lipgloss.Color("#9CA3AF")).
 		Padding(0, 1)
 
+	Styles.HighlightText = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("4"))
+
 	// Status context indicators
 	Styles.LogFrame = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#F59E0B")).
@@ -64,5 +67,5 @@ func init() {
 
 	// Noficication
 	Styles.Notice = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("0"))
+		Foreground(lipgloss.Color("8")).Italic(true)
 }

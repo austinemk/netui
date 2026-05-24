@@ -3,14 +3,17 @@ package bluetooth
 import (
 	"netui/components"
 
+	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	if m.PopupMenu.Active {
-		var cmd tea.Cmd
-		m.PopupMenu, cmd = m.PopupMenu.Update(msg)
+	var cmd tea.Cmd
+	var cmds []tea.Cmd
 
+	// 1. Intercept for Active Popup Controls
+	if m.PopupMenu.Active {
+		m.PopupMenu, cmd = m.PopupMenu.Update(msg)
 		if selectMsg, ok := msg.(components.OptionSelectedMsg); ok {
 			m.PopupMenu.Active = false
 			return m, ExecuteActionCmd(selectMsg.Option, m.SelectedMac)
@@ -20,28 +23,38 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 
+	case tea.WindowSizeMsg:
+		// Slicing application height limits gracefully
+		m.Viewport.Width = msg.Width
+		m.Viewport.Height = msg.Height
+
+		// Table constraints padding limits
+		m.Table.SetWidth(msg.Width - 4)
+		// Reserve roughly 10 lines for headers, options, and adapters toggles
+		tableHeight := msg.Height - 10
+		if tableHeight < 3 {
+			tableHeight = 3
+		}
+		m.Table.SetHeight(tableHeight)
+
 	case ScanStartedMsg:
-		// BlueZ has confirmed discovery is active — safe to start polling now
 		return m, tea.Batch(FetchDevicesCmd(), PollDevicesTicker())
 
 	case DevicesLoadedMsg:
 		m.Devices = msg
-		// FIXED: If we are actively scanning, keep the ticker sequence looping
+		m.syncTableRows() // Hydrate rows with fresh devices
 		if m.Scanning {
 			return m, PollDevicesTicker()
 		}
 
 	case TickMsg:
 		if m.Scanning {
-			// FIXED: The tick message now requests fresh D-Bus state data.
-			// This tells BlueZ to feed newly discovered signals directly back into DevicesLoadedMsg.
 			return m, FetchDevicesCmd()
 		}
 
 	case ScanStoppedMsg:
 		m.Scanning = false
-		m.Cursor = 0
-		// Fetch one final time to solidify state listings locally
+		m.Table.GotoTop() // Safe reset cursor
 		return m, FetchDevicesCmd()
 
 	case AdapterInfoLoadedMsg:
@@ -50,7 +63,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.Pairable = msg.Pairable
 
 	case AdapterToggledMsg:
-		// Re-fetch adapter state so Powered/Discoverable/Pairable update in the UI
 		return m, FetchAdapterInfoCmd()
 
 	case ActionSuccessMsg:
@@ -73,7 +85,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				return m, StopScanCmd()
 			} else {
 				m.Scanning = true
-				m.Cursor = 0
+				m.Table.GotoTop()
 				m.Err = nil
 				return m, StartScanCmd()
 			}
@@ -91,30 +103,20 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				return m, ToggleAdapterPropertyCmd("Pairable", m.Pairable)
 			}
 
-		case "up", "k":
-			if m.Cursor > 0 {
-				m.Cursor--
-			}
-		case "down", "j":
-			filteredCount := len(m.getFilteredDevices())
-			if m.Cursor < filteredCount-1 {
-				m.Cursor++
-			}
-
 		case "enter":
 			visibleDevices := m.getFilteredDevices()
-			if len(visibleDevices) == 0 || m.Cursor >= len(visibleDevices) {
+			selectedIdx := m.Table.Cursor()
+			if len(visibleDevices) == 0 || selectedIdx >= len(visibleDevices) {
 				return m, nil
 			}
 
-			targetDev := visibleDevices[m.Cursor]
+			targetDev := visibleDevices[selectedIdx]
 			m.SelectedMac = targetDev.MAC
 
 			var opts []string
 			if targetDev.Connected {
 				opts = append(opts, "Disconnect")
 			} else {
-				// Show contextual pairing options conditionally
 				if !targetDev.Paired {
 					opts = append(opts, "Pair")
 				} else {
@@ -128,15 +130,46 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				opts = append(opts, "Trust")
 			}
 
-			// Add destructive option only in Offline Saved Mode to avoid accidents
 			if !m.Scanning {
 				opts = append(opts, "Remove")
 			}
 
 			m.PopupMenu = components.NewOptionsPopup(targetDev.Name, opts)
 			m.PopupMenu.Active = true
+			return m, nil
 		}
 	}
 
-	return m, nil
+	// 2. Route messages to the standard table controller (handles arrow highlights)
+	m.Table, cmd = m.Table.Update(msg)
+	cmds = append(cmds, cmd)
+
+	// 3. Route messages to viewport (handles scrollbars page transitions)
+	m.Viewport, cmd = m.Viewport.Update(msg)
+	cmds = append(cmds, cmd)
+
+	return m, tea.Batch(cmds...)
+}
+
+// Helper to convert internal device array indices cleanly into standard table rows
+func (m *Model) syncTableRows() {
+	visibleDevices := m.getFilteredDevices()
+	var rows []table.Row
+
+	for _, dev := range visibleDevices {
+		statusIcon := IconGenericBluetooth.String()
+		if dev.Icon != "" {
+			statusIcon = FromString(dev.Icon).String()
+		}
+		if dev.Connected {
+			statusIcon = ""
+		}
+
+		rows = append(rows, table.Row{
+			statusIcon,
+			dev.Name,
+			dev.MAC,
+		})
+	}
+	m.Table.SetRows(rows)
 }

@@ -178,12 +178,12 @@ func GetActiveAccessPoints(client *DBusClient) ([]AccessPoint, error) {
 		}
 		strength, _ := strengthProp.Value().(uint8)
 
-		sec := "open"
+		sec := " "
 		if wpa, ok := wpaProp.Value().(uint32); ok && wpa > 0 {
-			sec = "wpa"
+			sec = ""
 		}
 		if rsn, ok := rsnProp.Value().(uint32); ok && rsn > 0 {
-			sec = "wpa2/3"
+			sec = ""
 		}
 
 		list = append(list, AccessPoint{
