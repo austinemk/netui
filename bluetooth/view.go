@@ -72,7 +72,8 @@ func (m Model) View() string {
 
 	// --- SECTION 5: CONTAINER PACKAGING ---
 	fullContent := strings.Join(bodyLines, "\n")
-	m.Viewport.SetContent(fullContent)
 
+	// Update the content on the local copy and immediately render it
+	m.Viewport.SetContent(fullContent)
 	return m.Viewport.View()
 }

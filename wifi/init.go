@@ -103,9 +103,10 @@ func New() Model {
 		BorderForeground(lipgloss.Color("240")).
 		BorderBottom(true).
 		Bold(true)
+
 	s.Selected = s.Selected.
-		Foreground(lipgloss.Color("229")).
-		Background(lipgloss.Color("57")).
+		Foreground(lipgloss.Color("#FFFFFF")).
+		Background(lipgloss.Color("#3B82F6")). // Uses your blue color from Styles.CursorColor
 		Bold(true)
 	t.SetStyles(s)
 

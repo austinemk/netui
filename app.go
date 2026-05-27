@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"netui/bluetooth"
 	"netui/components"
 	"netui/vpn"
@@ -26,6 +28,14 @@ const (
 	VpnTab
 )
 
+// Enforced window constraint thresholds
+const (
+	MinWindowWidth  = 60
+	MinWindowHeight = 30
+	MaxWindowWidth  = 60
+	MaxWindowHeight = 40
+)
+
 type AppModel struct {
 	Focus        FocusedWindow
 	ActiveTab    Tab
@@ -35,6 +45,8 @@ type AppModel struct {
 	OptionsPopup components.OptionsPopupModel // Custom context action popup
 	InputPopup   components.InputPopupModel   // Custom maskable credential popup
 	LogMessage   string                       // Contextual logs panel text
+	// Track if the current screen size is invalid
+	SizeError string
 }
 
 func (m AppModel) Init() tea.Cmd {
@@ -49,6 +61,44 @@ func (m AppModel) Init() tea.Cmd {
 func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	var cmds []tea.Cmd
+
+	// Intercept Window Resizing and enforce strict sizing rules
+	if windowMsg, ok := msg.(tea.WindowSizeMsg); ok {
+		// A. Check Minimum Bounds
+		if windowMsg.Width < MinWindowWidth || windowMsg.Height < MinWindowHeight {
+			m.SizeError = fmt.Sprintf(
+				"⚠️  Terminal screen is too small!\n\n  Current: %dx%d\n  Minimum required: %dx%d\n\n Please resize your terminal window.",
+				windowMsg.Width, windowMsg.Height, MinWindowWidth, MinWindowHeight,
+			)
+			// Return immediately so sub-components don't receive invalid dimensions and crash
+			return m, nil
+		}
+
+		// B. Clean up the error if the size becomes valid again
+		m.SizeError = ""
+
+		// C. Enforce Maximum Bounds capping
+		if windowMsg.Width > MaxWindowWidth {
+			windowMsg.Width = MaxWindowWidth
+		}
+		if windowMsg.Height > MaxWindowHeight {
+			windowMsg.Height = MaxWindowHeight
+		}
+
+		// Overwrite the message payload with our clamped dimensions
+		msg = windowMsg
+	}
+
+	// If a sizing error exists, completely block any other user inputs/updates
+	if m.SizeError != "" {
+		// Allow 'q' or 'ctrl+c' to still function so users can exit if they want to
+		if keyMsg, ok := msg.(tea.KeyMsg); ok {
+			if keyMsg.String() == "q" || keyMsg.String() == "ctrl+c" {
+				return m, tea.Quit
+			}
+		}
+		return m, nil
+	}
 
 	// 1. INTERCEPT INPUT IF ANY POPUP IS VISIBLE
 	if m.Focus == PopupWindow {
@@ -110,16 +160,17 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m AppModel) View() string {
+	// If terminal dimensions are broken, display a clear overlay message
+	if m.SizeError != "" {
+		boxStyle := lipgloss.NewStyle().
+			Border(lipgloss.DoubleBorder()).
+			BorderForeground(lipgloss.Color("#EF4444")).
+			Padding(2, 4).
+			Margin(2, 2)
+		return boxStyle.Render(m.SizeError)
+	}
 	// A. Render Global Navigation Tabs
 	header := components.RenderHeader(int(m.ActiveTab))
-
-	// B. Render Centralized Live Dashboard Grid
-	// Pulls isolated sub-tab variables automatically!
-	/*statusGrid := "\n  " + components.RenderStatusGrid(
-		m.WifiView.Status, // e.g. components.StatusScanning
-		m.BtView.Status,   // e.g. components.StatusConnected
-		m.VpnView.Status,  // e.g. components.StatusIdle
-	) + "\n"*/
 
 	// C. Render Focused Sub-View Body
 	var body string

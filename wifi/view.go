@@ -25,42 +25,20 @@ func (m Model) View() string {
 		segments = append(segments, bannerStyle.Render("🛰️  [OFFLINE MODE] Ready (Press 's' to scan | 'p' to toggle power)"))
 	}
 
-	// 2. Conditional Interface Block Rendering
+	// 2. Conditional Interface Block Rendering (Loops Removed!)
 	if m.Scanning {
-		// --- SCANNING ON: Show Nearby Access Points ---
-		apBlock := "\n Nearby Access Points\n"
-		for i, ap := range m.ActiveAPs {
-			cursor := " "
-			if m.Cursor == i && m.UIState == StateNormal {
-				cursor = ">"
-			}
-			activeMark := "  "
-			if ap.IsActive {
-				activeMark = "✔ "
-			}
-			apBlock += fmt.Sprintf("  %s %s%-22s \t %3d%% \t %s\n", cursor, activeMark, ap.SSID, ap.Strength, ap.Security)
-		}
+		// --- SCANNING ON: Let the table component render the nearby access points ---
+		apBlock := "\n Nearby Access Points\n\n" + m.Table.View() + "\n"
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("10")).Render(apBlock))
 	} else {
-		// --- SCANNING OFF: Show Hardware & Saved Configuration Layouts ---
+		// --- SCANNING OFF: Show Hardware & the table component for saved configurations ---
 		adapterBlock := fmt.Sprintf(
 			"\n🎛️  [Hardware Settings]\n  Interface:    %s\n  Link Status:  %s\n  Radio Power:  %s\n",
 			m.Adapter.Interface, m.Adapter.State, map[bool]string{true: "Enabled [ON]", false: "Disabled [OFF]"}[m.Adapter.Enabled],
 		)
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Render(adapterBlock))
 
-		savedBlock := "\n💾 [Saved Station Configuration Registry]\n"
-		for i, prof := range m.Saved {
-			cursor := " "
-			if m.Cursor == i && m.UIState == StateNormal {
-				cursor = ">"
-			}
-			autoStr := "Manual"
-			if prof.AutoConnect {
-				autoStr = "Auto"
-			}
-			savedBlock += fmt.Sprintf("  %s %-25s \t[%s] \t(UUID: %s...)\n", cursor, prof.Name, autoStr, prof.UUID[:8])
-		}
+		savedBlock := "\n💾 [Saved Station Configuration Registry]\n\n" + m.Table.View() + "\n"
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#F59E0B")).Render(savedBlock))
 	}
 
@@ -68,7 +46,6 @@ func (m Model) View() string {
 
 	// 3. Popup Overlay Processing
 	if m.UIState == StatePasswordInput {
-		// Mask input string contents for password protection fields
 		hiddenPassword := strings.Repeat("*", len(m.PasswordInput))
 		box := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#EF4444")).Padding(1, 3).Margin(1, 2)
 		popup := box.Render(fmt.Sprintf("Enter Password for: %s\n\n %s_", m.SelectedAP.SSID, hiddenPassword))

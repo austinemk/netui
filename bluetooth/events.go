@@ -21,46 +21,23 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, cmd
 	}
 
+	// 2. Main Message Router
 	switch msg := msg.(type) {
-
-	case tea.WindowSizeMsg:
-		// Slicing application height limits gracefully
-		m.Viewport.Width = msg.Width
-		m.Viewport.Height = msg.Height
-
-		// Table constraints padding limits
-		m.Table.SetWidth(msg.Width - 4)
-		// Reserve roughly 10 lines for headers, options, and adapters toggles
-		tableHeight := msg.Height - 10
-		if tableHeight < 3 {
-			tableHeight = 3
-		}
-		m.Table.SetHeight(tableHeight)
 
 	case ScanStartedMsg:
 		return m, tea.Batch(FetchDevicesCmd(), PollDevicesTicker())
 
 	case DevicesLoadedMsg:
-		m.Devices = msg
-		m.syncTableRows() // Hydrate rows with fresh devices
-		if m.Scanning {
-			return m, PollDevicesTicker()
-		}
+		return m.handleDevicesLoaded(msg)
 
 	case TickMsg:
-		if m.Scanning {
-			return m, FetchDevicesCmd()
-		}
+		return m.handleTick()
 
 	case ScanStoppedMsg:
-		m.Scanning = false
-		m.Table.GotoTop() // Safe reset cursor
-		return m, FetchDevicesCmd()
+		return m.handleScanStopped()
 
 	case AdapterInfoLoadedMsg:
-		m.Powered = msg.Powered
-		m.Discoverable = msg.Discoverable
-		m.Pairable = msg.Pairable
+		m.handleAdapterInfoLoaded(msg)
 
 	case AdapterToggledMsg:
 		return m, FetchAdapterInfoCmd()
@@ -73,83 +50,140 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.Err = msg
 
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
-			if m.Scanning {
-				_ = ControlScan(false)
-			}
-			return m, tea.Quit
-
-		case "s":
-			if m.Scanning {
-				return m, StopScanCmd()
-			} else {
-				m.Scanning = true
-				m.Table.GotoTop()
-				m.Err = nil
-				return m, StartScanCmd()
-			}
-
-		case "p":
-			if !m.Scanning {
-				return m, ToggleAdapterPropertyCmd("Powered", m.Powered)
-			}
-		case "d":
-			if !m.Scanning {
-				return m, ToggleAdapterPropertyCmd("Discoverable", m.Discoverable)
-			}
-		case "b":
-			if !m.Scanning {
-				return m, ToggleAdapterPropertyCmd("Pairable", m.Pairable)
-			}
-
-		case "enter":
-			visibleDevices := m.getFilteredDevices()
-			selectedIdx := m.Table.Cursor()
-			if len(visibleDevices) == 0 || selectedIdx >= len(visibleDevices) {
-				return m, nil
-			}
-
-			targetDev := visibleDevices[selectedIdx]
-			m.SelectedMac = targetDev.MAC
-
-			var opts []string
-			if targetDev.Connected {
-				opts = append(opts, "Disconnect")
-			} else {
-				if !targetDev.Paired {
-					opts = append(opts, "Pair")
-				} else {
-					opts = append(opts, "Connect")
-				}
-			}
-
-			if targetDev.Trusted {
-				opts = append(opts, "Distrust")
-			} else {
-				opts = append(opts, "Trust")
-			}
-
-			if !m.Scanning {
-				opts = append(opts, "Remove")
-			}
-
-			m.PopupMenu = components.NewOptionsPopup(targetDev.Name, opts)
-			m.PopupMenu.Active = true
-			return m, nil
-		}
+		return m.handleKeyInput(msg)
 	}
 
-	// 2. Route messages to the standard table controller (handles arrow highlights)
+	// 3. Route messages to the standard table controller (handles arrow highlights)
 	m.Table, cmd = m.Table.Update(msg)
 	cmds = append(cmds, cmd)
 
-	// 3. Route messages to viewport (handles scrollbars page transitions)
+	// 4. Route messages to viewport (handles scrollbars page transitions)
 	m.Viewport, cmd = m.Viewport.Update(msg)
 	cmds = append(cmds, cmd)
 
 	return m, tea.Batch(cmds...)
 }
+
+// --- Extracted Message Handlers ---
+
+/*func (m *Model) handleWindowSize(msg tea.WindowSizeMsg) {
+	// Slicing application height limits gracefully
+	m.Viewport.Width = msg.Width
+	m.Viewport.Height = msg.Height
+
+	// Table constraints padding limits
+	m.Table.SetWidth(msg.Width - 4)
+	// Reserve roughly 10 lines for headers, options, and adapters toggles
+	tableHeight := msg.Height - 10
+	if tableHeight < 3 {
+		tableHeight = 3
+	}
+	m.Table.SetHeight(tableHeight)
+}*/
+
+func (m Model) handleDevicesLoaded(msg DevicesLoadedMsg) (Model, tea.Cmd) {
+	m.Devices = msg
+	m.syncTableRows() // Hydrate rows with fresh devices
+	if m.Scanning {
+		return m, PollDevicesTicker()
+	}
+	return m, nil
+}
+
+func (m Model) handleTick() (Model, tea.Cmd) {
+	if m.Scanning {
+		return m, FetchDevicesCmd()
+	}
+	return m, nil
+}
+
+func (m Model) handleScanStopped() (Model, tea.Cmd) {
+	m.Scanning = false
+	m.Table.GotoTop() // Safe reset cursor
+	return m, FetchDevicesCmd()
+}
+
+func (m *Model) handleAdapterInfoLoaded(msg AdapterInfoLoadedMsg) {
+	m.Powered = msg.Powered
+	m.Discoverable = msg.Discoverable
+	m.Pairable = msg.Pairable
+}
+
+func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
+	switch msg.String() {
+	case "ctrl+c", "q":
+		if m.Scanning {
+			_ = ControlScan(false)
+		}
+		return m, tea.Quit
+
+	case "s":
+		if m.Scanning {
+			return m, StopScanCmd()
+		} else {
+			m.Scanning = true
+			m.Table.GotoTop()
+			m.Err = nil
+			return m, StartScanCmd()
+		}
+
+	case "p":
+		if !m.Scanning {
+			return m, ToggleAdapterPropertyCmd("Powered", m.Powered)
+		}
+	case "d":
+		if !m.Scanning {
+			return m, ToggleAdapterPropertyCmd("Discoverable", m.Discoverable)
+		}
+	case "b":
+		if !m.Scanning {
+			return m, ToggleAdapterPropertyCmd("Pairable", m.Pairable)
+		}
+
+	case "enter":
+		return m.handleEnterKey()
+	}
+
+	return m, nil
+}
+
+func (m Model) handleEnterKey() (Model, tea.Cmd) {
+	visibleDevices := m.getFilteredDevices()
+	selectedIdx := m.Table.Cursor()
+	if len(visibleDevices) == 0 || selectedIdx >= len(visibleDevices) {
+		return m, nil
+	}
+
+	targetDev := visibleDevices[selectedIdx]
+	m.SelectedMac = targetDev.MAC
+
+	var opts []string
+	if targetDev.Connected {
+		opts = append(opts, "Disconnect")
+	} else {
+		if !targetDev.Paired {
+			opts = append(opts, "Pair")
+		} else {
+			opts = append(opts, "Connect")
+		}
+	}
+
+	if targetDev.Trusted {
+		opts = append(opts, "Distrust")
+	} else {
+		opts = append(opts, "Trust")
+	}
+
+	if !m.Scanning {
+		opts = append(opts, "Remove")
+	}
+
+	m.PopupMenu = components.NewOptionsPopup(targetDev.Name, opts)
+	m.PopupMenu.Active = true
+	return m, nil
+}
+
+// --- Helpers ---
 
 // Helper to convert internal device array indices cleanly into standard table rows
 func (m *Model) syncTableRows() {
