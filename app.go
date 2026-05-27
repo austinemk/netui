@@ -5,6 +5,7 @@ import (
 
 	"netui/bluetooth"
 	"netui/components"
+	"netui/config"
 	"netui/vpn"
 	"netui/wifi"
 
@@ -26,14 +27,6 @@ const (
 	WifiTab Tab = iota
 	BluetoothTab
 	VpnTab
-)
-
-// Enforced window constraint thresholds
-const (
-	MinWindowWidth  = 60
-	MinWindowHeight = 30
-	MaxWindowWidth  = 60
-	MaxWindowHeight = 40
 )
 
 type AppModel struct {
@@ -65,10 +58,10 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Intercept Window Resizing and enforce strict sizing rules
 	if windowMsg, ok := msg.(tea.WindowSizeMsg); ok {
 		// A. Check Minimum Bounds
-		if windowMsg.Width < MinWindowWidth || windowMsg.Height < MinWindowHeight {
+		if windowMsg.Width < config.MinWindowWidth || windowMsg.Height < config.MinWindowHeight {
 			m.SizeError = fmt.Sprintf(
 				"⚠️  Terminal screen is too small!\n\n  Current: %dx%d\n  Minimum required: %dx%d\n\n Please resize your terminal window.",
-				windowMsg.Width, windowMsg.Height, MinWindowWidth, MinWindowHeight,
+				windowMsg.Width, windowMsg.Height, config.MinWindowWidth, config.MinWindowHeight,
 			)
 			// Return immediately so sub-components don't receive invalid dimensions and crash
 			return m, nil
@@ -78,11 +71,11 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.SizeError = ""
 
 		// C. Enforce Maximum Bounds capping
-		if windowMsg.Width > MaxWindowWidth {
-			windowMsg.Width = MaxWindowWidth
+		if windowMsg.Width > config.WindowWidth {
+			windowMsg.Width = config.WindowWidth
 		}
-		if windowMsg.Height > MaxWindowHeight {
-			windowMsg.Height = MaxWindowHeight
+		if windowMsg.Height > config.WindowHeight {
+			windowMsg.Height = config.WindowHeight
 		}
 
 		// Overwrite the message payload with our clamped dimensions
@@ -169,6 +162,7 @@ func (m AppModel) View() string {
 			Margin(2, 2)
 		return boxStyle.Render(m.SizeError)
 	}
+
 	// A. Render Global Navigation Tabs
 	header := components.RenderHeader(int(m.ActiveTab))
 
@@ -193,7 +187,7 @@ func (m AppModel) View() string {
 	// E. Render Layout Actions Footer
 	footer := components.RenderFooter(int(m.ActiveTab), isPopupOpen)
 
-	// Stitch our interface frame layers vertically
+	// 1. Stitch our interface frame layers vertically first
 	mainLayout := lipgloss.JoinVertical(
 		lipgloss.Left,
 		header,
@@ -203,7 +197,17 @@ func (m AppModel) View() string {
 		footer,
 	)
 
+	// === NEW: Wrap the entire stitched layout in a global window border ===
+	appBorderStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).      // Smooth rounded corners for the app frame
+		BorderForeground(lipgloss.Color("8")). // Deep indigo border color
+		Padding(0, 1)                          // Adds 1 character of padding on left/right inside the frame
+
+	mainLayout = appBorderStyle.Render(mainLayout)
+	// ====================================================================
+
 	// F. PHYSICAL OVERLAY RENDERING FOR POPUPS
+	// (Renders on top of the newly bordered main layout so popups aren't cut off)
 	if m.Focus == OptionsPopupWindow {
 		return components.RenderOverlay(mainLayout, m.OptionsPopup.View())
 	}

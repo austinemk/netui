@@ -23,7 +23,7 @@ func init() {
 	// Base application boundaries
 	Styles.Container = lipgloss.NewStyle().
 		Margin(1, 2).
-		Width(72).
+		Italic(true).
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("8"))
 
@@ -55,7 +55,7 @@ func init() {
 		Foreground(lipgloss.Color("#9CA3AF")).
 		Padding(0, 1)
 
-	Styles.HighlightText = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("4"))
+	Styles.HighlightText = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("7")).Background(lipgloss.Color("8")).Padding(0, 1)
 
 	// Status context indicators
 	Styles.LogFrame = lipgloss.NewStyle().

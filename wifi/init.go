@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/table"
-	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/godbus/dbus/v5"
@@ -66,8 +65,7 @@ type Model struct {
 	ActiveAPs []AccessPoint
 
 	// Dynamic Layout Elements
-	Table    table.Model
-	Viewport viewport.Model
+	Table table.Model
 
 	// Navigation & Component UI states
 	Cursor     int // Kept for backend array mapping compatibility
@@ -79,7 +77,9 @@ type Model struct {
 
 	// Password handling for secured lines
 	SelectedAP    AccessPoint
+	SelectedSaved SavedProfile
 	PasswordInput string
+	MenuOptions   []string
 }
 
 func New() Model {
@@ -111,12 +111,12 @@ func New() Model {
 	t.SetStyles(s)
 
 	return Model{
-		Client:   &DBusClient{Conn: nil},
-		Scanning: false,
-		Loading:  true,
-		UIState:  StateNormal,
-		Table:    t,
-		Viewport: viewport.New(0, 0),
+		Client:      &DBusClient{Conn: nil},
+		Scanning:    false,
+		Loading:     true,
+		UIState:     StateNormal,
+		Table:       t,
+		MenuOptions: []string{"autoconnect/off", "forget"},
 	}
 }
 

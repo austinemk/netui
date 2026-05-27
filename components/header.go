@@ -4,13 +4,13 @@ import (
 	"netui/config"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/common-nighthawk/go-figure"
+	//"github.com/common-nighthawk/go-figure"
 )
 
 // RenderHeader draws the main app banner and menu selections
 func RenderHeader(activeTab int) string {
-	banner := figure.NewFigure("netui", "smisome1", true).String()
-	title := config.Styles.Title.Render(banner) + "\n\n"
+	//banner := figure.NewFigure("netui", "larry3d", true).String()
+	title := config.Styles.Title.Render("NETUI") + "\n"
 
 	var t1, t2, t3 string
 	if activeTab == 0 {
@@ -31,6 +31,12 @@ func RenderHeader(activeTab int) string {
 		t3 = config.Styles.InactiveTab.Render("[3] VPN")
 	}
 
-	tabs := lipgloss.JoinHorizontal(lipgloss.Top, t1, t2, t3) + "\n\n"
-	return title + tabs
+	tabs := lipgloss.JoinHorizontal(lipgloss.Top, t1, t2, t3)
+	//return title + tabs
+	return lipgloss.JoinVertical(
+		lipgloss.Left,
+		title,
+		tabs,
+		dividerBorder(),
+	)
 }

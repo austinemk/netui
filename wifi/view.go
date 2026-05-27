@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"netui/components"
+
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -17,28 +19,20 @@ func (m Model) View() string {
 
 	var segments []string
 
-	// 1. Status Banner
-	bannerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#3B82F6")).Bold(true).Padding(0, 1)
+	// 2. Conditional Interface Block Rendering
 	if m.Scanning {
-		segments = append(segments, bannerStyle.Render("⚡ [SCANNING] Active Airwaves (Refreshing every 5s | Press 's' to Stop)"))
-	} else {
-		segments = append(segments, bannerStyle.Render("🛰️  [OFFLINE MODE] Ready (Press 's' to scan | 'p' to toggle power)"))
-	}
-
-	// 2. Conditional Interface Block Rendering (Loops Removed!)
-	if m.Scanning {
-		// --- SCANNING ON: Let the table component render the nearby access points ---
 		apBlock := "\n Nearby Access Points\n\n" + m.Table.View() + "\n"
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("10")).Render(apBlock))
+		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Italic(true).Render(" scanning active"))
+
 	} else {
-		// --- SCANNING OFF: Show Hardware & the table component for saved configurations ---
 		adapterBlock := fmt.Sprintf(
-			"\n🎛️  [Hardware Settings]\n  Interface:    %s\n  Link Status:  %s\n  Radio Power:  %s\n",
-			m.Adapter.Interface, m.Adapter.State, map[bool]string{true: "Enabled [ON]", false: "Disabled [OFF]"}[m.Adapter.Enabled],
+			"\n  Settings\n  Interface:    %s\n  Link Status:  %s\n  Power:  %s [p: switch]\n",
+			m.Adapter.Interface, m.Adapter.State, map[bool]string{true: "󰤨  on", false: "󰤭  off"}[m.Adapter.Enabled],
 		)
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Render(adapterBlock))
 
-		savedBlock := "\n💾 [Saved Station Configuration Registry]\n\n" + m.Table.View() + "\n"
+		savedBlock := "󰆓 Saved networks\n" + m.Table.View()
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#F59E0B")).Render(savedBlock))
 	}
 
@@ -53,18 +47,9 @@ func (m Model) View() string {
 	}
 
 	if m.UIState == StateSavedActionsMenu {
-		options := []string{"Toggle AutoConnect", "Forget Network/Delete"}
-		var menuLines []string
-		menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#EF4444")).Render("── Saved Network Actions ──"))
-		for i, opt := range options {
-			if m.MenuCursor == i {
-				menuLines = append(menuLines, fmt.Sprintf(" > \x1b[1m%s\x1b[0m", opt))
-			} else {
-				menuLines = append(menuLines, fmt.Sprintf("   %s", opt))
-			}
-		}
-		box := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#F59E0B")).Padding(1, 2).Margin(1, 2)
-		return lipgloss.JoinVertical(lipgloss.Center, screen, box.Render(strings.Join(menuLines, "\n")))
+		options := []string{"autoconnect/off", "forget"}
+		popup := components.RenderOptionsPopup(m.SelectedSaved.Name, options, m.MenuCursor)
+		return popup
 	}
 
 	return screen

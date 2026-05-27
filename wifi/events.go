@@ -1,7 +1,8 @@
 package wifi
 
 import (
-	"fmt"
+	"netui/components"
+	"netui/config"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -44,15 +45,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// 3. Fallback to sub-component updates
 	var cmd tea.Cmd
-	var cmds []tea.Cmd
-
 	m.Table, cmd = m.Table.Update(msg)
-	cmds = append(cmds, cmd)
 
-	m.Viewport, cmd = m.Viewport.Update(msg)
-	cmds = append(cmds, cmd)
-
-	return m, tea.Batch(cmds...)
+	return m, cmd
 }
 
 // --- Dedicated Handler Functions ---
@@ -95,6 +90,8 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	case "up", "k":
 		if m.MenuCursor > 0 {
 			m.MenuCursor--
+		} else {
+			m.MenuCursor = len(m.MenuOptions) - 1
 		}
 	case "down", "j":
 		if m.MenuCursor < 1 {
@@ -119,14 +116,18 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
-	m.Viewport.Width = msg.Width
-	m.Viewport.Height = msg.Height
+	m.Table.SetWidth(config.WindowWidth - 4)
 
-	m.Table.SetWidth(msg.Width - 4)
-	tableHeight := msg.Height - 14
-	if tableHeight < 4 {
-		tableHeight = 4
+	// Base height layout allocation
+	tableHeight := config.WindowHeight - 15
+
+	// If offline/not scanning, shrink the saved table down
+	// further to cleanly allocate room for hardware settings text blocks
+	if !m.Scanning {
+		tableHeight -= 5
 	}
+
+	tableHeight = max(tableHeight, config.MinTableHeight)
 	m.Table.SetHeight(tableHeight)
 	return m, nil
 }
@@ -173,7 +174,11 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 	case "s":
 		m.Scanning = !m.Scanning
 		m.Table.GotoTop()
-		m.Viewport.GotoTop()
+
+		// Force trigger a programmatic resize window sequence to re-adjust
+		// table heights layout based on scanning active state constraints
+		m, _ = m.handleWindowSize(tea.WindowSizeMsg{Width: config.WindowWidth, Height: config.WindowHeight})
+
 		m.syncTableRows()
 		if m.Scanning {
 			return m, TriggerHardwareScanCmd(m.Client)
@@ -199,16 +204,14 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 		} else {
 			if len(m.Saved) > 0 && idx < len(m.Saved) {
 				m.UIState = StateSavedActionsMenu
+				m.SelectedSaved = m.Saved[idx]
 				m.MenuCursor = 0
 			}
 		}
 
 	default:
-		// FIX 1: Forward navigation keys (up/down/j/k) directly to the table component
 		var cmd tea.Cmd
 		m.Table, cmd = m.Table.Update(msg)
-
-		// FIX 2: Keep your custom m.Cursor synced with the table's internal cursor position
 		m.Cursor = m.Table.Cursor()
 		return m, cmd
 	}
@@ -220,43 +223,43 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 func (m *Model) syncTableRows() {
 	var rows []table.Row
 
+	wdth := config.WindowWidth - 4
+
 	if m.Scanning {
-		// Clear the old rows cache before defining the new columns!
 		m.Table.SetRows(nil)
 
 		m.Table.SetColumns([]table.Column{
-			{Title: "Status", Width: 8},
-			{Title: "Network Name (SSID)", Width: 35},
-			{Title: "Signal", Width: 10},
-			{Title: "Security", Width: 15},
+			{Width: wdth / 8},
+			{Title: "ssid", Width: (wdth * 2) / 5},
+			{Width: wdth / 4},
+			{Width: wdth / 8},
 		})
 
 		for _, ap := range m.ActiveAPs {
 			activeMark := " "
 			if ap.IsActive {
-				activeMark = " ✔"
+				activeMark = ""
 			}
 			rows = append(rows, table.Row{
-				activeMark,
+				components.RenderSignal(ap.Strength, ap.Security),
 				ap.SSID,
-				fmt.Sprintf("%d%%", ap.Strength),
 				ap.Security,
+				activeMark,
 			})
 		}
 	} else {
-		// Clear the old rows cache before defining the new columns!
 		m.Table.SetRows(nil)
 
 		m.Table.SetColumns([]table.Column{
-			{Title: "Profile Name (SSID)", Width: 35},
-			{Title: "Connection Mode", Width: 18},
-			{Title: "UUID Fingerprint", Width: 15},
+			{Title: "SSID", Width: (wdth * 2) / 5},
+			{Title: "Auto", Width: wdth / 10},
+			{Title: "UUID", Width: (wdth * 2) / 5},
 		})
 
 		for _, prof := range m.Saved {
-			autoStr := "Manual Only"
+			autoStr := " "
 			if prof.AutoConnect {
-				autoStr = "AutoConnect"
+				autoStr = "󰁪"
 			}
 			uuidShort := ""
 			if len(prof.UUID) >= 8 {
@@ -272,8 +275,6 @@ func (m *Model) syncTableRows() {
 
 	m.Table.SetRows(rows)
 
-	// Bonus Safeguard: Reset the table cursor if it's suddenly out of bounds
-	// for the new data array size, otherwise clicking "enter" later might crash.
 	if m.Table.Cursor() >= len(rows) {
 		m.Table.GotoTop()
 		m.Cursor = m.Table.Cursor()
