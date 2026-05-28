@@ -1,6 +1,10 @@
 package config
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"math"
+
+	"github.com/charmbracelet/lipgloss"
+)
 
 // CustomStyles aggregates the look and feel elements of netui
 type CustomStyles struct {
@@ -48,8 +52,11 @@ func init() {
 	// Subtabs structures
 	Styles.BoxStyle = lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("8")).
-		Padding(1)
+		BorderForeground(lipgloss.Color("3")).
+		Padding(1).
+		Width(int(math.Floor(TabBodyWidth*0.5))).
+		Margin(0, int(math.Floor(TabBodyWidth*0.2))).
+		Height(int(math.Floor(TabBodyHeight * 0.4)))
 
 	Styles.InfoText = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("8")).

@@ -47,6 +47,8 @@ func New() Model {
 
 	t := table.New(
 		table.WithColumns(columns),
+		table.WithWidth(int(math.Floor(config.TabBodyWidth))),
+		table.WithHeight(int(math.Floor(config.TabBodyHeight*0.8))),
 		table.WithFocused(true),
 	)
 
@@ -59,11 +61,7 @@ func New() Model {
 
 	// Apply beautiful theme defaults
 	s := table.DefaultStyles()
-	s.Header = s.Header.
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color("240")).
-		BorderBottom(true).
-		Bold(true)
+	s.Header = lipgloss.NewStyle().Height(0).Padding(0, 0).MaxHeight(0)
 
 	s.Selected = s.Selected.
 		Foreground(config.Styles.HighlightText.GetForeground()).
@@ -93,9 +91,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// 2. Normal State Core Navigation Loop
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		return m.handleTableSize()
-
 	case InfoLoadedMsg:
 		return m.handleInfoLoaded(msg)
 

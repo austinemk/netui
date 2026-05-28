@@ -65,7 +65,7 @@ func (m Model) adapterBlock() string {
 }
 
 func (m Model) ScanningBlock() string {
-	title := "Nearby Access Points\n"
+	title := "Nearby Access Points"
 	table := m.Table.View()
 	return lipgloss.NewStyle().Render(
 		lipgloss.JoinVertical(

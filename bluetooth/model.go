@@ -1,11 +1,12 @@
 package bluetooth
 
 import (
+	"math"
+
 	"netui/config"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 type Model struct {
@@ -32,22 +33,23 @@ type Model struct {
 
 func New() Model {
 	columns := []table.Column{
-		{Title: "Status", Width: 8},
-		{Title: "Device Name", Width: 26},
-		{Title: "MAC Address", Width: 18},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.05))},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.5))},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.44))},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
 		table.WithFocused(true),
+		table.WithHeight(int(math.Floor(config.TabBodyHeight*0.8))),
 	)
 
 	s := table.DefaultStyles()
-	s.Header = s.Header.
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color("240")).
-		BorderBottom(true).
-		Bold(true)
+	/*s.Header = s.Header.
+	BorderStyle(lipgloss.NormalBorder()).
+	BorderForeground(lipgloss.Color("240")).
+	BorderBottom(true).
+	Bold(true)*/
 
 	s.Selected = s.Selected.
 		Foreground(config.Styles.HighlightText.GetForeground()).
@@ -71,9 +73,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// 2. Normal State Core Navigation Loop
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		return m.handleWindowSize(msg)
-
 	case DevicesLoadedMsg:
 		return m.handleDevicesLoaded(msg)
 

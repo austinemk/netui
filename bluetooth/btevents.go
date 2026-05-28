@@ -1,6 +1,8 @@
 package bluetooth
 
 import (
+	"math"
+
 	"netui/config"
 
 	"github.com/charmbracelet/bubbles/table"
@@ -31,6 +33,8 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "esc":
 		m.UIState = StateNormal
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+
 	case "enter":
 		if m.MenuCursor >= 0 && m.MenuCursor < len(m.MenuOptions) {
 			action := m.MenuOptions[m.MenuCursor]
@@ -39,17 +43,6 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		m.UIState = StateNormal
 		return m, cmd
 	}
-	return m, nil
-}
-
-func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
-	// Directly constraint size maps inside the table component
-	m.Table.SetWidth(config.WindowWidth - 4)
-	tableHeight := config.WindowHeight - 12
-	m.Table.SetHeight(max(tableHeight, 5))
-
-	// Refresh rows layout structure matching new dimensional width bounds
-	m.syncTableRows()
 	return m, nil
 }
 
@@ -85,6 +78,7 @@ func (m *Model) handleAdapterInfoLoaded(msg AdapterInfoLoadedMsg) {
 func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 	switch msg.String() {
 	case "s":
+		m.syncTableRows()
 		if m.Scanning {
 			return m, StopScanCmd()
 		} else {
@@ -109,6 +103,7 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 		}
 
 	case "enter":
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.5)))
 		return m.handleEnterKey()
 
 	default:
@@ -174,11 +169,11 @@ func (m *Model) syncTableRows() {
 		}
 	}
 
-	m.Table.SetColumns([]table.Column{
+	/*m.Table.SetColumns([]table.Column{
 		{Title: "Status", Width: wdth / 8},
 		{Title: "Device Name", Width: (wdth * 3) / 5},
 		{Title: "MAC Address", Width: wdth / 4},
-	})
+	})*/
 
 	for _, dev := range visibleDevices {
 		statusIcon := "󰂯"

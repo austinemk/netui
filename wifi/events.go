@@ -24,7 +24,9 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	switch keyMsg.String() {
 	case "esc":
 		m.UIState = StateNormal
-		m.PassInput.Reset() // Clear the input field completely
+		m.PassInput.Reset()
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+		// Clear the input field completely
 		return m, nil
 
 	case "enter":
@@ -64,6 +66,8 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "esc":
 		m.UIState = StateNormal
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+
 	case "enter":
 		idx := m.Table.Cursor()
 		if idx >= 0 && idx < len(m.Saved) {
@@ -77,23 +81,6 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		m.UIState = StateNormal
 		return m, cmd
 	}
-	return m, nil
-}
-
-func (m Model) handleTableSize() (Model, tea.Cmd) {
-	m.Table.SetWidth(config.TabBodyWidth)
-
-	// Base height layout allocation
-	tableHeight := int(math.Floor(config.TabBodyHeight * 0.8))
-
-	// If offline/not scanning, shrink the saved table down
-	// further to cleanly allocate room for hardware settings text blocks
-	if m.UIState == StateSavedActionsMenu || m.UIState == StatePasswordInput {
-		tableHeight = int(math.Floor(config.TabBodyHeight * 0.5))
-	}
-
-	tableHeight = max(tableHeight, config.MinTableHeight)
-	m.Table.SetHeight(tableHeight)
 	return m, nil
 }
 
@@ -140,12 +127,10 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 		m.Scanning = !m.Scanning
 		m.Table.GotoTop()
 
-		m.handleTableSize()
+		m.syncTableRows()
 
 		// Force trigger a programmatic resize window sequence to re-adjust
 		// table heights layout based on scanning active state constraints
-
-		m.syncTableRows()
 		if m.Scanning {
 			return m, TriggerHardwareScanCmd(m.Client)
 		}
@@ -174,6 +159,7 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 				m.MenuCursor = 0
 			}
 		}
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4)))
 
 	default:
 		var cmd tea.Cmd
@@ -189,16 +175,14 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 func (m *Model) syncTableRows() {
 	var rows []table.Row
 
-	wdth := config.WindowWidth - 4
-
 	if m.Scanning {
 		m.Table.SetRows(nil)
 
 		m.Table.SetColumns([]table.Column{
-			{Width: wdth / 8},
-			{Title: "ssid", Width: (wdth * 2) / 5},
-			{Width: wdth / 4},
-			{Width: wdth / 8},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.1))},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.5))},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.3))},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.1))},
 		})
 
 		for _, ap := range m.ActiveAPs {
@@ -217,9 +201,9 @@ func (m *Model) syncTableRows() {
 		m.Table.SetRows(nil)
 
 		m.Table.SetColumns([]table.Column{
-			{Title: "SSID", Width: (wdth * 2) / 5},
-			{Title: "Auto", Width: wdth / 10},
-			{Title: "UUID", Width: (wdth * 2) / 5},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.4))},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.15))},
+			{Width: int(math.Floor(config.TabBodyWidth * 0.4))},
 		})
 
 		for _, prof := range m.Saved {
