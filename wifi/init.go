@@ -4,6 +4,8 @@ package wifi
 import (
 	"time"
 
+	"netui/config"
+
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -105,9 +107,9 @@ func New() Model {
 		Bold(true)
 
 	s.Selected = s.Selected.
-		Foreground(lipgloss.Color("#FFFFFF")).
-		Background(lipgloss.Color("#3B82F6")). // Uses your blue color from Styles.CursorColor
-		Bold(true)
+		Foreground(config.Styles.HighlightText.GetForeground()).
+		Background(config.Styles.HighlightText.GetBackground()). // Uses your blue color from Styles.CursorColor
+		Bold(config.Styles.HighlightText.GetBold())
 	t.SetStyles(s)
 
 	return Model{

@@ -13,3 +13,11 @@ const (
 	MinTableHeight = 7
 	TableHeight    = 7
 )
+
+// popup box
+const (
+	PopupWidth  = WindowWidth - 6
+	PopupHeight = WindowHeight / 2
+	PopupHpos   = 6
+	PopupVpos   = (WindowHeight * 2) / 5
+)

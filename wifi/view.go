@@ -22,7 +22,7 @@ func (m Model) View() string {
 	// 2. Conditional Interface Block Rendering
 	if m.Scanning {
 		apBlock := "\n Nearby Access Points\n\n" + m.Table.View() + "\n"
-		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("10")).Render(apBlock))
+		segments = append(segments, lipgloss.NewStyle().Render(apBlock))
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Italic(true).Render(" scanning active"))
 
 	} else {
@@ -33,7 +33,7 @@ func (m Model) View() string {
 		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Render(adapterBlock))
 
 		savedBlock := "󰆓 Saved networks\n" + m.Table.View()
-		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("#F59E0B")).Render(savedBlock))
+		segments = append(segments, lipgloss.NewStyle().Render(savedBlock))
 	}
 
 	screen := lipgloss.JoinVertical(lipgloss.Left, segments...)

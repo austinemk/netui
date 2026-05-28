@@ -20,7 +20,7 @@ func RenderFooter(activeTab int, isPopup bool) string {
 		return divider + hintStyle.Render(" 1-3: Swap Tabs │ q: Quit App")
 	}*/
 
-	hints = hints + "j,k: up/down | enter: connect/options | q: quit"
+	hints = hints + "j,k: up/down | enter: connect/options | esc: close popup | q: quit"
 	hintsView := hintStyle.Render(hints)
 	footer := lipgloss.JoinVertical(lipgloss.Left, dividerBorder(), hintsView)
 
