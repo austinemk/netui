@@ -8,7 +8,7 @@ type CustomStyles struct {
 	Title         lipgloss.Style
 	ActiveTab     lipgloss.Style
 	InactiveTab   lipgloss.Style
-	PopupBoxStyle lipgloss.Style
+	BoxStyle      lipgloss.Style
 	InfoText      lipgloss.Style
 	HighlightText lipgloss.Style
 	LogFrame      lipgloss.Style
@@ -35,7 +35,7 @@ func init() {
 		Padding(0, 1)
 
 	// Tab structures
-	Styles.PopupBoxStyle = lipgloss.NewStyle().
+	Styles.ActiveTab = lipgloss.NewStyle().
 		Background(lipgloss.Color("8")).
 		Foreground(lipgloss.Color("2")).
 		Padding(0, 1)
@@ -46,7 +46,7 @@ func init() {
 		Padding(0, 1)
 
 	// Subtabs structures
-	Styles.PopupBoxStyle = lipgloss.NewStyle().
+	Styles.BoxStyle = lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("8")).
 		Padding(1)

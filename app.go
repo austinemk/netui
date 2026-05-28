@@ -57,26 +57,31 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Intercept Window Resizing and enforce strict sizing rules
 	if windowMsg, ok := msg.(tea.WindowSizeMsg); ok {
-		// A. Check Minimum Bounds
-		if windowMsg.Width < config.MinWindowWidth || windowMsg.Height < config.MinWindowHeight {
+
+		// 1. Check if config values are less than the hardcoded absolute minimums
+		if config.WindowWidth < 70 || config.WindowHeight < 25 {
 			m.SizeError = fmt.Sprintf(
-				"⚠️  Terminal screen is too small!\n\n  Current: %dx%d\n  Minimum required: %dx%d\n\n Please resize your terminal window.",
-				windowMsg.Width, windowMsg.Height, config.MinWindowWidth, config.MinWindowHeight,
+				"⚠️  Configuration Error!\n\n  Configured sizes are too small for layout items.\n  Config: %dx%d\n  Absolute Minimum: 70x25",
+				config.WindowWidth, config.WindowHeight,
 			)
-			// Return immediately so sub-components don't receive invalid dimensions and crash
 			return m, nil
 		}
 
-		// B. Clean up the error if the size becomes valid again
+		// 2. Check if config values are larger than the actual physical window size
+		if config.WindowWidth > windowMsg.Width || config.WindowHeight > windowMsg.Height {
+			m.SizeError = fmt.Sprintf(
+				"⚠️  Terminal screen is too small!\n\n  Current Window: %dx%d\n  Config Demands: %dx%d\n\n Please resize your terminal window.",
+				windowMsg.Width, windowMsg.Height, config.WindowWidth, config.WindowHeight,
+			)
+			return m, nil
+		}
+
+		// If everything passes, clean up any previous sizing errors
 		m.SizeError = ""
 
-		// C. Enforce Maximum Bounds capping
-		if windowMsg.Width > config.WindowWidth {
-			windowMsg.Width = config.WindowWidth
-		}
-		if windowMsg.Height > config.WindowHeight {
-			windowMsg.Height = config.WindowHeight
-		}
+		// Enforce and clamp the dimensions to the strict config boundaries
+		windowMsg.Width = config.WindowWidth
+		windowMsg.Height = config.WindowHeight
 
 		// Overwrite the message payload with our clamped dimensions
 		msg = windowMsg
@@ -127,7 +132,6 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			//bluetooth.CleanupAll() // Instantly kills background bluetoothctl processes safely
 			return m, tea.Quit
 		case "1", "2", "3":
 			m.ActiveTab = Tab(msg.String()[0] - '1')
@@ -136,7 +140,6 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	// 3. ROUTE MESSAGES & KEYPRESSES TO THE ACTIVE TAB ONLY
-	// This lets sub-views change their own internal m.Status variables independently.
 	switch m.ActiveTab {
 	case WifiTab:
 		m.WifiView, cmd = m.WifiView.Update(msg)
@@ -153,7 +156,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m AppModel) View() string {
-	// If terminal dimensions are broken, display a clear overlay message
+	// If terminal dimensions or config setups are broken, display a clear overlay message
 	if m.SizeError != "" {
 		boxStyle := lipgloss.NewStyle().
 			Border(lipgloss.DoubleBorder()).
@@ -191,23 +194,20 @@ func (m AppModel) View() string {
 	mainLayout := lipgloss.JoinVertical(
 		lipgloss.Left,
 		header,
-		// statusGrid,
 		body,
 		logView,
 		footer,
 	)
 
-	// === NEW: Wrap the entire stitched layout in a global window border ===
+	// === Wrap the entire stitched layout in a global window border ===
 	appBorderStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).      // Smooth rounded corners for the app frame
-		BorderForeground(lipgloss.Color("8")). // Deep indigo border color
-		Padding(0, 1)                          // Adds 1 character of padding on left/right inside the frame
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("8")).
+		Padding(0, 1)
 
 	mainLayout = appBorderStyle.Render(mainLayout)
-	// ====================================================================
 
 	// F. PHYSICAL OVERLAY RENDERING FOR POPUPS
-	// (Renders on top of the newly bordered main layout so popups aren't cut off)
 	if m.Focus == OptionsPopupWindow {
 		return components.RenderOverlay(mainLayout, m.OptionsPopup.View())
 	}

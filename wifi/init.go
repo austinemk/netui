@@ -4,11 +4,7 @@ package wifi
 import (
 	"time"
 
-	"netui/config"
-
-	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/godbus/dbus/v5"
 )
 
@@ -58,68 +54,6 @@ type InfoLoadedData struct {
 	Adapter AdapterInfo
 	Saved   []SavedProfile
 	APs     []AccessPoint
-}
-
-type Model struct {
-	Client    *DBusClient
-	Adapter   AdapterInfo
-	Saved     []SavedProfile
-	ActiveAPs []AccessPoint
-
-	// Dynamic Layout Elements
-	Table table.Model
-
-	// Navigation & Component UI states
-	Cursor     int // Kept for backend array mapping compatibility
-	MenuCursor int
-	UIState    UIState
-	Scanning   bool
-	Loading    bool
-	Err        error
-
-	// Password handling for secured lines
-	SelectedAP    AccessPoint
-	SelectedSaved SavedProfile
-	PasswordInput string
-	MenuOptions   []string
-}
-
-func New() Model {
-	// Initialize default columns structure
-	columns := []table.Column{
-		{Title: "Status", Width: 8},
-		{Title: "Network Name (SSID)", Width: 26},
-		{Title: "Signal", Width: 8},
-		{Title: "Security", Width: 12},
-	}
-
-	t := table.New(
-		table.WithColumns(columns),
-		table.WithFocused(true),
-	)
-
-	// Apply beautiful theme defaults
-	s := table.DefaultStyles()
-	s.Header = s.Header.
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color("240")).
-		BorderBottom(true).
-		Bold(true)
-
-	s.Selected = s.Selected.
-		Foreground(config.Styles.HighlightText.GetForeground()).
-		Background(config.Styles.HighlightText.GetBackground()). // Uses your blue color from Styles.CursorColor
-		Bold(config.Styles.HighlightText.GetBold())
-	t.SetStyles(s)
-
-	return Model{
-		Client:      &DBusClient{Conn: nil},
-		Scanning:    false,
-		Loading:     true,
-		UIState:     StateNormal,
-		Table:       t,
-		MenuOptions: []string{"autoconnect/off", "forget"},
-	}
 }
 
 func (m Model) Init() tea.Cmd {

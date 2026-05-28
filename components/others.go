@@ -1,9 +1,6 @@
 package components
 
 import (
-	"fmt"
-	"strings"
-
 	"netui/config"
 
 	"github.com/charmbracelet/lipgloss"
@@ -18,7 +15,7 @@ func dividerBorder() string {
 	return lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Render(divider)
 }
 
-func RenderOptionsPopup(title string, options []string, cursor int) string {
+/*func RenderOptionsPopup(title string, options []string, cursor int) string {
 	var menulines []string
 	menulines = append(menulines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("15")).Italic(true).Render(fmt.Sprintf("%s options \n\n", title)))
 	//boxStyle := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("8")).Padding(1, 2)
@@ -38,4 +35,4 @@ func RenderOptionsPopup(title string, options []string, cursor int) string {
 		config.PopupVpos,
 		strings.Join(menulines, "\n"),
 	))
-}
+}*/

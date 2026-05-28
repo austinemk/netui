@@ -93,9 +93,9 @@ func getFilteredDevices(devices []Device, scanning bool) []Device {
 }
 
 // getFilteredDevices is kept as a method for compatibility with view.go and init.go
-func (m Model) getFilteredDevices() []Device {
+/*func (m Model) getFilteredDevices() []Device {
 	return getFilteredDevices(m.Devices, m.Scanning)
-}
+}*/
 
 func ControlScan(turnOn bool) error {
 	conn, err := getSystemBus()
@@ -160,7 +160,7 @@ func FetchCachedDevices() ([]Device, error) {
 				dev.Trusted = trusted
 			}
 			if icon, ok := props["Icon"].Value().(string); ok {
-				dev.Icon = icon
+				dev.Icon = string(FromString(icon))
 			}
 
 			devices = append(devices, dev)

@@ -2,10 +2,10 @@ package config
 
 // Enforced window constraint thresholds
 const (
-	MinWindowWidth  = 70
-	MinWindowHeight = 25
-	WindowWidth     = 70
-	WindowHeight    = 25
+	WindowWidth   = 70
+	WindowHeight  = 25
+	TabBodyHeight = WindowHeight - 10
+	TabBodyWidth  = WindowWidth - 2
 )
 
 // TableHeight for setting table height
@@ -16,8 +16,20 @@ const (
 
 // popup box
 const (
-	PopupWidth  = WindowWidth - 6
+	PopupWidth  = WindowWidth / 2
 	PopupHeight = WindowHeight / 2
-	PopupHpos   = 6
+	PopupHpos   = WindowWidth / 4
 	PopupVpos   = (WindowHeight * 2) / 5
 )
+
+/*func PopupWindow(content string) string {
+	return Styles.PopupBoxStyle.Render(
+		lipgloss.Place(
+			PopupWidth,
+			PopupHeight,
+			PopupHpos,
+			PopupVpos,
+			content,
+		),
+	)
+}*/

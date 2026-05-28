@@ -1,6 +1,8 @@
 package wifi
 
 import (
+	"math"
+
 	"netui/components"
 	"netui/config"
 
@@ -8,75 +10,38 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	// 1. State-based Structural Intercepts
-	switch m.UIState {
-	case StatePasswordInput:
-		return m.handlePasswordInput(msg)
-	case StateSavedActionsMenu:
-		return m.handleSavedActionsMenu(msg)
-	}
-
-	// 2. Normal State Core Navigation Loop
-	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		return m.handleWindowSize(msg)
-
-	case InfoLoadedMsg:
-		return m.handleInfoLoaded(msg)
-
-	case ScanFinishedMsg:
-		return m.handleScanFinished(msg)
-
-	case TickMsg:
-		return m.handleTick()
-
-	case AdapterToggledMsg, ActionSuccessMsg:
-		return m.handleAdapterOrActionSuccess()
-
-	case ErrMsg:
-		m.Err = msg
-		m.Scanning = false
-		return m, nil
-
-	case tea.KeyMsg:
-		return m.handleKeyInput(msg)
-	}
-
-	// 3. Fallback to sub-component updates
-	var cmd tea.Cmd
-	m.Table, cmd = m.Table.Update(msg)
-
-	return m, cmd
-}
-
 // --- Dedicated Handler Functions ---
 
 func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	keyMsg, ok := msg.(tea.KeyMsg)
 	if !ok {
-		return m, nil
+		// Still allow system messages to pass through to the input if needed
+		var cmd tea.Cmd
+		m.PassInput, cmd = m.PassInput.Update(msg)
+		return m, cmd
 	}
 
 	switch keyMsg.String() {
 	case "esc":
 		m.UIState = StateNormal
-		m.PasswordInput = ""
-	case "backspace":
-		if len(m.PasswordInput) > 0 {
-			m.PasswordInput = m.PasswordInput[:len(m.PasswordInput)-1]
-		}
+		m.PassInput.Reset() // Clear the input field completely
+		return m, nil
+
 	case "enter":
-		cmd := ConnectToAccessPoint(m.Client, m.SelectedAP, m.PasswordInput)
+		// Grab the clean text value directly from the component
+		passwordValue := m.PassInput.Value()
+		cmd := ConnectToAccessPoint(m.Client, m.SelectedAP, passwordValue)
+
 		m.UIState = StateNormal
-		m.PasswordInput = ""
+		m.PassInput.Reset()
 		return m, cmd
+
 	default:
-		if len(keyMsg.String()) == 1 {
-			m.PasswordInput += keyMsg.String()
-		}
+		// Forward all typing events directly to the textinput bubble
+		var cmd tea.Cmd
+		m.PassInput, cmd = m.PassInput.Update(msg)
+		return m, cmd
 	}
-	return m, nil
 }
 
 func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
@@ -115,16 +80,16 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
-	m.Table.SetWidth(config.WindowWidth - 4)
+func (m Model) handleTableSize() (Model, tea.Cmd) {
+	m.Table.SetWidth(config.TabBodyWidth)
 
 	// Base height layout allocation
-	tableHeight := config.WindowHeight - 15
+	tableHeight := int(math.Floor(config.TabBodyHeight * 0.8))
 
 	// If offline/not scanning, shrink the saved table down
 	// further to cleanly allocate room for hardware settings text blocks
-	if !m.Scanning {
-		tableHeight -= 5
+	if m.UIState == StateSavedActionsMenu || m.UIState == StatePasswordInput {
+		tableHeight = int(math.Floor(config.TabBodyHeight * 0.5))
 	}
 
 	tableHeight = max(tableHeight, config.MinTableHeight)
@@ -175,9 +140,10 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 		m.Scanning = !m.Scanning
 		m.Table.GotoTop()
 
+		m.handleTableSize()
+
 		// Force trigger a programmatic resize window sequence to re-adjust
 		// table heights layout based on scanning active state constraints
-		m, _ = m.handleWindowSize(tea.WindowSizeMsg{Width: config.WindowWidth, Height: config.WindowHeight})
 
 		m.syncTableRows()
 		if m.Scanning {

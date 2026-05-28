@@ -5,12 +5,6 @@ import (
 	"github.com/godbus/dbus/v5"
 )
 
-type AdapterInfo struct {
-	Powered      bool
-	Discoverable bool
-	Pairable     bool
-}
-
 func FetchAdapterInfoCmd() tea.Cmd {
 	return func() tea.Msg {
 		info, err := FetchAdapterInfo()

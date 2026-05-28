@@ -1,89 +1,61 @@
 package bluetooth
 
 import (
-	"netui/components"
+	"netui/config"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	var cmd tea.Cmd
-	var cmds []tea.Cmd
+// --- Dedicated Handler Functions ---
 
-	// 1. Intercept for Active Popup Controls
-	if m.PopupMenu.Active {
-		m.PopupMenu, cmd = m.PopupMenu.Update(msg)
-		if selectMsg, ok := msg.(components.OptionSelectedMsg); ok {
-			m.PopupMenu.Active = false
-			return m, ExecuteActionCmd(selectMsg.Option, m.SelectedMac)
+func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
+	keyMsg, ok := msg.(tea.KeyMsg)
+	if !ok {
+		return m, nil
+	}
+
+	var cmd tea.Cmd
+	switch keyMsg.String() {
+	case "up", "k":
+		if m.MenuCursor > 0 {
+			m.MenuCursor--
+		} else {
+			m.MenuCursor = len(m.MenuOptions) - 1
 		}
+	case "down", "j":
+		if m.MenuCursor < len(m.MenuOptions)-1 {
+			m.MenuCursor++
+		} else {
+			m.MenuCursor = 0
+		}
+	case "esc":
+		m.UIState = StateNormal
+	case "enter":
+		if m.MenuCursor >= 0 && m.MenuCursor < len(m.MenuOptions) {
+			action := m.MenuOptions[m.MenuCursor]
+			cmd = ExecuteActionCmd(action, m.SelectedMac)
+		}
+		m.UIState = StateNormal
 		return m, cmd
 	}
-
-	// 2. Main Message Router
-	switch msg := msg.(type) {
-
-	case ScanStartedMsg:
-		return m, tea.Batch(FetchDevicesCmd(), PollDevicesTicker())
-
-	case DevicesLoadedMsg:
-		return m.handleDevicesLoaded(msg)
-
-	case TickMsg:
-		return m.handleTick()
-
-	case ScanStoppedMsg:
-		return m.handleScanStopped()
-
-	case AdapterInfoLoadedMsg:
-		m.handleAdapterInfoLoaded(msg)
-
-	case AdapterToggledMsg:
-		return m, FetchAdapterInfoCmd()
-
-	case ActionSuccessMsg:
-		m.Err = nil
-		return m, tea.Batch(FetchDevicesCmd(), FetchAdapterInfoCmd())
-
-	case ErrMsg:
-		m.Err = msg
-
-	case tea.KeyMsg:
-		return m.handleKeyInput(msg)
-	}
-
-	// 3. Route messages to the standard table controller (handles arrow highlights)
-	m.Table, cmd = m.Table.Update(msg)
-	cmds = append(cmds, cmd)
-
-	// 4. Route messages to viewport (handles scrollbars page transitions)
-	m.Viewport, cmd = m.Viewport.Update(msg)
-	cmds = append(cmds, cmd)
-
-	return m, tea.Batch(cmds...)
+	return m, nil
 }
 
-// --- Extracted Message Handlers ---
+func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
+	// Directly constraint size maps inside the table component
+	m.Table.SetWidth(config.WindowWidth - 4)
+	tableHeight := config.WindowHeight - 12
+	m.Table.SetHeight(max(tableHeight, 5))
 
-/*func (m *Model) handleWindowSize(msg tea.WindowSizeMsg) {
-	// Slicing application height limits gracefully
-	m.Viewport.Width = msg.Width
-	m.Viewport.Height = msg.Height
-
-	// Table constraints padding limits
-	m.Table.SetWidth(msg.Width - 4)
-	// Reserve roughly 10 lines for headers, options, and adapters toggles
-	tableHeight := msg.Height - 10
-	if tableHeight < 3 {
-		tableHeight = 3
-	}
-	m.Table.SetHeight(tableHeight)
-}*/
+	// Refresh rows layout structure matching new dimensional width bounds
+	m.syncTableRows()
+	return m, nil
+}
 
 func (m Model) handleDevicesLoaded(msg DevicesLoadedMsg) (Model, tea.Cmd) {
 	m.Devices = msg
-	m.syncTableRows() // Hydrate rows with fresh devices
+	m.syncTableRows()
 	if m.Scanning {
 		return m, PollDevicesTicker()
 	}
@@ -99,7 +71,8 @@ func (m Model) handleTick() (Model, tea.Cmd) {
 
 func (m Model) handleScanStopped() (Model, tea.Cmd) {
 	m.Scanning = false
-	m.Table.GotoTop() // Safe reset cursor
+	m.Table.GotoTop()
+	m.Cursor = m.Table.Cursor()
 	return m, FetchDevicesCmd()
 }
 
@@ -111,18 +84,13 @@ func (m *Model) handleAdapterInfoLoaded(msg AdapterInfoLoadedMsg) {
 
 func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 	switch msg.String() {
-	case "ctrl+c", "q":
-		if m.Scanning {
-			_ = ControlScan(false)
-		}
-		return m, tea.Quit
-
 	case "s":
 		if m.Scanning {
 			return m, StopScanCmd()
 		} else {
 			m.Scanning = true
 			m.Table.GotoTop()
+			m.Cursor = m.Table.Cursor()
 			m.Err = nil
 			return m, StartScanCmd()
 		}
@@ -142,8 +110,13 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 
 	case "enter":
 		return m.handleEnterKey()
-	}
 
+	default:
+		var cmd tea.Cmd
+		m.Table, cmd = m.Table.Update(msg)
+		m.Cursor = m.Table.Cursor()
+		return m, cmd
+	}
 	return m, nil
 }
 
@@ -156,6 +129,7 @@ func (m Model) handleEnterKey() (Model, tea.Cmd) {
 
 	targetDev := visibleDevices[selectedIdx]
 	m.SelectedMac = targetDev.MAC
+	m.SelectedDev = targetDev
 
 	var opts []string
 	if targetDev.Connected {
@@ -178,22 +152,38 @@ func (m Model) handleEnterKey() (Model, tea.Cmd) {
 		opts = append(opts, "Remove")
 	}
 
-	m.PopupMenu = components.NewOptionsPopup(targetDev.Name, opts)
-	m.PopupMenu.Active = true
+	m.MenuOptions = opts
+	m.MenuCursor = 0
+	m.UIState = StateActionsMenu
 	return m, nil
 }
 
-// --- Helpers ---
+func (m Model) getFilteredDevices() []Device {
+	return m.Devices
+}
 
-// Helper to convert internal device array indices cleanly into standard table rows
 func (m *Model) syncTableRows() {
 	visibleDevices := m.getFilteredDevices()
 	var rows []table.Row
 
+	wdth := m.Table.Width()
+	if wdth <= 0 {
+		wdth = config.WindowWidth - 4
+		if wdth <= 0 {
+			wdth = 50 // Safe fallback minimum initialization width bounds
+		}
+	}
+
+	m.Table.SetColumns([]table.Column{
+		{Title: "Status", Width: wdth / 8},
+		{Title: "Device Name", Width: (wdth * 3) / 5},
+		{Title: "MAC Address", Width: wdth / 4},
+	})
+
 	for _, dev := range visibleDevices {
-		statusIcon := IconGenericBluetooth.String()
+		statusIcon := "󰂯"
 		if dev.Icon != "" {
-			statusIcon = FromString(dev.Icon).String()
+			statusIcon = dev.Icon
 		}
 		if dev.Connected {
 			statusIcon = ""
@@ -206,4 +196,9 @@ func (m *Model) syncTableRows() {
 		})
 	}
 	m.Table.SetRows(rows)
+
+	if m.Table.Cursor() >= len(rows) {
+		m.Table.GotoTop()
+		m.Cursor = m.Table.Cursor()
+	}
 }
