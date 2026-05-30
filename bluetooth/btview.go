@@ -6,7 +6,7 @@ import (
 
 	"netui/config"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 func (m Model) View() string {
@@ -27,11 +27,10 @@ func (m Model) View() string {
 	if m.UIState == StateActionsMenu {
 		segments = append(segments, m.ActionsMenuBlock())
 	}
-	if m.Scanning {
-		segments = append(segments, lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Italic(true).Render("󱉶 scanning active ..."))
-	}
+
 	segments = append(segments, m.AdapterBlock())
 
+	// V2: Layout compositions use enum alignment methods
 	return lipgloss.JoinVertical(lipgloss.Left, segments...)
 }
 
@@ -45,11 +44,16 @@ func (m Model) AdapterBlock() string {
 	pairStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
 		Render(fmt.Sprintf("   pairable: %s", map[bool]string{true: "", false: ""}[m.Pairable]))
 
+	scanStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).Italic(true).
+		Render(fmt.Sprintf("   state: %s", map[bool]string{true: "discovering", false: "saved"}[m.Scanning]))
+
+	// V2: Join strings using direct horizontal alignment methods
 	adapterBlock := lipgloss.JoinHorizontal(
 		lipgloss.Center,
 		powStatus,
 		discStatus,
 		pairStatus,
+		scanStatus,
 	)
 
 	return adapterBlock

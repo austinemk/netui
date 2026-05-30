@@ -1,171 +1,146 @@
 package bluetooth
 
 import (
-	"sync"
+	"fmt"
+	"os"
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 	"github.com/godbus/dbus/v5"
 )
 
-// scanConn holds the D-Bus connection that issued StartDiscovery.
-// BlueZ ties the discovery session to the originating connection — closing
-// it immediately cancels discovery. We keep it open until StopScan is called.
-var (
-	scanConn   *dbus.Conn
-	scanConnMu sync.Mutex
-)
-
-func StartScanCmd() tea.Cmd {
+// StartScanCmd tells BlueZ to turn on the physical Bluetooth radio scanning
+func StartScanCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		scanConnMu.Lock()
-		defer scanConnMu.Unlock()
-
-		// Close any leftover session from a previous scan
-		if scanConn != nil {
-			_ = scanConn.Close()
-			scanConn = nil
-		}
-
-		conn, err := getSystemBus()
-		if err != nil {
-			return ErrMsg(err)
-		}
-
-		obj := conn.Object(bluezInterface, adapterPath)
+		obj := client.Conn.Object(bluezInterface, adapterPath)
 		call := obj.Call("org.bluez.Adapter1.StartDiscovery", 0)
 		if call.Err != nil {
-			_ = conn.Close()
 			return ErrMsg(call.Err)
 		}
-
-		// Keep the connection alive — closing it would end the BlueZ
-		// discovery session immediately.
-		scanConn = conn
 		return ScanStartedMsg{}
 	}
 }
 
-func StopScanCmd() tea.Cmd {
+// StopScanCmd tells BlueZ to shut down the physical radio scanning immediately
+func StopScanCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		scanConnMu.Lock()
-		defer scanConnMu.Unlock()
-
-		if scanConn != nil {
-			obj := scanConn.Object(bluezInterface, adapterPath)
-			_ = obj.Call("org.bluez.Adapter1.StopDiscovery", 0)
-			_ = scanConn.Close()
-			scanConn = nil
-		}
-
+		obj := client.Conn.Object(bluezInterface, adapterPath)
+		_ = obj.Call("org.bluez.Adapter1.StopDiscovery", 0)
 		return ScanStoppedMsg{}
 	}
 }
 
-func FetchDevicesCmd() tea.Cmd {
+// FetchAllBlueZObjects remains as the single source of truth from the OS cache
+func FetchAllBlueZObjects(client *BlueZClient) ([]Device, error) {
+	obj := client.Conn.Object(bluezInterface, dbus.ObjectPath("/"))
+	var nodes map[dbus.ObjectPath]map[string]map[string]dbus.Variant
+
+	err := obj.Call("org.freedesktop.DBus.ObjectManager.GetManagedObjects", 0).Store(&nodes)
+	if err != nil {
+		logToFile("❌ DBUS ERROR calling GetManagedObjects: %v", err)
+		return nil, err
+	}
+
+	logToFile("📬 Received %d total DBus object paths from ObjectManager", len(nodes))
+
+	var devices []Device
+	for path, interfaces := range nodes {
+		props, exists := interfaces["org.bluez.Device1"]
+		if !exists {
+			// This path is not a Bluetooth device (might be an adapter or agent)
+			continue
+		}
+
+		logToFile("🔍 Inspecting device path: %s", path)
+
+		dev := Device{}
+
+		if addr, ok := props["Address"].Value().(string); ok {
+			dev.MAC = addr
+		}
+
+		if dev.MAC == "" {
+			logToFile("⚠️  Skipping path %s because MAC Address is empty", path)
+			continue
+		}
+
+		if name, ok := props["Name"].Value().(string); ok {
+			dev.Name = name
+		} else if alias, ok := props["Alias"].Value().(string); ok {
+			dev.Name = alias
+		} else {
+			dev.Name = "Unknown Device"
+		}
+
+		if paired, ok := props["Paired"].Value().(bool); ok {
+			dev.Paired = paired
+		}
+		if connected, ok := props["Connected"].Value().(bool); ok {
+			dev.Connected = connected
+		}
+		if trusted, ok := props["Trusted"].Value().(bool); ok {
+			dev.Trusted = trusted
+		}
+
+		logToFile("✅ Successfully parsed: Name='%s' MAC='%s' Paired=%t Connected=%t", dev.Name, dev.MAC, dev.Paired, dev.Connected)
+
+		devices = append(devices, dev)
+	}
+
+	logToFile("📦 Total devices loaded into memory from scan block: %d", len(devices))
+	return devices, nil
+}
+
+func LoadPairedDevicesCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		devs, err := FetchCachedDevices()
+		logToFile("📥 Command Triggered: LoadPairedDevicesCmd")
+		devices, err := FetchAllBlueZObjects(client)
 		if err != nil {
 			return ErrMsg(err)
 		}
-		return DevicesLoadedMsg(devs)
+
+		var pairedOnly []Device
+		for _, d := range devices {
+			if d.Paired {
+				pairedOnly = append(pairedOnly, d)
+			}
+		}
+		logToFile("💾 Filtering SAVED table: showing %d paired out of %d total devices", len(pairedOnly), len(devices))
+		return PairedDevicesLoadedMsg(pairedOnly)
 	}
 }
 
-func PollDevicesTicker() tea.Cmd {
-	return tea.Tick(10*time.Second, func(t time.Time) tea.Msg {
+func DiscoverDevicesCmd(client *BlueZClient) tea.Cmd {
+	return func() tea.Msg {
+		logToFile("📡 Command Triggered: DiscoverDevicesCmd")
+		devices, err := FetchAllBlueZObjects(client)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		var discoveredOnly []Device
+		for _, d := range devices {
+			if !d.Paired {
+				discoveredOnly = append(discoveredOnly, d)
+			}
+		}
+		logToFile("🌐 Filtering DISCOVERED table: showing %d unpaired out of %d total devices", len(discoveredOnly), len(devices))
+		return DiscoveredDevicesLoadedMsg(discoveredOnly)
+	}
+}
+
+func PollBluetoothTicker() tea.Cmd {
+	return tea.Tick(4*time.Second, func(t time.Time) tea.Msg {
 		return TickMsg(t)
 	})
 }
 
-func getFilteredDevices(devices []Device, scanning bool) []Device {
-	var filtered []Device
-	for _, dev := range devices {
-		if scanning {
-			filtered = append(filtered, dev)
-		} else {
-			if dev.Paired {
-				filtered = append(filtered, dev)
-			}
-		}
-	}
-	return filtered
-}
-
-// getFilteredDevices is kept as a method for compatibility with view.go and init.go
-/*func (m Model) getFilteredDevices() []Device {
-	return getFilteredDevices(m.Devices, m.Scanning)
-}*/
-
-func ControlScan(turnOn bool) error {
-	conn, err := getSystemBus()
+func logToFile(format string, v ...interface{}) {
+	f, err := os.OpenFile("debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
-		return err
+		return
 	}
-	defer conn.Close()
-
-	obj := conn.Object(bluezInterface, adapterPath)
-
-	var method string
-	if turnOn {
-		method = "org.bluez.Adapter1.StartDiscovery"
-	} else {
-		method = "org.bluez.Adapter1.StopDiscovery"
-	}
-
-	call := obj.Call(method, 0)
-	return call.Err
-}
-
-func FetchCachedDevices() ([]Device, error) {
-	conn, err := getSystemBus()
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-
-	obj := conn.Object(bluezInterface, "/")
-	var nodes map[dbus.ObjectPath]map[string]map[string]dbus.Variant
-
-	err = obj.Call("org.freedesktop.DBus.ObjectManager.GetManagedObjects", 0).Store(&nodes)
-	if err != nil {
-		return nil, err
-	}
-
-	var devices []Device
-
-	for _, interfaces := range nodes {
-		if props, exists := interfaces["org.bluez.Device1"]; exists {
-			dev := Device{}
-
-			if addr, ok := props["Address"].Value().(string); ok {
-				dev.MAC = addr
-			}
-
-			if name, ok := props["Name"].Value().(string); ok {
-				dev.Name = name
-			} else if alias, ok := props["Alias"].Value().(string); ok {
-				dev.Name = alias
-			} else {
-				dev.Name = dev.MAC
-			}
-
-			if connected, ok := props["Connected"].Value().(bool); ok {
-				dev.Connected = connected
-			}
-			if paired, ok := props["Paired"].Value().(bool); ok {
-				dev.Paired = paired
-			}
-			if trusted, ok := props["Trusted"].Value().(bool); ok {
-				dev.Trusted = trusted
-			}
-			if icon, ok := props["Icon"].Value().(string); ok {
-				dev.Icon = string(FromString(icon))
-			}
-
-			devices = append(devices, dev)
-		}
-	}
-
-	return devices, nil
+	defer f.Close()
+	msg := fmt.Sprintf(format, v...)
+	fmt.Fprintf(f, "[%s] %s\n", time.Now().Format("15:04:05"), msg)
 }

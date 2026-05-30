@@ -1,21 +1,27 @@
 package wifi
 
 import (
+	"context"
 	"math"
 
 	"netui/config"
 
-	"github.com/charmbracelet/bubbles/table"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/table"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
 type Model struct {
-	Client    *DBusClient
+	Client    gonetworkmanager.NetworkManager
 	Adapter   AdapterInfo
 	Saved     []SavedProfile
 	ActiveAPs []AccessPoint
+
+	// Context for graceful cleanup
+	Ctx    context.Context
+	Cancel context.CancelFunc // <-- Add this to track background tasks
 
 	// Dynamic Layout Elements
 	Table     table.Model
@@ -40,43 +46,48 @@ func New() Model {
 	// Initialize default columns structure
 	columns := []table.Column{
 		{Title: "Status", Width: int(math.Floor(config.TabBodyWidth * 0.05))},
-		{Title: "Network Name (SSID)", Width: config.TabBodyWidth * 0.5},
+		{Title: "Network Name (SSID)", Width: int(math.Floor(config.TabBodyWidth * 0.5))}, // Cast explicitly for safety
 		{Title: "Signal", Width: int(math.Floor(config.TabBodyWidth * 0.2))},
 		{Title: "Security", Width: int(math.Floor(config.TabBodyWidth * 0.24))},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
-		table.WithWidth(int(math.Floor(config.TabBodyWidth))),
-		table.WithHeight(int(math.Floor(config.TabBodyHeight*0.8))),
-		table.WithFocused(true),
 	)
+	// V2: Width and Height use explicit setter functions instead of direct structural fields
+	t.SetWidth(int(math.Floor(config.TabBodyWidth)))
+	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+	t.Focus()
 
-	// ─── INITIALIZE THE TEXT INPUT HERE ──────────────────────────────
 	ti := textinput.New()
 	ti.Placeholder = "Password"
-	ti.EchoMode = textinput.EchoPassword // Automatically handles hiding text with asterisks/dots
+	ti.EchoMode = textinput.EchoPassword
 	ti.EchoCharacter = '*'
-	ti.Focus() // Start with the input focused
+	ti.Focus()
 
-	// Apply beautiful theme defaults
+	// Apply theme defaults
 	s := table.DefaultStyles()
 	s.Header = lipgloss.NewStyle().Height(0).Padding(0, 0).MaxHeight(0)
 
 	s.Selected = s.Selected.
 		Foreground(config.Styles.HighlightText.GetForeground()).
-		Background(config.Styles.HighlightText.GetBackground()). // Uses your blue color from Styles.CursorColor
+		Background(config.Styles.HighlightText.GetBackground()).
 		Bold(config.Styles.HighlightText.GetBold())
 	t.SetStyles(s)
 
+	// Create a cancellable context for background tasks
+	ctx, cancel := context.WithCancel(context.Background())
+
 	return Model{
-		Client:      &DBusClient{Conn: nil},
+		Client:      nil, // Will be loaded dynamically inside Init()
 		Scanning:    false,
 		Loading:     true,
 		UIState:     StateNormal,
 		Table:       t,
 		PassInput:   ti,
 		MenuOptions: []string{"autoconnect/off", "forget"},
+		Ctx:         ctx,
+		Cancel:      cancel,
 	}
 }
 
@@ -108,7 +119,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.Scanning = false
 		return m, nil
 
-	case tea.KeyMsg:
+	// V2 Change: KeyMsg is now KeyPressMsg
+	case tea.KeyPressMsg:
 		return m.handleKeyInput(msg)
 	}
 

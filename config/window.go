@@ -1,3 +1,4 @@
+// Package config for app configurations
 package config
 
 // Enforced window constraint thresholds
@@ -23,7 +24,7 @@ const (
 )
 
 /*func PopupWindow(content string) string {
-	return Styles.PopupBoxStyle.Render(
+	return Styles.SuccessLog.Render(
 		lipgloss.Place(
 			PopupWidth,
 			PopupHeight,

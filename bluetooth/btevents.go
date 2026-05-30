@@ -5,16 +5,17 @@ import (
 
 	"netui/config"
 
-	"github.com/charmbracelet/bubbles/table"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/table"
+	tea "charm.land/bubbletea/v2"
 )
 
 // --- Dedicated Handler Functions ---
 
+// handleActionsMenu handles inputs when the context popup menu is active
 func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
-	keyMsg, ok := msg.(tea.KeyMsg)
+	keyMsg, ok := msg.(tea.KeyPressMsg)
 	if !ok {
-		return m, nil
+		return m, nil // No longer using *m
 	}
 
 	var cmd tea.Cmd
@@ -38,7 +39,7 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	case "enter":
 		if m.MenuCursor >= 0 && m.MenuCursor < len(m.MenuOptions) {
 			action := m.MenuOptions[m.MenuCursor]
-			cmd = ExecuteActionCmd(action, m.SelectedMac)
+			cmd = ExecuteActionCmd(m.Client, action, m.SelectedMac)
 		}
 		m.UIState = StateNormal
 		return m, cmd
@@ -46,134 +47,116 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m Model) handleDevicesLoaded(msg DevicesLoadedMsg) (Model, tea.Cmd) {
-	m.Devices = msg
-	m.syncTableRows()
-	if m.Scanning {
-		return m, PollDevicesTicker()
-	}
+// handleDevicesLoaded processes paired updates from DBus
+func (m Model) handleDevicesLoaded(msg PairedDevicesLoadedMsg) (Model, tea.Cmd) {
+	m.Devices = []Device(msg)
+	m = m.syncTableRows() // Updates and captures the modified layout copy
 	return m, nil
 }
 
-func (m Model) handleTick() (Model, tea.Cmd) {
-	if m.Scanning {
-		return m, FetchDevicesCmd()
-	}
+// handleDiscoveredLoaded processes active radio scanning discoveries from DBus
+func (m Model) handleDiscoveredLoaded(msg DiscoveredDevicesLoadedMsg) (Model, tea.Cmd) {
+	m.Devices = []Device(msg)
+	m = m.syncTableRows()
+
 	return m, nil
 }
 
+// handleAdapterInfoLoaded updates active system radios configurations
+func (m Model) handleAdapterInfoLoaded(info AdapterInfo) (Model, tea.Cmd) {
+	m.Powered = info.Powered
+	m.Discoverable = info.Discoverable
+	m.Pairable = info.Pairable
+	return m, nil
+}
+
+// handleScanStopped changes states back to standard rendering tracks
 func (m Model) handleScanStopped() (Model, tea.Cmd) {
 	m.Scanning = false
-	m.Table.GotoTop()
-	m.Cursor = m.Table.Cursor()
-	return m, FetchDevicesCmd()
+	return m, LoadPairedDevicesCmd(m.Client)
 }
 
-func (m *Model) handleAdapterInfoLoaded(msg AdapterInfoLoadedMsg) {
-	m.Powered = msg.Powered
-	m.Discoverable = msg.Discoverable
-	m.Pairable = msg.Pairable
-}
-
-func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
-	switch msg.String() {
-	case "s":
-		m.syncTableRows()
-		if m.Scanning {
-			return m, StopScanCmd()
-		} else {
-			m.Scanning = true
-			m.Table.GotoTop()
-			m.Cursor = m.Table.Cursor()
-			m.Err = nil
-			return m, StartScanCmd()
-		}
-
-	case "p":
-		if !m.Scanning {
-			return m, ToggleAdapterPropertyCmd("Powered", m.Powered)
-		}
-	case "d":
-		if !m.Scanning {
-			return m, ToggleAdapterPropertyCmd("Discoverable", m.Discoverable)
-		}
-	case "b":
-		if !m.Scanning {
-			return m, ToggleAdapterPropertyCmd("Pairable", m.Pairable)
-		}
-
-	case "enter":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.5)))
-		return m.handleEnterKey()
-
-	default:
-		var cmd tea.Cmd
-		m.Table, cmd = m.Table.Update(msg)
-		m.Cursor = m.Table.Cursor()
-		return m, cmd
+// handleTick is called by our background poll routine to constantly request objects
+func (m Model) handleTick() (Model, tea.Cmd) {
+	if m.Scanning {
+		return m, tea.Batch(DiscoverDevicesCmd(m.Client), PollBluetoothTicker())
 	}
-	return m, nil
+	return m, tea.Batch(LoadPairedDevicesCmd(m.Client), PollBluetoothTicker())
 }
 
-func (m Model) handleEnterKey() (Model, tea.Cmd) {
-	visibleDevices := m.getFilteredDevices()
-	selectedIdx := m.Table.Cursor()
-	if len(visibleDevices) == 0 || selectedIdx >= len(visibleDevices) {
+// handleNormalStateNavigation acts on user interaction strings inside primary frames
+func (m Model) handleNormalStateNavigation(msg tea.Msg) (Model, tea.Cmd) {
+	keyMsg, ok := msg.(tea.KeyPressMsg)
+	if !ok {
 		return m, nil
 	}
 
-	targetDev := visibleDevices[selectedIdx]
-	m.SelectedMac = targetDev.MAC
-	m.SelectedDev = targetDev
-
-	var opts []string
-	if targetDev.Connected {
-		opts = append(opts, "Disconnect")
-	} else {
-		if !targetDev.Paired {
-			opts = append(opts, "Pair")
-		} else {
-			opts = append(opts, "Connect")
+	switch keyMsg.String() {
+	case "s", " ":
+		if m.Scanning {
+			return m, StopScanCmd(m.Client)
 		}
-	}
+		return m, StartScanCmd(m.Client)
 
-	if targetDev.Trusted {
-		opts = append(opts, "Distrust")
-	} else {
-		opts = append(opts, "Trust")
-	}
+	case "p":
+		return m, ToggleAdapterPropertyCmd(m.Client, "Powered", !m.Powered)
 
-	if !m.Scanning {
-		opts = append(opts, "Remove")
-	}
+	case "d":
+		return m, ToggleAdapterPropertyCmd(m.Client, "Discoverable", !m.Discoverable)
 
-	m.MenuOptions = opts
-	m.MenuCursor = 0
-	m.UIState = StateActionsMenu
+	case "enter":
+		visibleDevices := m.getFilteredDevices()
+		selectedIdx := m.Table.Cursor()
+
+		if selectedIdx < 0 || selectedIdx >= len(visibleDevices) {
+			return m, nil
+		}
+
+		targetDev := visibleDevices[selectedIdx]
+		m.SelectedMac = targetDev.MAC
+		m.SelectedDev = targetDev
+
+		var opts []string
+		if targetDev.Connected {
+			opts = append(opts, "Disconnect")
+		} else {
+			if !targetDev.Paired {
+				opts = append(opts, "Pair")
+			} else {
+				opts = append(opts, "Connect")
+			}
+		}
+
+		if targetDev.Trusted {
+			opts = append(opts, "Distrust")
+		} else {
+			opts = append(opts, "Trust")
+		}
+
+		if !m.Scanning {
+			opts = append(opts, "Remove")
+		}
+
+		m.MenuOptions = opts
+		m.MenuCursor = 0
+		m.UIState = StateActionsMenu
+		return m, nil
+	}
 	return m, nil
 }
 
+// getFilteredDevices returns the direct items array because separation logic happens inside commands
 func (m Model) getFilteredDevices() []Device {
 	return m.Devices
 }
 
-func (m *Model) syncTableRows() {
+// syncTableRows maps data structures onto bubbletea table UI dimensions
+// Note: Changed from pointer receiver to value receiver returning Model
+func (m Model) syncTableRows() Model {
 	visibleDevices := m.getFilteredDevices()
 	var rows []table.Row
 
-	wdth := m.Table.Width()
-	if wdth <= 0 {
-		wdth = config.WindowWidth - 4
-		if wdth <= 0 {
-			wdth = 50 // Safe fallback minimum initialization width bounds
-		}
-	}
-
-	/*m.Table.SetColumns([]table.Column{
-		{Title: "Status", Width: wdth / 8},
-		{Title: "Device Name", Width: (wdth * 3) / 5},
-		{Title: "MAC Address", Width: wdth / 4},
-	})*/
+	// DO NOT clear or reset SetColumns inside here to prevent visual glitching
 
 	for _, dev := range visibleDevices {
 		statusIcon := "󰂯"
@@ -191,9 +174,9 @@ func (m *Model) syncTableRows() {
 		})
 	}
 	m.Table.SetRows(rows)
-
 	if m.Table.Cursor() >= len(rows) {
 		m.Table.GotoTop()
 		m.Cursor = m.Table.Cursor()
 	}
+	return m // Return the mutated copy back
 }

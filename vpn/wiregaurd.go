@@ -5,112 +5,106 @@ import (
 	"fmt"
 	"strings"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/godbus/dbus/v5"
+	tea "charm.land/bubbletea/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
 func GetVPNConnections(client *DBusClient) ([]TunnelProfile, error) {
-	settings := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager/Settings")
-	var connections []dbus.ObjectPath
-	if err := settings.Call("org.freedesktop.NetworkManager.Settings.ListConnections", 0).Store(&connections); err != nil {
+	settings, err := gonetworkmanager.NewSettings()
+	if err != nil {
 		return nil, err
 	}
 
-	nm := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager")
-	activeConnsVal, err := nm.GetProperty("org.freedesktop.NetworkManager.ActiveConnections")
-	var activePaths []dbus.ObjectPath
-	if err == nil {
-		activePaths, _ = activeConnsVal.Value().([]dbus.ObjectPath)
+	connections, err := settings.ListConnections()
+	if err != nil {
+		return nil, err
 	}
 
+	// Fetch active connection UUIDs safely using the wrapper
+	activeConns, err := client.NM.GetPropertyActiveConnections()
 	activeUUIDs := make(map[string]bool)
-	for _, aPath := range activePaths {
-		aObj := client.Conn.Object("org.freedesktop.NetworkManager", aPath)
-		uuidProp, err := aObj.GetProperty("org.freedesktop.NetworkManager.Connection.Active.Uuid")
-		if err == nil {
-			if uStr, ok := uuidProp.Value().(string); ok {
-				activeUUIDs[uStr] = true
+	if err == nil {
+		for _, aConn := range activeConns {
+			uuid, err := aConn.GetPropertyUUID()
+			if err == nil && uuid != "" {
+				activeUUIDs[uuid] = true
 			}
 		}
 	}
 
 	var tunnels []TunnelProfile
-	for _, path := range connections {
-		connObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-		var sMap map[string]map[string]dbus.Variant
-		if err := connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.GetSettings", 0).Store(&sMap); err != nil {
+	for _, conn := range connections {
+		sMap, err := conn.GetSettings()
+		if err != nil {
 			continue
 		}
 
-		connSettings := sMap["connection"]
-		cType, okType := connSettings["type"].Value().(string)
+		connSettings, hasConn := sMap["connection"]
+		if !hasConn {
+			continue
+		}
 
-		if okType && (strings.Contains(cType, "vpn") || strings.Contains(cType, "wireguard")) {
-			cID, _ := connSettings["id"].Value().(string)
-			cUUID, _ := connSettings["uuid"].Value().(string)
+		cType, _ := connSettings["type"].(string)
+		cUUID, _ := connSettings["uuid"].(string)
+		cName, _ := connSettings["id"].(string)
 
+		// Filter for wireguard and vpn tunnels
+		if cType == "wireguard" || cType == "vpn" {
 			tunnels = append(tunnels, TunnelProfile{
-				Name:   cID,
-				UUID:   cUUID,
-				Type:   cType,
-				Active: activeUUIDs[cUUID],
-				Path:   path,
+				Name:       cName,
+				UUID:       cUUID,
+				Type:       strings.ToUpper(cType),
+				Active:     activeUUIDs[cUUID],
+				Connection: conn,
 			})
 		}
 	}
+
 	return tunnels, nil
 }
 
-// AddWireguardProfileCmd constructs and stores a native NetworkManager WireGuard connection profile
-func AddWireguardProfileCmd(client *DBusClient, inputs map[FormField]string) func() tea.Msg {
-	return func() tea.Msg {
-		settings := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager/Settings")
+func generateUUID() string {
+	b := make([]byte, 16)
+	_, _ = rand.Read(b)
+	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+}
 
-		uuid, err := generateRandomUUID()
+func CreateWireGuardProfileCmd(client *DBusClient, inputs map[FormField]string) tea.Cmd {
+	return func() tea.Msg {
+		settings, err := gonetworkmanager.NewSettings()
 		if err != nil {
 			return ErrMsg(err)
 		}
 
-		// Prepare standard outer properties dictionary
-		connectionSettings := map[string]map[string]dbus.Variant{
+		uuid := generateUUID()
+		// gonetworkmanager uses map[string]map[string]interface{}
+		connectionSettings := map[string]map[string]interface{}{
 			"connection": {
-				"id":             dbus.MakeVariant(inputs[FieldProfileName]),
-				"uuid":           dbus.MakeVariant(uuid),
-				"type":           dbus.MakeVariant("wireguard"),
-				"interface-name": dbus.MakeVariant(inputs[FieldInterfaceName]),
-				"autoconnect":    dbus.MakeVariant(false),
+				"id":             inputs[FieldProfileName],
+				"uuid":           uuid,
+				"type":           "wireguard",
+				"interface-name": inputs[FieldInterfaceName],
+				"autoconnect":    false,
 			},
 			"wireguard": {
-				"private-key": dbus.MakeVariant(inputs[FieldPrivateKey]),
-				"listen-port": dbus.MakeVariant(uint32(51820)),
+				"private-key": inputs[FieldPrivateKey],
+				"listen-port": uint32(51820),
 			},
 		}
 
-		// If a peer endpoint is specified, append a standard map breakdown representation
 		if inputs[FieldPeerPublicKey] != "" && inputs[FieldPeerEndpoint] != "" {
-			peer := map[string]dbus.Variant{
-				"public-key": dbus.MakeVariant(inputs[FieldPeerPublicKey]),
-				"endpoint":   dbus.MakeVariant(inputs[FieldPeerEndpoint]),
+			peer := map[string]interface{}{
+				"public-key": inputs[FieldPeerPublicKey],
+				"endpoint":   inputs[FieldPeerEndpoint],
 			}
-			// NetworkManager expects an array of peer dictionary maps (aa{sv})
-			connectionSettings["wireguard"]["peers"] = dbus.MakeVariant([]map[string]dbus.Variant{peer})
+			connectionSettings["wireguard"]["peers"] = []map[string]interface{}{peer}
 		}
 
-		var newConnPath dbus.ObjectPath
-		err = settings.Call("org.freedesktop.NetworkManager.Settings.AddConnection", 0, connectionSettings).Store(&newConnPath)
+		_, err = settings.AddConnection(connectionSettings)
 		if err != nil {
-			return ErrMsg(fmt.Errorf("D-Bus profile write rejection: %v", err))
+			return ErrMsg(fmt.Errorf("profile write rejection: %v", err))
 		}
 
 		return ActionSuccessMsg("WireGuard Profile Created successfully!")
 	}
-}
-
-func generateRandomUUID() (string, error) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:]), nil
 }

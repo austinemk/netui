@@ -3,21 +3,24 @@ package config
 import (
 	"math"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 // CustomStyles aggregates the look and feel elements of netui
 type CustomStyles struct {
 	Container     lipgloss.Style
 	Title         lipgloss.Style
+	Heading       lipgloss.Style
+	SuccessLog    lipgloss.Style
+	ErrorLog      lipgloss.Style
 	ActiveTab     lipgloss.Style
 	InactiveTab   lipgloss.Style
 	BoxStyle      lipgloss.Style
 	InfoText      lipgloss.Style
 	HighlightText lipgloss.Style
-	LogFrame      lipgloss.Style
 	CursorColor   lipgloss.Style
-	Notice        lipgloss.Style
+	Hints         lipgloss.Style
+	TabHints      lipgloss.Style
 }
 
 // Styles is the globally accessible style blueprint
@@ -38,6 +41,25 @@ func init() {
 		Bold(true).
 		Padding(0, 1)
 
+	// Contextual Headers (New additions)
+	Styles.Heading = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("8")).
+		Bold(true).
+		BorderBottom(true).
+		Italic(true)
+
+	Styles.SuccessLog = lipgloss.NewStyle().
+		Background(lipgloss.Color("#a6e3a1")).
+		Padding(0, 1).
+		Foreground(lipgloss.Color("#1e1e2e")).
+		Bold(true)
+
+	Styles.ErrorLog = lipgloss.NewStyle().
+		Background(lipgloss.Color("#eba0ac")).
+		Padding(0, 1).
+		Foreground(lipgloss.Color("#1e1e2e")).
+		Bold(true)
+
 	// Tab structures
 	Styles.ActiveTab = lipgloss.NewStyle().
 		Background(lipgloss.Color("8")).
@@ -54,8 +76,8 @@ func init() {
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("3")).
 		Padding(1).
-		Width(int(math.Floor(TabBodyWidth*0.5))).
-		Margin(0, int(math.Floor(TabBodyWidth*0.2))).
+		Width(int(math.Floor(TabBodyWidth*0.6))).
+		Margin(0, int(math.Floor(TabBodyWidth*0.15))).
 		Height(int(math.Floor(TabBodyHeight * 0.4)))
 
 	Styles.InfoText = lipgloss.NewStyle().
@@ -64,15 +86,13 @@ func init() {
 
 	Styles.HighlightText = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("7")).Background(lipgloss.Color("8")).Padding(0, 1)
 
-	// Status context indicators
-	Styles.LogFrame = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#F59E0B")).
-		Italic(true)
-
 	Styles.CursorColor = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#3B82F6"))
 
-	// Noficication
-	Styles.Notice = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).Italic(true)
+	Styles.Hints = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("8")).
+		Bold(true)
+	Styles.TabHints = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("8")).
+		Italic(true)
 }

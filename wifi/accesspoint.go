@@ -1,225 +1,267 @@
 package wifi
 
 import (
+	"context" // <-- 1. ADD THIS IMPORT
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/godbus/dbus/v5"
+	tea "charm.land/bubbletea/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
-func ConnectToAccessPoint(client *DBusClient, ap AccessPoint, password string) tea.Cmd {
+// <-- 2. UPDATE THIS SIGNATURE TO ACCEPT A CONTEXT
+func ConnectToAccessPoint(ctx context.Context, nm gonetworkmanager.NetworkManager, ap AccessPoint, password string) tea.Cmd {
 	return func() tea.Msg {
-		nm := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager")
+		devices, err := nm.GetDevices()
+		if err != nil {
+			return ErrMsg(err)
+		}
 
-		// Find active Wi-Fi Device reference
-		var devices []dbus.ObjectPath
-		_ = nm.Call("org.freedesktop.NetworkManager.GetDevices", 0).Store(&devices)
-		var targetDevice dbus.ObjectPath
-		for _, path := range devices {
-			devObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-			devType, _ := devObj.GetProperty("org.freedesktop.NetworkManager.Device.DeviceType")
-			if u, ok := devType.Value().(uint32); ok && u == 2 {
-				targetDevice = path
+		var targetDevice gonetworkmanager.Device
+		for _, dev := range devices {
+			devType, _ := dev.GetPropertyDeviceType()
+			if devType == gonetworkmanager.NmDeviceTypeWifi {
+				targetDevice = dev
 				break
 			}
 		}
 
+		if targetDevice == nil {
+			return ErrMsg(err)
+		}
+
 		if password == "" {
-			var activeConn dbus.ObjectPath
-			_ = nm.Call("org.freedesktop.NetworkManager.ActivateConnection", 0, dbus.ObjectPath("/"), targetDevice, ap.Path).Store(&activeConn)
-			return ActionSuccessMsg("Connecting to saved network...")
-		} else {
-			// Create a transient connection map
-			connectionSettings := map[string]map[string]dbus.Variant{
-				"connection": {
-					"id":   dbus.MakeVariant(ap.SSID),
-					"type": dbus.MakeVariant("802-11-wireless"),
-					// 0x1 represents NM_CONNECTION_FLAG_NOT_SAVED (Transient / In-memory only)
-					"flags": dbus.MakeVariant(uint32(1)),
-				},
-				"802-11-wireless": {
-					"ssid": dbus.MakeVariant([]byte(ap.SSID)),
-				},
-				"802-11-wireless-security": {
-					"key-mgmt": dbus.MakeVariant("wpa-psk"),
-					"psk":      dbus.MakeVariant(password),
-				},
-			}
-
-			var path dbus.ObjectPath
-			var activeConn dbus.ObjectPath
-
-			// Call AddAndActivateConnection. Because flags=1, this profile is NOT saved to disk yet.
-			err := nm.Call("org.freedesktop.NetworkManager.AddAndActivateConnection", 0, connectionSettings, targetDevice, ap.Path).Store(&path, &activeConn)
+			settings, err := gonetworkmanager.NewSettings()
 			if err != nil {
 				return ErrMsg(err)
 			}
 
-			// Launch a background monitoring routine to see if authentication succeeds
-			go monitorConnectionState(client, activeConn, path)
+			connections, err := settings.ListConnections()
+			if err != nil {
+				return ErrMsg(err)
+			}
+
+			var matchedConnection gonetworkmanager.Connection
+			for _, conn := range connections {
+				sMap, err := conn.GetSettings()
+				if err != nil {
+					continue
+				}
+				if connSettings, ok := sMap["connection"]; ok {
+					if connSettings["id"] == ap.SSID {
+						matchedConnection = conn
+						break
+					}
+				}
+			}
+
+			if matchedConnection == nil {
+				return ErrMsg(err)
+			}
+
+			_, err = nm.ActivateConnection(matchedConnection, targetDevice, nil)
+			if err != nil {
+				return ErrMsg(err)
+			}
+			return ActionSuccessMsg("Connecting to saved network...")
+		} else {
+			connectionSettings := map[string]map[string]interface{}{
+				"connection": {
+					"id":    ap.SSID,
+					"type":  "802-11-wireless",
+					"flags": uint32(1),
+				},
+				"802-11-wireless": {
+					"ssid": []byte(ap.SSID),
+				},
+				"802-11-wireless-security": {
+					"key-mgmt": "wpa-psk",
+					"psk":      password,
+				},
+			}
+
+			activeConn, err := nm.AddAndActivateConnection(connectionSettings, targetDevice)
+			if err != nil {
+				return ErrMsg(err)
+			}
+
+			// <-- 3. PASS THE CTX DOWN TO THE MONITOR GOROUTINE
+			go monitorConnectionState(ctx, activeConn)
 
 			return ActionSuccessMsg("Authenticating...")
 		}
 	}
 }
 
-// monitorConnectionState watches the active connection to see if it successfully hits state 2 (ACTIVATED)
-func monitorConnectionState(client *DBusClient, activeConnPath dbus.ObjectPath, connPath dbus.ObjectPath) {
-	activeObj := client.Conn.Object("org.freedesktop.NetworkManager", activeConnPath)
-
-	// Poll the state for up to 15 seconds to check if authentication passes
+// <-- 4. UPDATE THIS TO WATCH THE CONTEXT FOR EARLY CLOSURE
+func monitorConnectionState(ctx context.Context, activeConn gonetworkmanager.ActiveConnection) {
 	for i := 0; i < 15; i++ {
-		time.Sleep(1 * time.Second)
+		// Use a select block to watch for the application closing early
+		select {
+		case <-ctx.Done():
+			// The user closed the app, and Clean() was called!
+			// Exit immediately and stop leaking resources.
+			return
+		default:
+			time.Sleep(1 * time.Second)
+		}
 
-		stateVal, err := activeObj.GetProperty("org.freedesktop.NetworkManager.Connection.Active.State")
+		state, err := activeConn.GetPropertyState()
 		if err != nil {
 			break
 		}
 
-		state, ok := stateVal.Value().(uint32)
-		if !ok {
-			continue
-		}
-
-		// State 2 == NM_ACTIVE_CONNECTION_STATE_ACTIVATED (Success!)
-		if state == 2 {
-			// The password was correct! Now commit the transient connection permanently to disk.
-			settingsObj := client.Conn.Object("org.freedesktop.NetworkManager", connPath)
-			// Call Save() on the Settings.Connection object to persist it
-			_ = settingsObj.Call("org.freedesktop.NetworkManager.Settings.Connection.Save", 0)
+		if state == gonetworkmanager.NmActiveConnectionStateActivated {
 			return
 		}
 
-		// State 4 == NM_ACTIVE_CONNECTION_STATE_DEACTIVATING / Failed
-		if state == 4 {
+		if state == gonetworkmanager.NmActiveConnectionStateDeactivating {
 			break
 		}
 	}
-
-	// If it timed out or hit a failed state, we do absolutely nothing.
-	// Because it was transient, NetworkManager automatically discards the profile.
 }
 
-func ToggleAutoConnectCmd(client *DBusClient, uuid string, auto bool) tea.Cmd {
+// ... Keep ToggleAutoConnectCmd, ForgetProfileCmd, GetActiveAccessPoints, and GetSavedProfiles as they were
+func ToggleAutoConnectCmd(nm gonetworkmanager.NetworkManager, uuid string, auto bool) tea.Cmd {
 	return func() tea.Msg {
-		path, err := findConnectionPathByUUID(client, uuid)
+		settings, err := gonetworkmanager.NewSettings()
 		if err == nil {
-			connObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-			var settingsMap map[string]map[string]dbus.Variant
-			_ = connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.GetSettings", 0).Store(&settingsMap)
-
-			settingsMap["connection"]["autoconnect"] = dbus.MakeVariant(auto)
-			_ = connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.Update", 0, settingsMap)
+			connections, err := settings.ListConnections()
+			if err == nil {
+				for _, conn := range connections {
+					sMap, err := conn.GetSettings()
+					if err == nil {
+						if cSettings, ok := sMap["connection"]; ok {
+							if cSettings["uuid"] == uuid {
+								sMap["connection"]["autoconnect"] = auto
+								_ = conn.Update(sMap)
+								break
+							}
+						}
+					}
+				}
+			}
 		}
 		return ActionSuccessMsg("AutoConnect Updated")
 	}
 }
 
-func ForgetProfileCmd(client *DBusClient, uuid string) tea.Cmd {
+func ForgetProfileCmd(nm gonetworkmanager.NetworkManager, uuid string) tea.Cmd {
 	return func() tea.Msg {
-		path, err := findConnectionPathByUUID(client, uuid)
+		settings, err := gonetworkmanager.NewSettings()
 		if err == nil {
-			connObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-			_ = connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.Delete", 0)
+			connections, err := settings.ListConnections()
+			if err == nil {
+				for _, conn := range connections {
+					sMap, err := conn.GetSettings()
+					if err == nil {
+						if cSettings, ok := sMap["connection"]; ok {
+							if cSettings["uuid"] == uuid {
+								_ = conn.Delete()
+								break
+							}
+						}
+					}
+				}
+			}
 		}
 		return ActionSuccessMsg("Profile Removed")
 	}
 }
 
-func findConnectionPathByUUID(client *DBusClient, uuid string) (dbus.ObjectPath, error) {
-	settings := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager/Settings")
-	var connections []dbus.ObjectPath
-	_ = settings.Call("org.freedesktop.NetworkManager.Settings.ListConnections", 0).Store(&connections)
-	for _, path := range connections {
-		connObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-		var sMap map[string]map[string]dbus.Variant
-		_ = connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.GetSettings", 0).Store(&sMap)
-		if sMap["connection"]["uuid"].Value().(string) == uuid {
-			return path, nil
-		}
+func GetActiveAccessPoints(nm gonetworkmanager.NetworkManager) ([]AccessPoint, error) {
+	devices, err := nm.GetDevices()
+	if err != nil {
+		return nil, err
 	}
-	return dbus.ObjectPath(""), error(nil)
-}
 
-func GetActiveAccessPoints(client *DBusClient) ([]AccessPoint, error) {
-	obj := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager")
-	var devices []dbus.ObjectPath
-	_ = obj.Call("org.freedesktop.NetworkManager.GetDevices", 0).Store(&devices)
-	var wifiPath dbus.ObjectPath
-	for _, path := range devices {
-		devObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-		devType, _ := devObj.GetProperty("org.freedesktop.NetworkManager.Device.DeviceType")
-		if u, ok := devType.Value().(uint32); ok && u == 2 {
-			wifiPath = path
+	var wDev gonetworkmanager.DeviceWireless
+	for _, dev := range devices {
+		devType, _ := dev.GetPropertyDeviceType()
+		if devType == gonetworkmanager.NmDeviceTypeWifi {
+			wDev, err = gonetworkmanager.NewDeviceWireless(dev.GetPath())
 			break
 		}
 	}
-	if wifiPath == "" {
+
+	if wDev == nil {
 		return nil, nil
 	}
 
-	wifiDev := client.Conn.Object("org.freedesktop.NetworkManager", wifiPath)
-	var apPaths []dbus.ObjectPath
-	_ = wifiDev.Call("org.freedesktop.NetworkManager.Device.Wireless.GetAllAccessPoints", 0).Store(&apPaths)
-	activeApProp, _ := wifiDev.GetProperty("org.freedesktop.NetworkManager.Device.Wireless.ActiveAccessPoint")
-	activeApPath, _ := activeApProp.Value().(dbus.ObjectPath)
+	apPaths, err := wDev.GetAllAccessPoints()
+	if err != nil {
+		return nil, err
+	}
+
+	activeAp, _ := wDev.GetPropertyActiveAccessPoint()
+	var activeApPath string
+	if activeAp != nil {
+		activeApPath = string(activeAp.GetPath())
+	}
 
 	var list []AccessPoint
-	for _, path := range apPaths {
-		apObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-		ssidProp, _ := apObj.GetProperty("org.freedesktop.NetworkManager.AccessPoint.Ssid")
-		strengthProp, _ := apObj.GetProperty("org.freedesktop.NetworkManager.AccessPoint.Strength")
-		wpaProp, _ := apObj.GetProperty("org.freedesktop.NetworkManager.AccessPoint.WpaFlags")
-		rsnProp, _ := apObj.GetProperty("org.freedesktop.NetworkManager.AccessPoint.RsnFlags")
-
-		ssidBytes, ok := ssidProp.Value().([]uint8)
-		if !ok || len(ssidBytes) == 0 {
+	for _, ap := range apPaths {
+		ssid, _ := ap.GetPropertySSID()
+		if ssid == "" {
 			continue
 		}
-		strength, _ := strengthProp.Value().(uint8)
+		strength, _ := ap.GetPropertyStrength()
+		wpaFlags, _ := ap.GetPropertyWPAFlags()
+		rsnFlags, _ := ap.GetPropertyRSNFlags()
 
 		sec := "open"
-		if wpa, ok := wpaProp.Value().(uint32); ok && wpa > 0 {
+		if wpaFlags > 0 {
 			sec = "wpa"
 		}
-		if rsn, ok := rsnProp.Value().(uint32); ok && rsn > 0 {
+		if rsnFlags > 0 {
 			sec = "wpa/2"
 		}
 
 		list = append(list, AccessPoint{
-			SSID:     string(ssidBytes),
+			SSID:     ssid,
 			Strength: strength,
 			Security: sec,
-			IsActive: path == activeApPath,
-			Path:     path,
+			IsActive: string(ap.GetPath()) == activeApPath,
+			AP:       ap,
 		})
 	}
 	return list, nil
 }
 
-func GetSavedProfiles(client *DBusClient) ([]SavedProfile, error) {
-	settings := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager/Settings")
-	var connections []dbus.ObjectPath
-	if err := settings.Call("org.freedesktop.NetworkManager.Settings.ListConnections", 0).Store(&connections); err != nil {
+func GetSavedProfiles(nm gonetworkmanager.NetworkManager) ([]SavedProfile, error) {
+	settings, err := gonetworkmanager.NewSettings()
+	if err != nil {
 		return nil, err
 	}
+
+	connections, err := settings.ListConnections()
+	if err != nil {
+		return nil, err
+	}
+
 	var saved []SavedProfile
-	for _, path := range connections {
-		connObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-		var sMap map[string]map[string]dbus.Variant
-		if err := connObj.Call("org.freedesktop.NetworkManager.Settings.Connection.GetSettings", 0).Store(&sMap); err != nil {
+	for _, conn := range connections {
+		sMap, err := conn.GetSettings()
+		if err != nil {
 			continue
 		}
-		connSettings := sMap["connection"]
-		if connSettings["type"].Value().(string) == "802-11-wireless" {
+
+		connSettings, ok := sMap["connection"]
+		if !ok {
+			continue
+		}
+
+		if connSettings["type"] == "802-11-wireless" {
 			auto := true
 			if val, ok := connSettings["autoconnect"]; ok {
-				auto = val.Value().(bool)
+				if bVal, ok := val.(bool); ok {
+					auto = bVal
+				}
 			}
 			saved = append(saved, SavedProfile{
-				Name:        connSettings["id"].Value().(string),
-				UUID:        connSettings["uuid"].Value().(string),
+				Name:        connSettings["id"].(string),
+				UUID:        connSettings["uuid"].(string),
 				AutoConnect: auto,
+				Settings:    conn,
 			})
 		}
 	}

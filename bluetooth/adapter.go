@@ -1,13 +1,18 @@
 package bluetooth
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
+	"fmt"
+
+	tea "charm.land/bubbletea/v2"
 	"github.com/godbus/dbus/v5"
 )
 
-func FetchAdapterInfoCmd() tea.Cmd {
+func FetchAdapterInfoCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		info, err := FetchAdapterInfo()
+		if client == nil || client.Conn == nil {
+			return ErrMsg(fmt.Errorf("bluetooth adapter not available"))
+		}
+		info, err := FetchAdapterInfo(client)
 		if err != nil {
 			return ErrMsg(err)
 		}
@@ -15,14 +20,8 @@ func FetchAdapterInfoCmd() tea.Cmd {
 	}
 }
 
-func FetchAdapterInfo() (AdapterInfo, error) {
-	conn, err := getSystemBus()
-	if err != nil {
-		return AdapterInfo{}, err
-	}
-	defer conn.Close()
-
-	obj := conn.Object(bluezInterface, adapterPath)
+func FetchAdapterInfo(client *BlueZClient) (AdapterInfo, error) {
+	obj := client.Conn.Object(bluezInterface, adapterPath)
 
 	var powered, discoverable, pairable bool
 
@@ -48,25 +47,12 @@ func FetchAdapterInfo() (AdapterInfo, error) {
 	}, nil
 }
 
-func ToggleAdapterPropertyCmd(prop string, currentVal bool) tea.Cmd {
+func ToggleAdapterPropertyCmd(client *BlueZClient, prop string, currentVal bool) tea.Cmd {
 	return func() tea.Msg {
-		conn, err := getSystemBus()
-		if err != nil {
-			return ErrMsg(err)
-		}
-		defer conn.Close()
+		obj := client.Conn.Object(bluezInterface, adapterPath)
 
-		obj := conn.Object(bluezInterface, adapterPath)
-
-		// Pass the bool as a typed variable so godbus serialises it as "b"
-		// on the wire. Passing !currentVal directly through ...interface{}
-		// inside MakeVariant causes godbus to double-wrap the variant into
-		// v(v(b)) which BlueZ silently rejects.
-		var newVal bool = !currentVal
-		err = obj.Call("org.freedesktop.DBus.Properties.Set", 0, "org.bluez.Adapter1", prop, dbus.MakeVariant(newVal)).Err
-		if err != nil {
-			return ErrMsg(err)
-		}
+		typedValue := !currentVal
+		_ = obj.Call("org.freedesktop.DBus.Properties.Set", 0, "org.bluez.Adapter1", prop, dbus.MakeVariant(typedValue))
 
 		return AdapterToggledMsg{}
 	}

@@ -3,7 +3,7 @@ package components
 import (
 	"netui/config"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 func dividerBorder() string {

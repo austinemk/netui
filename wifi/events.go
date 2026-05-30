@@ -3,51 +3,48 @@ package wifi
 import (
 	"math"
 
-	"netui/components"
 	"netui/config"
 
-	"github.com/charmbracelet/bubbles/table"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/table"
+	tea "charm.land/bubbletea/v2"
 )
 
 // --- Dedicated Handler Functions ---
 
+// V2 Fix: Changed parameter type and type assertion to tea.KeyPressMsg
 func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
-	keyMsg, ok := msg.(tea.KeyMsg)
+	keyMsg, ok := msg.(tea.KeyPressMsg)
 	if !ok {
-		// Still allow system messages to pass through to the input if needed
 		var cmd tea.Cmd
 		m.PassInput, cmd = m.PassInput.Update(msg)
 		return m, cmd
 	}
 
 	switch keyMsg.String() {
-	case "esc":
+	case "backspace", "esc":
 		m.UIState = StateNormal
 		m.PassInput.Reset()
 		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
-		// Clear the input field completely
 		return m, nil
 
 	case "enter":
-		// Grab the clean text value directly from the component
 		passwordValue := m.PassInput.Value()
-		cmd := ConnectToAccessPoint(m.Client, m.SelectedAP, passwordValue)
+		cmd := ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, passwordValue)
 
 		m.UIState = StateNormal
 		m.PassInput.Reset()
 		return m, cmd
 
 	default:
-		// Forward all typing events directly to the textinput bubble
 		var cmd tea.Cmd
 		m.PassInput, cmd = m.PassInput.Update(msg)
 		return m, cmd
 	}
 }
 
+// V2 Fix: Changed type assertion to tea.KeyPressMsg
 func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
-	keyMsg, ok := msg.(tea.KeyMsg)
+	keyMsg, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return m, nil
 	}
@@ -85,6 +82,7 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) handleInfoLoaded(msg InfoLoadedMsg) (Model, tea.Cmd) {
+	m.Client = msg.Client // <-- Persist the initialized client to your state!
 	m.Adapter = msg.Adapter
 	m.Saved = msg.Saved
 	m.ActiveAPs = msg.APs
@@ -121,16 +119,14 @@ func (m Model) handleAdapterOrActionSuccess() (Model, tea.Cmd) {
 	}
 }
 
-func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
+// V2 Fix: Changed argument type to tea.KeyPressMsg
+func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	switch msg.String() {
 	case "s":
 		m.Scanning = !m.Scanning
 		m.Table.GotoTop()
-
 		m.syncTableRows()
 
-		// Force trigger a programmatic resize window sequence to re-adjust
-		// table heights layout based on scanning active state constraints
 		if m.Scanning {
 			return m, TriggerHardwareScanCmd(m.Client)
 		}
@@ -149,7 +145,7 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 			m.SelectedAP = m.ActiveAPs[idx]
 
 			if m.SelectedAP.Security == "open" || IsProfileSaved(m.Saved, m.SelectedAP.SSID) {
-				return m, ConnectToAccessPoint(m.Client, m.SelectedAP, "")
+				return m, ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, "")
 			}
 			m.UIState = StatePasswordInput
 		} else {
@@ -170,19 +166,17 @@ func (m Model) handleKeyInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 	return m, nil
 }
 
-// --- Table UI Logic ---
-
 func (m *Model) syncTableRows() {
 	var rows []table.Row
 
 	if m.Scanning {
 		m.Table.SetRows(nil)
-
+		// V2 Fix: Explicitly mapped table.Column keys
 		m.Table.SetColumns([]table.Column{
-			{Width: int(math.Floor(config.TabBodyWidth * 0.1))},
-			{Width: int(math.Floor(config.TabBodyWidth * 0.5))},
-			{Width: int(math.Floor(config.TabBodyWidth * 0.3))},
-			{Width: int(math.Floor(config.TabBodyWidth * 0.1))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.5))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.3))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
 		})
 
 		for _, ap := range m.ActiveAPs {
@@ -191,7 +185,7 @@ func (m *Model) syncTableRows() {
 				activeMark = ""
 			}
 			rows = append(rows, table.Row{
-				components.RenderSignal(ap.Strength, ap.Security),
+				RenderSignal(ap.Strength, ap.Security),
 				ap.SSID,
 				ap.Security,
 				activeMark,
@@ -199,11 +193,11 @@ func (m *Model) syncTableRows() {
 		}
 	} else {
 		m.Table.SetRows(nil)
-
+		// V2 Fix: Explicitly mapped table.Column keys
 		m.Table.SetColumns([]table.Column{
-			{Width: int(math.Floor(config.TabBodyWidth * 0.4))},
-			{Width: int(math.Floor(config.TabBodyWidth * 0.15))},
-			{Width: int(math.Floor(config.TabBodyWidth * 0.4))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.15))},
+			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
 		})
 
 		for _, prof := range m.Saved {

@@ -1,8 +1,7 @@
 package vpn
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/godbus/dbus/v5"
+	tea "charm.land/bubbletea/v2"
 )
 
 // Helper command to fetch fresh tunnel state profiles asynchronously
@@ -18,61 +17,70 @@ func FetchTunnelsCmd(client *DBusClient) tea.Cmd {
 
 func ToggleTunnelCmd(client *DBusClient, tunnel TunnelProfile, activate bool) tea.Cmd {
 	return func() tea.Msg {
-		nm := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager")
-
 		if activate {
-			var activeConn dbus.ObjectPath
-			err := nm.Call("org.freedesktop.NetworkManager.ActivateConnection", 0, tunnel.Path, dbus.ObjectPath("/"), dbus.ObjectPath("/")).Store(&activeConn)
+			// Find an available specific device if needed, or send nil for generic setups
+			_, err := client.NM.ActivateConnection(tunnel.Connection, nil, nil)
 			if err != nil {
 				return ErrMsg(err)
 			}
 		} else {
-			var activePaths []dbus.ObjectPath
-			activeConnsVal, err := nm.GetProperty("org.freedesktop.NetworkManager.ActiveConnections")
+			activeConns, err := client.NM.GetPropertyActiveConnections()
 			if err == nil {
-				activePaths, _ = activeConnsVal.Value().([]dbus.ObjectPath)
-				for _, aPath := range activePaths {
-					aObj := client.Conn.Object("org.freedesktop.NetworkManager", aPath)
-					uuidProp, _ := aObj.GetProperty("org.freedesktop.NetworkManager.Connection.Active.Uuid")
-					if uStr, ok := uuidProp.Value().(string); ok && uStr == tunnel.UUID {
-						_ = nm.Call("org.freedesktop.NetworkManager.DeactivateConnection", 0, aPath)
+				for _, aConn := range activeConns {
+					uuid, _ := aConn.GetPropertyUUID()
+					if uuid == tunnel.UUID {
+						err = client.NM.DeactivateConnection(aConn)
+						if err != nil {
+							return ErrMsg(err)
+						}
 						break
 					}
 				}
 			}
 		}
-		return ActionSuccessMsg("State change completed")
+		return ActionSuccessMsg("VPN Activation/Deactivation State updated!")
 	}
 }
 
+// m.Update(msg tea.Msg) can remain completely unchanged!
+
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	// State Intercept 1: Form Wizard Processing
+	// State Intercept 1: Form Inputs Logic Management Loop
 	if m.UIState == StateAddForm {
-		if keyMsg, ok := msg.(tea.KeyMsg); ok {
+		if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
 			switch keyMsg.String() {
 			case "esc":
 				m.UIState = StateNormal
-			case "tab", "down", "j":
-				if m.ActiveField < FieldDone {
-					m.ActiveField++
-				}
-			case "shift+tab", "up", "k":
+				return m, nil
+
+			case "up":
 				if m.ActiveField > FieldProfileName {
 					m.ActiveField--
 				}
-			case "backspace":
-				currInput := m.FormInputs[m.ActiveField]
-				if len(currInput) > 0 {
-					m.FormInputs[m.ActiveField] = currInput[:len(currInput)-1]
+
+			case "down":
+				if m.ActiveField < FieldDone {
+					m.ActiveField++
+				} else {
+					m.ActiveField = FieldProfileName
 				}
+
 			case "enter":
 				if m.ActiveField == FieldDone {
-					// FIXED: Execute creation, set loading, and explicitly chain the D-Bus re-fetch command
 					m.UIState = StateNormal
 					m.Loading = true
-					return m, tea.Batch(AddWireguardProfileCmd(m.Client, m.FormInputs), FetchTunnelsCmd(m.Client))
+					return m, CreateWireGuardProfileCmd(m.Client, m.FormInputs)
 				}
-				m.ActiveField++
+				if m.ActiveField < FieldDone {
+					m.ActiveField++
+				}
+
+			case "backspace":
+				curr := m.FormInputs[m.ActiveField]
+				if len(curr) > 0 {
+					m.FormInputs[m.ActiveField] = curr[:len(curr)-1]
+				}
+
 			default:
 				if len(keyMsg.String()) == 1 {
 					m.FormInputs[m.ActiveField] += keyMsg.String()
@@ -84,7 +92,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// State Intercept 2: Normal Actions Dialog Panel
 	if m.UIState == StateActionsMenu {
-		if keyMsg, ok := msg.(tea.KeyMsg); ok {
+		if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
 			switch keyMsg.String() {
 			case "up", "k":
 				if m.MenuCursor > 0 {
@@ -118,7 +126,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 
 	case ActionSuccessMsg:
-		// FIXED: Call the structured D-Bus collector explicitly instead of returning a naked nested callback
 		return m, FetchTunnelsCmd(m.Client)
 
 	case ErrMsg:
@@ -126,12 +133,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.Loading = false
 		return m, nil
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch msg.String() {
-		case "a":
-			m.UIState = StateAddForm
-			m.ActiveField = FieldProfileName
-			m.FormInputs = make(map[FormField]string)
 		case "up", "k":
 			if m.Cursor > 0 {
 				m.Cursor--
@@ -142,10 +145,18 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		case "enter":
 			if len(m.Tunnels) > 0 {
-				m.UIState = StateActionsMenu
 				m.MenuCursor = 0
+				m.UIState = StateActionsMenu
 			}
+		case "n":
+			m.UIState = StateAddForm
+			m.ActiveField = FieldProfileName
+			m.FormInputs = make(map[FormField]string)
+		case "r":
+			m.Loading = true
+			return m, FetchTunnelsCmd(m.Client)
 		}
 	}
+
 	return m, nil
 }

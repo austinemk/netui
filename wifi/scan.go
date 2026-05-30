@@ -3,8 +3,8 @@ package wifi
 import (
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/godbus/dbus/v5"
+	tea "charm.land/bubbletea/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
 func PollWifiTicker() tea.Cmd {
@@ -13,22 +13,23 @@ func PollWifiTicker() tea.Cmd {
 	})
 }
 
-func TriggerHardwareScanCmd(client *DBusClient) tea.Cmd {
+func TriggerHardwareScanCmd(nm gonetworkmanager.NetworkManager) tea.Cmd {
 	return func() tea.Msg {
-		obj := client.Conn.Object("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager")
-		var devices []dbus.ObjectPath
-		_ = obj.Call("org.freedesktop.NetworkManager.GetDevices", 0).Store(&devices)
-
-		for _, path := range devices {
-			devObj := client.Conn.Object("org.freedesktop.NetworkManager", path)
-			devType, _ := devObj.GetProperty("org.freedesktop.NetworkManager.Device.DeviceType")
-			if u, ok := devType.Value().(uint32); ok && u == 2 {
-				// Fire network hardware card interface probe
-				_ = devObj.Call("org.freedesktop.NetworkManager.Device.Wireless.RequestScan", 0, map[string]dbus.Variant{})
-				break
+		devices, err := nm.GetDevices()
+		if err == nil {
+			for _, dev := range devices {
+				devType, _ := dev.GetPropertyDeviceType()
+				if devType == gonetworkmanager.NmDeviceTypeWifi {
+					wDev, err := gonetworkmanager.NewDeviceWireless(dev.GetPath())
+					if err == nil {
+						// Clean programmatic trigger instead of raw .Call()
+						_ = wDev.RequestScan()
+					}
+					break
+				}
 			}
 		}
-		aps, _ := GetActiveAccessPoints(client)
+		aps, _ := GetActiveAccessPoints(nm)
 		return ScanFinishedMsg(aps)
 	}
 }

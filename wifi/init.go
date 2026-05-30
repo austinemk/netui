@@ -4,8 +4,8 @@ package wifi
 import (
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/godbus/dbus/v5"
+	tea "charm.land/bubbletea/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
 type UIState int
@@ -15,10 +15,6 @@ const (
 	StateSavedActionsMenu
 	StatePasswordInput
 )
-
-type DBusClient struct {
-	Conn *dbus.Conn
-}
 
 type AdapterInfo struct {
 	Interface string
@@ -31,13 +27,14 @@ type AccessPoint struct {
 	Strength uint8
 	Security string
 	IsActive bool
-	Path     dbus.ObjectPath
+	AP       gonetworkmanager.AccessPoint
 }
 
 type SavedProfile struct {
 	Name        string
 	UUID        string
 	AutoConnect bool
+	Settings    gonetworkmanager.Connection
 }
 
 // Bubble Tea Message Definitions
@@ -51,6 +48,7 @@ type (
 )
 
 type InfoLoadedData struct {
+	Client  gonetworkmanager.NetworkManager // <-- Add this field
 	Adapter AdapterInfo
 	Saved   []SavedProfile
 	APs     []AccessPoint
@@ -58,22 +56,46 @@ type InfoLoadedData struct {
 
 func (m Model) Init() tea.Cmd {
 	return func() tea.Msg {
-		conn, err := dbus.SystemBus()
+		nm, err := gonetworkmanager.NewNetworkManager()
 		if err != nil {
 			return ErrMsg(err)
 		}
-		m.Client.Conn = conn
 
-		adapter, err := GetAdapterSettings(m.Client)
+		adapter, err := GetAdapterSettings(nm)
 		if err != nil {
 			return ErrMsg(err)
 		}
-		saved, err := GetSavedProfiles(m.Client)
-		if err != nil {
-			return ErrMsg(err)
-		}
-		aps, _ := GetActiveAccessPoints(m.Client)
 
-		return InfoLoadedMsg(InfoLoadedData{Adapter: adapter, Saved: saved, APs: aps})
+		saved, err := GetSavedProfiles(nm)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		aps, err := GetActiveAccessPoints(nm)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		return InfoLoadedMsg(InfoLoadedData{
+			Client:  nm, // <-- Pass it along here
+			Adapter: adapter,
+			Saved:   saved,
+			APs:     aps,
+		})
 	}
+}
+
+// Clean gracefully halts background procedures, context loops, and stops leaks
+func (m Model) Clean() {
+	// 1. Cancel the background context to instantly terminate the monitor goroutine
+	if m.Cancel != nil {
+		m.Cancel()
+	}
+
+	// 2. Explicitly stop the hardware scanning loop state flag
+	m.Scanning = false
+
+	// 3. Clean up inner component state instances
+	m.PassInput.Reset()
+	m.Table.SetRows(nil)
 }

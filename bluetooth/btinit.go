@@ -4,7 +4,7 @@ package bluetooth
 import (
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 	"github.com/godbus/dbus/v5"
 )
 
@@ -32,32 +32,53 @@ type AdapterInfo struct {
 
 const (
 	bluezInterface = "org.bluez"
-	adapterPath    = "/org/bluez/hci0" // Default bluetooth adapter path
+	adapterPath    = "/org/bluez/hci0"
 )
 
-// Helper to grab a quick handle on the System Bus
-func getSystemBus() (*dbus.Conn, error) {
-	return dbus.ConnectSystemBus()
+type BlueZClient struct {
+	Conn *dbus.Conn
+}
+
+func NewBlueZClient() (*BlueZClient, error) {
+	conn, err := dbus.ConnectSystemBus()
+	if err != nil {
+		return nil, err
+	}
+	return &BlueZClient{Conn: conn}, nil
 }
 
 type (
-	DevicesLoadedMsg     []Device
-	ScanStartedMsg       struct{}
-	ScanStoppedMsg       struct{}
-	AdapterToggledMsg    struct{}
-	TickMsg              time.Time
-	ErrMsg               error
-	ActionSuccessMsg     string // String type matching declaration in device.go
-	AdapterInfoLoadedMsg AdapterInfo
+	PairedDevicesLoadedMsg     []Device // Clean Track A
+	DiscoveredDevicesLoadedMsg []Device // Clean Track B
+	ScanStartedMsg             struct{}
+	ScanStoppedMsg             struct{}
+	AdapterToggledMsg          struct{}
+	TickMsg                    time.Time
+	ErrMsg                     error
+	ActionSuccessMsg           string
+	AdapterInfoLoadedMsg       AdapterInfo
 )
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(FetchDevicesCmd(), FetchAdapterInfoCmd())
+	if m.Client == nil {
+		return nil
+	}
+	return tea.Batch(LoadPairedDevicesCmd(m.Client), FetchAdapterInfoCmd(m.Client))
 }
 
-func CleanBluetooth(m Model) bool {
-	if m.Scanning {
-		_ = ControlScan(false)
+// Clean gracefully stops any hardware discovery and closes the system bus connection to prevent memory leaks.
+func (m Model) Clean() {
+	if m.Client == nil || m.Client.Conn == nil {
+		return
 	}
-	return true
+
+	// 1. If the hardware is actively discovering devices, tell BlueZ to stop immediately
+	if m.Scanning {
+		obj := m.Client.Conn.Object(bluezInterface, adapterPath)
+		// Send a direct synchronous DBus call to ensure it hits the OS before the binary exits
+		_ = obj.Call("org.bluez.Adapter1.StopDiscovery", 0)
+	}
+
+	// 2. Close the D-Bus connection completely to clear system RAM and file descriptors
+	_ = m.Client.Conn.Close()
 }

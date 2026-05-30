@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 func (m Model) View() string {
@@ -41,39 +41,16 @@ func (m Model) View() string {
 
 		doneRow := "  [ SUBMIT AND REGISTER ]"
 		if m.ActiveField == FieldDone {
-			doneRow = "> \x1b[1m[ SUBMIT AND REGISTER ]\x1b[0m"
+			doneRow = "> [ SUBMIT AND REGISTER ]"
 		}
 		fLines = append(fLines, "\n"+doneRow)
-		fLines = append(fLines, lipgloss.NewStyle().Foreground(lipgloss.Color("#6B7280")).Render("\n(Press 'Esc' to abandon form)"))
-
-		box := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#10B981")).Padding(1, 4).Margin(1, 2)
-		return box.Render(strings.Join(fLines, "\n"))
+		return lipgloss.JoinVertical(lipgloss.Left, fLines...)
 	}
 
-	// --- OTHERWISE: Render Saved Profiles Dashboard ---
 	var sections []string
+	sections = append(sections, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("6")).Render("🔒 Register Link tunnels (WireGuard / OpenVPN)\n"))
 
-	// 1. Status Monitoring Bar
-	hasActive := false
-	for _, t := range m.Tunnels {
-		if t.Active {
-			hasActive = true
-			break
-		}
-	}
-
-	bannerStyle := lipgloss.NewStyle().Bold(true).Padding(0, 1)
-	if hasActive {
-		sections = append(sections, bannerStyle.Foreground(lipgloss.Color("#10B981")).Render("🛡️  TUNNEL SECURITY: ACTIVE (Overlay active)"))
-	} else {
-		sections = append(sections, bannerStyle.Foreground(lipgloss.Color("#F59E0B")).Render("🔓 TUNNEL SECURITY: UNPROTECTED (Press 'a' to add new wireguard profile)"))
-	}
-
-	// 2. Saved Profile Registry List
-	listBlock := "\n🔒 [Configured Secure Overlays & Routing Tunnels]\n"
-	if len(m.Tunnels) == 0 {
-		listBlock += "  No endpoints registered in system databases.\n"
-	}
+	listBlock := ""
 	for i, t := range m.Tunnels {
 		cursor := " "
 		if m.Cursor == i && m.UIState == StateNormal {
@@ -103,13 +80,20 @@ func (m Model) View() string {
 		menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#EF4444")).Render(fmt.Sprintf("── Actions: %s ──", target.Name)))
 		for i, opt := range options {
 			if m.MenuCursor == i {
-				menuLines = append(menuLines, fmt.Sprintf(" > \x1b[1m%s\x1b[0m", opt))
+				menuLines = append(menuLines, fmt.Sprintf(" > %s", opt))
 			} else {
 				menuLines = append(menuLines, fmt.Sprintf("   %s", opt))
 			}
 		}
-		box := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#EF4444")).Padding(1, 2).Margin(1, 2)
-		return lipgloss.JoinVertical(lipgloss.Center, screen, box.Render(strings.Join(menuLines, "\n")))
+
+		popupDialog := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("9")).
+			Padding(1, 3).
+			Render(strings.Join(menuLines, "\n"))
+
+		// Render multi-layered stacked screen blocks together using style method positions
+		return lipgloss.JoinVertical(lipgloss.Left, screen, "\n", popupDialog)
 	}
 
 	return screen
