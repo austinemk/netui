@@ -168,65 +168,6 @@ func ForgetProfileCmd(nm gonetworkmanager.NetworkManager, uuid string) tea.Cmd {
 	}
 }
 
-func GetActiveAccessPoints(nm gonetworkmanager.NetworkManager) ([]AccessPoint, error) {
-	devices, err := nm.GetDevices()
-	if err != nil {
-		return nil, err
-	}
-
-	var wDev gonetworkmanager.DeviceWireless
-	for _, dev := range devices {
-		devType, _ := dev.GetPropertyDeviceType()
-		if devType == gonetworkmanager.NmDeviceTypeWifi {
-			wDev, err = gonetworkmanager.NewDeviceWireless(dev.GetPath())
-			break
-		}
-	}
-
-	if wDev == nil {
-		return nil, nil
-	}
-
-	apPaths, err := wDev.GetAllAccessPoints()
-	if err != nil {
-		return nil, err
-	}
-
-	activeAp, _ := wDev.GetPropertyActiveAccessPoint()
-	var activeApPath string
-	if activeAp != nil {
-		activeApPath = string(activeAp.GetPath())
-	}
-
-	var list []AccessPoint
-	for _, ap := range apPaths {
-		ssid, _ := ap.GetPropertySSID()
-		if ssid == "" {
-			continue
-		}
-		strength, _ := ap.GetPropertyStrength()
-		wpaFlags, _ := ap.GetPropertyWPAFlags()
-		rsnFlags, _ := ap.GetPropertyRSNFlags()
-
-		sec := "open"
-		if wpaFlags > 0 {
-			sec = "wpa"
-		}
-		if rsnFlags > 0 {
-			sec = "wpa/2"
-		}
-
-		list = append(list, AccessPoint{
-			SSID:     ssid,
-			Strength: strength,
-			Security: sec,
-			IsActive: string(ap.GetPath()) == activeApPath,
-			AP:       ap,
-		})
-	}
-	return list, nil
-}
-
 func GetSavedProfiles(nm gonetworkmanager.NetworkManager) ([]SavedProfile, error) {
 	settings, err := gonetworkmanager.NewSettings()
 	if err != nil {

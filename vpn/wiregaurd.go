@@ -1,8 +1,10 @@
 package vpn
 
 import (
+	"bufio"
 	"crypto/rand"
 	"fmt"
+	"os"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -20,7 +22,6 @@ func GetVPNConnections(client *DBusClient) ([]TunnelProfile, error) {
 		return nil, err
 	}
 
-	// Fetch active connection UUIDs safely using the wrapper
 	activeConns, err := client.NM.GetPropertyActiveConnections()
 	activeUUIDs := make(map[string]bool)
 	if err == nil {
@@ -48,7 +49,6 @@ func GetVPNConnections(client *DBusClient) ([]TunnelProfile, error) {
 		cUUID, _ := connSettings["uuid"].(string)
 		cName, _ := connSettings["id"].(string)
 
-		// Filter for wireguard and vpn tunnels
 		if cType == "wireguard" || cType == "vpn" {
 			tunnels = append(tunnels, TunnelProfile{
 				Name:       cName,
@@ -77,7 +77,6 @@ func CreateWireGuardProfileCmd(client *DBusClient, inputs map[FormField]string) 
 		}
 
 		uuid := generateUUID()
-		// gonetworkmanager uses map[string]map[string]interface{}
 		connectionSettings := map[string]map[string]interface{}{
 			"connection": {
 				"id":             inputs[FieldProfileName],
@@ -106,5 +105,58 @@ func CreateWireGuardProfileCmd(client *DBusClient, inputs map[FormField]string) 
 		}
 
 		return ActionSuccessMsg("WireGuard Profile Created successfully!")
+	}
+}
+
+// ImportWireGuardFileCmd reads a local config file and submits it to NetworkManager
+func ImportWireGuardFileCmd(client *DBusClient, path string) tea.Cmd {
+	return func() tea.Msg {
+		file, err := os.Open(path)
+		if err != nil {
+			return ErrMsg(fmt.Errorf("failed to open file: %v", err))
+		}
+		defer file.Close()
+
+		inputs := make(map[FormField]string)
+		// Extract profile name from filename without extension
+		info, err := file.Stat()
+		if err == nil {
+			name := info.Name()
+			if idx := strings.LastIndex(name, "."); idx != -1 {
+				name = name[:idx]
+			}
+			inputs[FieldProfileName] = name
+			inputs[FieldInterfaceName] = name
+		}
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if strings.HasPrefix(line, "#") || line == "" {
+				continue
+			}
+			parts := strings.SplitN(line, "=", 2)
+			if len(parts) != 2 {
+				continue
+			}
+			key := strings.ToLower(strings.TrimSpace(parts[0]))
+			val := strings.TrimSpace(parts[1])
+
+			switch key {
+			case "privatekey":
+				inputs[FieldPrivateKey] = val
+			case "publickey":
+				inputs[FieldPeerPublicKey] = val
+			case "endpoint":
+				inputs[FieldPeerEndpoint] = val
+			}
+		}
+
+		if inputs[FieldPrivateKey] == "" {
+			return ErrMsg(fmt.Errorf("invalid config file: missing PrivateKey"))
+		}
+
+		// Re-use standard profile writer logic using extracted configurations
+		return CreateWireGuardProfileCmd(client, inputs)()
 	}
 }

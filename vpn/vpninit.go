@@ -11,6 +11,7 @@ const (
 	StateNormal UIState = iota
 	StateActionsMenu
 	StateAddForm
+	StateImportFile
 )
 
 type FormField int
@@ -25,7 +26,6 @@ const (
 )
 
 type DBusClient struct {
-	// Wrapper instance instead of raw dbus connection
 	NM gonetworkmanager.NetworkManager
 }
 
@@ -34,7 +34,7 @@ type TunnelProfile struct {
 	UUID       string
 	Type       string
 	Active     bool
-	Connection gonetworkmanager.Connection // Wrapper reference
+	Connection gonetworkmanager.Connection
 }
 
 type (
@@ -43,47 +43,22 @@ type (
 	ErrMsg           error
 )
 
-type Model struct {
-	Client     *DBusClient
-	Tunnels    []TunnelProfile
-	Cursor     int
-	MenuCursor int
-	UIState    UIState
-	Loading    bool
-	Err        error
-
-	// Form input states
-	ActiveField FormField
-	FormInputs  map[FormField]string
-}
-
-func New() Model {
-	return Model{
-		Client:     &DBusClient{NM: nil},
-		Loading:    true,
-		UIState:    StateNormal,
-		FormInputs: make(map[FormField]string),
-	}
-}
-
 func (m Model) Init() tea.Cmd {
-	return func() tea.Msg {
-		nm, err := gonetworkmanager.NewNetworkManager()
-		if err != nil {
-			return ErrMsg(err)
-		}
+	return tea.Batch(
+		m.FilePicker.Init(), // Provisions directory lookup internal commands cleanly
+		func() tea.Msg {
+			nm, err := gonetworkmanager.NewNetworkManager()
+			if err != nil {
+				return ErrMsg(err)
+			}
 
-		// DO NOT do: m.Client.NM = nm here if m is a value receiver.
-		// Instead, pass it or handle assignment inside your VPN sub-view's Update()
-		// when handling TunnelsLoadedMsg, or handle it inside app.go before Init() runs.
+			tempClient := &DBusClient{NM: nm}
+			t, err := GetVPNConnections(tempClient)
+			if err != nil {
+				return ErrMsg(err)
+			}
 
-		// Creating a temp client wrapper to fetch data safely
-		tempClient := &DBusClient{NM: nm}
-		t, err := GetVPNConnections(tempClient)
-		if err != nil {
-			return ErrMsg(err)
-		}
-
-		return TunnelsLoadedMsg(t)
-	}
+			return TunnelsLoadedMsg(t)
+		},
+	)
 }

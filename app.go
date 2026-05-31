@@ -122,8 +122,8 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
-		case "1", "2", "3":
-			m.ActiveTab = Tab(msg.String()[0] - '1')
+		// case "1", "2", "3":
+		//	m.ActiveTab = Tab(msg.String()[0] - '1')
 		case "tab", "pagedown", "pgdown":
 			m.ActiveTab = (m.ActiveTab + 1) % 3
 		case "shift+tab", "pageup", "pgup":
