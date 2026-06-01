@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"corntui/config"
+
 	"charm.land/lipgloss/v2"
 )
 
@@ -37,12 +39,15 @@ func (m Model) View() string {
 		}
 	}
 
+	// 5. Hints
+	segments = append(segments, m.HintsBlock())
+
 	return lipgloss.JoinVertical(lipgloss.Left, segments...)
 }
 
 func (m Model) AddFormBlock() string {
 	var fLines []string
-	fLines = append(fLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#10B981")).Render("── Create WireGuard Interface Profile ──\n"))
+	fLines = append(fLines, config.Styles.Heading.Render("Create WireGuard Interface Profile"))
 
 	fields := []struct {
 		id    FormField
@@ -73,17 +78,15 @@ func (m Model) AddFormBlock() string {
 
 func (m Model) ImportFileBlock() string {
 	var iLines []string
-	iLines = append(iLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#3B82F6")).Render("── Navigate to File Selection ──\n"))
+	iLines = append(iLines, config.Styles.Heading.Render("Select a File"))
 	iLines = append(iLines, m.FilePicker.View())
-	iLines = append(iLines, lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Render("\n [Esc] Go Back  [Arrows] Move  [Enter] Select/Open"))
 	return lipgloss.JoinVertical(lipgloss.Left, iLines...)
 }
 
 func (m Model) TableBlock() string {
 	var sections []string
-	sections = append(sections, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("6")).Render("🔒 Register Link tunnels (WireGuard / OpenVPN)\n"))
+	sections = append(sections, config.Styles.Heading.Render("WireGuard List"))
 	sections = append(sections, m.Table.View())
-	sections = append(sections, lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Render("\n [n] New Profile  [i] Import File  [r] Refresh  [Enter] Actions"))
 	return lipgloss.JoinVertical(lipgloss.Left, sections...)
 }
 
@@ -110,4 +113,27 @@ func (m Model) OptionsPopupBlock() string {
 		BorderForeground(lipgloss.Color("9")).
 		Padding(1, 3).
 		Render(strings.Join(menuLines, "\n"))
+}
+
+func (m Model) HintsBlock() string {
+	actionsHints := ""
+
+	switch m.UIState {
+	case StateAddForm:
+		actionsHints = "esc: back |  | enter: submit"
+	case StateActionsMenu:
+		actionsHints = "󰹹: nav | backspace: back "
+	case StateImportFile:
+		actionsHints = "left/right: nav | backspace: back"
+	case StateNormal:
+		actionsHints = "n: new | i: import | enter: actions | r: refresh"
+	}
+
+	hints := actionsHints + " | q: quit"
+
+	return lipgloss.JoinVertical(
+		lipgloss.Center,
+		config.DividerBorder(),
+		config.Styles.Hints.Render(hints),
+	)
 }

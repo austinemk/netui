@@ -9,25 +9,58 @@ import (
 	"github.com/godbus/dbus/v5"
 )
 
-// StartScanCmd tells BlueZ to turn on the physical Bluetooth radio scanning
-func StartScanCmd(client *BlueZClient) tea.Cmd {
+// StartDiscoveryCmd tells BlueZ to turn on the physical Bluetooth radio scanning
+func StartDiscoveryCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		obj := client.Conn.Object(bluezInterface, adapterPath)
-		call := obj.Call("org.bluez.Adapter1.StartDiscovery", 0)
-		if call.Err != nil {
-			return ErrMsg(call.Err)
+		err := StartDiscovery(client)
+		if err != nil {
+			return ErrMsg(err)
 		}
-		return ScanStartedMsg{}
+		dvs, _ := DiscoverDevices(client)
+		return ScanFinishedMsg(dvs)
 	}
 }
 
-// StopScanCmd tells BlueZ to shut down the physical radio scanning immediately
-func StopScanCmd(client *BlueZClient) tea.Cmd {
+func ContinueDiscoveryCmd(client *BlueZClient) tea.Cmd {
 	return func() tea.Msg {
-		obj := client.Conn.Object(bluezInterface, adapterPath)
-		_ = obj.Call("org.bluez.Adapter1.StopDiscovery", 0)
-		return ScanStoppedMsg{}
+		dvs, _ := DiscoverDevices(client)
+
+		return ScanFinishedMsg(dvs)
 	}
+}
+
+func LoadPairedDevicesCmd(client *BlueZClient) tea.Cmd {
+	return func() tea.Msg {
+		dvs, _ := LoadPairedDevices(client)
+		ap, _ := FetchAdapterInfo(client)
+		return InfoLoadedMsg(InfoLoadedData{
+			Client:  client,
+			Adapter: ap,
+			Devices: dvs,
+		})
+	}
+}
+
+// StopDiscoveryCmd tells BlueZ to shut down the physical radio scanning immediately
+func StopDiscoveryCmd(client *BlueZClient) tea.Cmd {
+	return func() tea.Msg {
+		StopDiscovery(client)
+		return DiscoveryStoppedMsg{}
+	}
+}
+
+func StartDiscovery(client *BlueZClient) error {
+	obj := client.Conn.Object(bluezInterface, adapterPath)
+	call := obj.Call("org.bluez.Adapter1.StartDiscovery", 0)
+	if call.Err != nil {
+		return call.Err
+	}
+	return nil
+}
+
+func StopDiscovery(client *BlueZClient) {
+	obj := client.Conn.Object(bluezInterface, adapterPath)
+	_ = obj.Call("org.bluez.Adapter1.StopDiscovery", 0)
 }
 
 // FetchAllBlueZObjects remains as the single source of truth from the OS cache
@@ -72,6 +105,8 @@ func FetchAllBlueZObjects(client *BlueZClient) ([]Device, error) {
 			dev.Name = "Unknown Device"
 		}
 
+		dev.Icon = "󰂯"
+
 		if paired, ok := props["Paired"].Value().(bool); ok {
 			dev.Paired = paired
 		}
@@ -91,42 +126,44 @@ func FetchAllBlueZObjects(client *BlueZClient) ([]Device, error) {
 	return devices, nil
 }
 
-func LoadPairedDevicesCmd(client *BlueZClient) tea.Cmd {
-	return func() tea.Msg {
-		logToFile("📥 Command Triggered: LoadPairedDevicesCmd")
-		devices, err := FetchAllBlueZObjects(client)
-		if err != nil {
-			return ErrMsg(err)
-		}
-
-		var pairedOnly []Device
-		for _, d := range devices {
-			if d.Paired {
-				pairedOnly = append(pairedOnly, d)
-			}
-		}
-		logToFile("💾 Filtering SAVED table: showing %d paired out of %d total devices", len(pairedOnly), len(devices))
-		return PairedDevicesLoadedMsg(pairedOnly)
+func LoadPairedDevices(client *BlueZClient) ([]Device, error) {
+	logToFile("📥 Command Triggered: LoadPairedDevicesCmd")
+	/*err := StartDiscovery(client)
+	if err != nil {
+		return nil, err
+	}*/
+	devices, err := FetchAllBlueZObjects(client)
+	if err != nil {
+		return nil, err
 	}
+
+	//StopDiscovery(client)
+
+	var pairedOnly []Device
+	for _, d := range devices {
+		if d.Paired {
+			pairedOnly = append(pairedOnly, d)
+		}
+	}
+	logToFile("💾 Filtering SAVED table: showing %d paired out of %d total devices", len(pairedOnly), len(devices))
+	return pairedOnly, nil
 }
 
-func DiscoverDevicesCmd(client *BlueZClient) tea.Cmd {
-	return func() tea.Msg {
-		logToFile("📡 Command Triggered: DiscoverDevicesCmd")
-		devices, err := FetchAllBlueZObjects(client)
-		if err != nil {
-			return ErrMsg(err)
-		}
-
-		var discoveredOnly []Device
-		for _, d := range devices {
-			if !d.Paired {
-				discoveredOnly = append(discoveredOnly, d)
-			}
-		}
-		logToFile("🌐 Filtering DISCOVERED table: showing %d unpaired out of %d total devices", len(discoveredOnly), len(devices))
-		return DiscoveredDevicesLoadedMsg(discoveredOnly)
+func DiscoverDevices(client *BlueZClient) ([]Device, error) {
+	logToFile("📡 Command Triggered: DiscoverDevicesCmd")
+	devices, err := FetchAllBlueZObjects(client)
+	if err != nil {
+		return nil, err
 	}
+
+	var discoveredOnly []Device
+	for _, d := range devices {
+		if !d.Paired && !d.Trusted {
+			discoveredOnly = append(discoveredOnly, d)
+		}
+	}
+	logToFile("🌐 Filtering DISCOVERED table: showing %d unpaired out of %d total devices", len(discoveredOnly), len(devices))
+	return discoveredOnly, nil
 }
 
 func PollBluetoothTicker() tea.Cmd {

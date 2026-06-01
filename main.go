@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"netui/bluetooth"
-	"netui/vpn"
-	"netui/wifi"
+	"corntui/bluetooth"
+	"corntui/vpn"
+	"corntui/wifi"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -30,11 +30,11 @@ func main() {
 	}
 
 	// 3. Setup a pointer to hold the BlueZ client if needed right away
-	var btClient *bluetooth.BlueZClient
+	// var btClient *bluetooth.BlueZClient
 	var err error
 
 	// ONLY connect to BlueZ immediately if the user requested the Bluetooth tab on startup
-	if initialTab == BluetoothTab {
+	/*if initialTab == BluetoothTab {
 		btClient, err = bluetooth.NewBlueZClient()
 	}
 
@@ -43,13 +43,13 @@ func main() {
 		btView.Err = err
 	} else if btClient != nil {
 		btView.Client = btClient
-	}
+	}*/
 
 	// 4. Initialize AppModel with tracked loaded states
 	initialAppModel := AppModel{
 		ActiveTab: initialTab,
 		WifiView:  wifi.New(),
-		BtView:    btView,
+		BtView:    bluetooth.New(),
 		VpnView:   vpn.New(),
 
 		// Mark which view is explicitly active and loaded right now

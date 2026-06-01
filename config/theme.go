@@ -15,6 +15,7 @@ type CustomStyles struct {
 	ErrorLog      lipgloss.Style
 	ActiveTab     lipgloss.Style
 	InactiveTab   lipgloss.Style
+	BodyText      lipgloss.Style
 	BoxStyle      lipgloss.Style
 	InfoText      lipgloss.Style
 	HighlightText lipgloss.Style
@@ -44,6 +45,7 @@ func init() {
 	// Contextual Headers (New additions)
 	Styles.Heading = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("8")).
+		Underline(true).
 		Bold(true).
 		BorderBottom(true).
 		Italic(true)
@@ -70,6 +72,9 @@ func init() {
 		Background(lipgloss.Color("#1F2937")).
 		Foreground(lipgloss.Color("#9CA3AF")).
 		Padding(0, 1)
+
+	// BodyText
+	//Styles.BodyText = lipgloss.NewStyle().Foreground(lipgloss.Color())
 
 	// Subtabs structures
 	Styles.BoxStyle = lipgloss.NewStyle().

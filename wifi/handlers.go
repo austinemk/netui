@@ -3,9 +3,8 @@ package wifi
 import (
 	"math"
 
-	"netui/config"
+	"corntui/config"
 
-	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -164,63 +163,4 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 		return m, cmd
 	}
 	return m, nil
-}
-
-func (m *Model) syncTableRows() {
-	var rows []table.Row
-
-	if m.Scanning {
-		m.Table.SetRows(nil)
-		// V2 Fix: Explicitly mapped table.Column keys
-		m.Table.SetColumns([]table.Column{
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.5))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.3))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
-		})
-
-		for _, ap := range m.ActiveAPs {
-			activeMark := " "
-			if ap.IsActive {
-				activeMark = ""
-			}
-			rows = append(rows, table.Row{
-				RenderSignal(ap.Strength, ap.Security),
-				ap.SSID,
-				ap.Security,
-				activeMark,
-			})
-		}
-	} else {
-		m.Table.SetRows(nil)
-		// V2 Fix: Explicitly mapped table.Column keys
-		m.Table.SetColumns([]table.Column{
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.15))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
-		})
-
-		for _, prof := range m.Saved {
-			autoStr := " "
-			if prof.AutoConnect {
-				autoStr = "󰁪"
-			}
-			uuidShort := ""
-			if len(prof.UUID) >= 8 {
-				uuidShort = prof.UUID[:8]
-			}
-			rows = append(rows, table.Row{
-				prof.Name,
-				autoStr,
-				uuidShort,
-			})
-		}
-	}
-
-	m.Table.SetRows(rows)
-
-	if m.Table.Cursor() >= len(rows) {
-		m.Table.GotoTop()
-		m.Cursor = m.Table.Cursor()
-	}
 }

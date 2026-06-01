@@ -5,7 +5,7 @@ package config
 const (
 	WindowWidth   = 70
 	WindowHeight  = 25
-	TabBodyHeight = WindowHeight - 10
+	TabBodyHeight = WindowHeight - 7
 	TabBodyWidth  = WindowWidth - 2
 )
 

@@ -1,7 +1,9 @@
+// Package vpn for vpn stuff management
 package vpn
 
 import (
-	tea "charm.land/bubbletea/v2"
+	"charm.land/bubbles/v2/filepicker"
+	"charm.land/bubbles/v2/table"
 	"github.com/Wifx/gonetworkmanager/v3"
 )
 
@@ -43,22 +45,19 @@ type (
 	ErrMsg           error
 )
 
-func (m Model) Init() tea.Cmd {
-	return tea.Batch(
-		m.FilePicker.Init(), // Provisions directory lookup internal commands cleanly
-		func() tea.Msg {
-			nm, err := gonetworkmanager.NewNetworkManager()
-			if err != nil {
-				return ErrMsg(err)
-			}
+type Model struct {
+	Client     *DBusClient
+	Tunnels    []TunnelProfile
+	Table      table.Model
+	FilePicker filepicker.Model // Integrated Native File Picker Component
+	MenuCursor int
+	UIState    UIState
+	Loading    bool
+	Err        error
+	Cursor     int
 
-			tempClient := &DBusClient{NM: nm}
-			t, err := GetVPNConnections(tempClient)
-			if err != nil {
-				return ErrMsg(err)
-			}
-
-			return TunnelsLoadedMsg(t)
-		},
-	)
+	// Form input states
+	ActiveField    FormField
+	SelectedTunnel TunnelProfile
+	FormInputs     map[FormField]string
 }

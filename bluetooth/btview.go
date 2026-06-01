@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"netui/config"
+	"corntui/config"
 
 	"charm.land/lipgloss/v2"
 )
@@ -29,6 +29,7 @@ func (m Model) View() string {
 	}
 
 	segments = append(segments, m.AdapterBlock())
+	segments = append(segments, m.HintsBlock())
 
 	// V2: Layout compositions use enum alignment methods
 	return lipgloss.JoinVertical(lipgloss.Left, segments...)
@@ -37,12 +38,12 @@ func (m Model) View() string {
 // AdapterBlock for displaying adapter info
 func (m Model) AdapterBlock() string {
 	powStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("power: %s", map[bool]string{true: "", false: ""}[m.Powered]))
+		Render(fmt.Sprintf("power: %s", map[bool]string{true: "", false: ""}[m.Adapter.Powered]))
 	discStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("   discoverable: %s", map[bool]string{true: "", false: ""}[m.Discoverable]))
+		Render(fmt.Sprintf("   discoverable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Discoverable]))
 
 	pairStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("   pairable: %s", map[bool]string{true: "", false: ""}[m.Pairable]))
+		Render(fmt.Sprintf("   pairable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Pairable]))
 
 	scanStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).Italic(true).
 		Render(fmt.Sprintf("   state: %s", map[bool]string{true: "discovering", false: "saved"}[m.Scanning]))
@@ -60,7 +61,7 @@ func (m Model) AdapterBlock() string {
 }
 
 func (m Model) ScanningBlock() string {
-	title := "Discovered devices\n"
+	title := config.Styles.Heading.Render("Discovered devices")
 	table := m.Table.View()
 
 	return lipgloss.NewStyle().Render(
@@ -69,7 +70,7 @@ func (m Model) ScanningBlock() string {
 }
 
 func (m Model) SavedBlock() string {
-	title := "󰆓 Known Paired Storage Devices\n"
+	title := config.Styles.Heading.Render("󰆓 Known Paired Storage Devices")
 	table := m.Table.View()
 
 	return lipgloss.NewStyle().Render(
@@ -93,4 +94,23 @@ func (m Model) ActionsMenuBlock() string {
 		}
 	}
 	return config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
+}
+
+func (m Model) HintsBlock() string {
+	actionsHints := ""
+
+	switch m.UIState {
+	case StateActionsMenu:
+		actionsHints = "j/k: nav | backspace: back "
+	case StateNormal:
+		actionsHints = "j/k: nav | p: power | d: discoverable | b: pairable"
+	}
+
+	hints := actionsHints + " | q: quit"
+
+	return lipgloss.JoinVertical(
+		lipgloss.Center,
+		config.DividerBorder(),
+		config.Styles.Hints.Render(hints),
+	)
 }

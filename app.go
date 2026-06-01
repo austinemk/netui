@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"netui/bluetooth"
-	"netui/config"
-	"netui/vpn"
-	"netui/wifi"
+	"corntui/bluetooth"
+	"corntui/config"
+	"corntui/vpn"
+	"corntui/wifi"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
@@ -67,12 +67,6 @@ func (m *AppModel) lazyLoadTab(tab Tab) tea.Cmd {
 		return m.WifiView.Init()
 
 	case BluetoothTab:
-		if m.BtView.Client == nil && m.BtView.Err == nil {
-			btClient, err := bluetooth.NewBlueZClient()
-			if err == nil {
-				m.BtView.Client = btClient
-			}
-		}
 		return m.BtView.Init()
 
 	case VpnTab:
@@ -186,9 +180,9 @@ func (m AppModel) View() tea.View {
 		logView = lipgloss.NewStyle().Foreground(lipgloss.Color("#F59E0B")).Render("\n[LOG] " + m.LogMessage)
 	}
 
-	footer := RenderFooter(int(m.ActiveTab), false)
+	//footer := RenderFooter(int(m.ActiveTab), false)
 
-	mainLayout := lipgloss.JoinVertical(lipgloss.Left, header, body, logView, footer)
+	mainLayout := lipgloss.JoinVertical(lipgloss.Left, header, body, logView)
 	appBorderStyle := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("8")).Padding(0, 1)
 	mainLayout = appBorderStyle.Render(mainLayout)
 

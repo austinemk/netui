@@ -1,7 +1,7 @@
 package main
 
 import (
-	"netui/config"
+	"corntui/config"
 
 	"charm.land/lipgloss/v2"
 	//"github.com/common-nighthawk/go-figure"

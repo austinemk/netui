@@ -4,7 +4,7 @@ import (
 	"context"
 	"math"
 
-	"netui/config"
+	"corntui/config"
 
 	"charm.land/bubbles/v2/table"
 	"charm.land/bubbles/v2/textinput"
@@ -12,35 +12,6 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/Wifx/gonetworkmanager/v3"
 )
-
-type Model struct {
-	Client    gonetworkmanager.NetworkManager
-	Adapter   AdapterInfo
-	Saved     []SavedProfile
-	ActiveAPs []AccessPoint
-
-	// Context for graceful cleanup
-	Ctx    context.Context
-	Cancel context.CancelFunc // <-- Add this to track background tasks
-
-	// Dynamic Layout Elements
-	Table     table.Model
-	PassInput textinput.Model
-
-	// Navigation & Component UI states
-	Cursor     int // Kept for backend array mapping compatibility
-	MenuCursor int
-	UIState    UIState
-	Scanning   bool
-	Loading    bool
-	Err        error
-
-	// Password handling for secured lines
-	SelectedAP    AccessPoint
-	SelectedSaved SavedProfile
-	PasswordInput string
-	MenuOptions   []string
-}
 
 func New() Model {
 	// Initialize default columns structure
@@ -91,42 +62,49 @@ func New() Model {
 	}
 }
 
-func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	// 1. State-based Structural Intercepts
-	switch m.UIState {
-	case StatePasswordInput:
-		return m.handlePasswordInput(msg)
-	case StateSavedActionsMenu:
-		return m.handleSavedActionsMenu(msg)
+// Init that initializes the package
+func (m Model) Init() tea.Cmd {
+	return func() tea.Msg {
+		nm, err := gonetworkmanager.NewNetworkManager()
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		adapter, err := GetAdapterSettings(nm)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		saved, err := GetSavedProfiles(nm)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		aps, err := GetActiveAccessPoints(nm)
+		if err != nil {
+			return ErrMsg(err)
+		}
+
+		return InfoLoadedMsg(InfoLoadedData{
+			Client:  nm, // <-- Pass it along here
+			Adapter: adapter,
+			Saved:   saved,
+			APs:     aps,
+		})
+	}
+}
+
+// Clean gracefully halts background procedures, context loops, and stops leaks
+func (m Model) Clean() {
+	// 1. Cancel the background context to instantly terminate the monitor goroutine
+	if m.Cancel != nil {
+		m.Cancel()
 	}
 
-	// 2. Normal State Core Navigation Loop
-	switch msg := msg.(type) {
-	case InfoLoadedMsg:
-		return m.handleInfoLoaded(msg)
+	// 2. Explicitly stop the hardware scanning loop state flag
+	m.Scanning = false
 
-	case ScanFinishedMsg:
-		return m.handleScanFinished(msg)
-
-	case TickMsg:
-		return m.handleTick()
-
-	case AdapterToggledMsg, ActionSuccessMsg:
-		return m.handleAdapterOrActionSuccess()
-
-	case ErrMsg:
-		m.Err = msg
-		m.Scanning = false
-		return m, nil
-
-	// V2 Change: KeyMsg is now KeyPressMsg
-	case tea.KeyPressMsg:
-		return m.handleKeyInput(msg)
-	}
-
-	// 3. Fallback to sub-component updates
-	var cmd tea.Cmd
-	m.Table, cmd = m.Table.Update(msg)
-
-	return m, cmd
+	// 3. Clean up inner component state instances
+	m.PassInput.Reset()
+	m.Table.SetRows(nil)
 }

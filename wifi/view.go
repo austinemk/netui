@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"netui/config"
+	"corntui/config"
 
 	"charm.land/lipgloss/v2"
 )
@@ -36,9 +36,11 @@ func (m Model) View() string {
 	}
 
 	segments = append(segments, m.adapterBlock())
+	segments = append(segments, m.HintsBlock())
 
 	// V2: Join lines now use alignment positioning directly
-	return lipgloss.JoinVertical(lipgloss.Left, segments...)
+	return lipgloss.JoinVertical(lipgloss.Left,
+		segments...)
 }
 
 func (m Model) adapterBlock() string {
@@ -110,4 +112,30 @@ func (m Model) OptionsBlock() string {
 	}
 	popup := config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
 	return popup
+}
+
+func (m Model) HintsBlock() string {
+	actionsHints := ""
+
+	switch m.UIState {
+	case StatePasswordInput:
+		actionsHints = "esc: close | enter: submit"
+	case StateSavedActionsMenu:
+		actionsHints = "j/k: nav | backspace: back "
+	case StateNormal:
+		actionsHints = "j/k: nav | p: power"
+		if m.Scanning {
+			actionsHints = actionsHints + " | enter: connect | s: scan off"
+		} else {
+			actionsHints = actionsHints + "| enter: options| s: scan"
+		}
+	}
+
+	hints := actionsHints + " | q: quit"
+
+	return lipgloss.JoinVertical(
+		lipgloss.Center,
+		config.DividerBorder(),
+		config.Styles.Hints.Render(hints),
+	)
 }
