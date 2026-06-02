@@ -10,11 +10,8 @@ import (
 )
 
 func (m Model) View() string {
-	if m.Loading {
-		return "\n  🔄 Querying Active secure interfaces via System Bus..."
-	}
-	if m.Err != nil {
-		return fmt.Sprintf("\n  ❌ System Failure Hook: %v", m.Err)
+	if m.Client == nil {
+		return config.Styles.LogBox.Render("nm Client not loaded yet")
 	}
 
 	var segments []string
@@ -41,6 +38,11 @@ func (m Model) View() string {
 
 	// 5. Hints
 	segments = append(segments, m.HintsBlock())
+
+	// 6. Logs
+	if m.Err != nil {
+		segments = append(segments, config.LogBlock(m.Err.Error()))
+	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, segments...)
 }

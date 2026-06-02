@@ -27,10 +27,6 @@ const (
 	FieldDone
 )
 
-type DBusClient struct {
-	NM gonetworkmanager.NetworkManager
-}
-
 type TunnelProfile struct {
 	Name       string
 	UUID       string
@@ -43,22 +39,23 @@ type (
 	TunnelsLoadedMsg TunnelsLoadedData
 	ActionSuccessMsg string
 	ErrMsg           error
+	ClearLogMsg      struct{ ID uint64 }
 )
 
 type TunnelsLoadedData struct {
 	Tunnels []TunnelProfile
-	Client  *DBusClient
+	Client  gonetworkmanager.NetworkManager
 }
 
 type Model struct {
-	Client     *DBusClient
+	Client     gonetworkmanager.NetworkManager
 	Tunnels    []TunnelProfile
 	Table      table.Model
 	FilePicker filepicker.Model // Integrated Native File Picker Component
 	MenuCursor int
 	UIState    UIState
-	Loading    bool
 	Err        error
+	LogID      uint64
 	Cursor     int
 
 	// Form input states

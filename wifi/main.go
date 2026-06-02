@@ -52,7 +52,6 @@ func New() Model {
 	return Model{
 		Client:      nil, // Will be loaded dynamically inside Init()
 		Scanning:    false,
-		Loading:     true,
 		UIState:     StateNormal,
 		Table:       t,
 		PassInput:   ti,

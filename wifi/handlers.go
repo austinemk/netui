@@ -31,6 +31,7 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 		cmd := ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, passwordValue)
 
 		m.UIState = StateNormal
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 		m.PassInput.Reset()
 		return m, cmd
 
@@ -75,6 +76,8 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		}
 		m.UIState = StateNormal
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+
 		return m, cmd
 	}
 	return m, nil
@@ -85,7 +88,6 @@ func (m Model) handleInfoLoaded(msg InfoLoadedMsg) (Model, tea.Cmd) {
 	m.Adapter = msg.Adapter
 	m.Saved = msg.Saved
 	m.ActiveAPs = msg.APs
-	m.Loading = false
 	m.syncTableRows()
 	if m.Scanning {
 		return m, PollWifiTicker()

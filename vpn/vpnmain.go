@@ -55,10 +55,9 @@ func New() Model {
 	fp.Styles.DisabledFile = fp.Styles.DisabledFile.MaxWidth(30)
 
 	return Model{
-		Client:     &DBusClient{NM: nil},
+		Client:     nil,
 		Table:      t,
 		FilePicker: fp,
-		Loading:    true,
 		UIState:    StateNormal,
 		FormInputs: make(map[FormField]string),
 	}
@@ -73,15 +72,14 @@ func (m Model) Init() tea.Cmd {
 				return ErrMsg(err)
 			}
 
-			tempClient := &DBusClient{NM: nm}
-			t, err := GetVPNConnections(tempClient)
+			t, err := GetVPNConnections(nm)
 			if err != nil {
 				return ErrMsg(err)
 			}
 
 			return TunnelsLoadedMsg(TunnelsLoadedData{
+				Client:  nm,
 				Tunnels: t,
-				Client:  tempClient,
 			})
 		},
 	)

@@ -54,6 +54,7 @@ type (
 	ScanFinishedMsg      []Device
 	TickMsg              time.Time
 	ErrMsg               error
+	ClearLogMsg          struct{ ID uint64 }
 	ActionSuccessMsg     string
 	AdapterInfoLoadedMsg AdapterInfo
 )
@@ -74,6 +75,7 @@ type Model struct {
 	UIState     UIState
 	Scanning    bool
 	Err         error
+	LogID       uint64
 	SelectedMac string
 	SelectedDev Device
 	MenuOptions []string

@@ -41,6 +41,8 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 			cmd = ExecuteActionCmd(m.Client, action, m.SelectedMac)
 		}
 		m.UIState = StateNormal
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+
 		return m, cmd
 	}
 	return m, nil

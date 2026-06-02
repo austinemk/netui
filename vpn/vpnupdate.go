@@ -1,6 +1,8 @@
 package vpn
 
 import (
+	"time"
+
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
 )
@@ -14,9 +16,41 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m.handleFilePickerState(msg)
 	case StateActionsMenu:
 		return m.handleActionsMenuState(msg)
-	}
 
-	return m.handleCoreLifecycle(msg)
+	}
+	switch msg := msg.(type) {
+	case TunnelsLoadedMsg:
+		m.Client = msg.Client
+		m.Tunnels = msg.Tunnels
+
+		// Map backend tunnels data cleanly to the UI table rows
+		m.syncTableRows()
+		return m, nil
+
+	case ActionSuccessMsg:
+		return m, FetchTunnelsCmd(m.Client)
+
+	case ErrMsg:
+		m.Err = msg
+		m.LogID++
+		return m, func() tea.Msg {
+			time.Sleep(4 * time.Second) // Display duration before auto-removal
+			return ClearLogMsg{ID: m.LogID}
+		}
+	case ClearLogMsg:
+		if msg.ID == m.LogID {
+			m.Err = nil
+		}
+		return m, nil
+
+	case tea.KeyPressMsg:
+		return m.handleKeyPress(msg)
+
+	}
+	var cmd tea.Cmd
+
+	m.Table, cmd = m.Table.Update(msg)
+	return m, cmd
 }
 
 // syncTableRows translates the internal Tunnels state into viewable table rows.

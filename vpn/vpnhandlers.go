@@ -10,36 +10,6 @@ import (
 
 // --- CORE LIFECYCLE ---
 
-func (m Model) handleCoreLifecycle(msg tea.Msg) (Model, tea.Cmd) {
-	var cmd tea.Cmd
-
-	switch msg := msg.(type) {
-	case TunnelsLoadedMsg:
-		m.Tunnels = msg.Tunnels
-		m.Client = msg.Client
-		m.Loading = false
-
-		// Map backend tunnels data cleanly to the UI table rows
-		m.syncTableRows()
-		return m, nil
-
-	case ActionSuccessMsg:
-		return m, FetchTunnelsCmd(m.Client)
-
-	case ErrMsg:
-		m.Err = msg
-		m.Loading = false
-		return m, nil
-
-	case tea.KeyPressMsg:
-		return m.handleKeyPress(msg)
-
-	}
-
-	m.Table, cmd = m.Table.Update(msg)
-	return m, cmd
-}
-
 // handleKeyPress to handle global keys
 func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	switch msg.String() {
@@ -57,8 +27,7 @@ func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	case "i":
 		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.3)))
 		m.UIState = StateImportFile //[cite: 1]
-	case "r":
-		m.Loading = true                    //[cite: 1]
+	case "r": //[cite: 1]
 		return m, FetchTunnelsCmd(m.Client) //[cite: 1]
 	default:
 		var cmd tea.Cmd
@@ -99,8 +68,7 @@ func (m Model) handleFormState(msg tea.Msg) (Model, tea.Cmd) {
 		if m.ActiveField == FieldDone {
 			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
-			m.Loading = true
-			return m, CreateWireGuardProfileCmd(m.Client, m.FormInputs)
+			return m, CreateWireGuardProfileCmd(m.FormInputs)
 		}
 		if m.ActiveField < FieldDone {
 			m.ActiveField++
@@ -131,8 +99,7 @@ func (m Model) handleFilePickerState(msg tea.Msg) (Model, tea.Cmd) {
 
 	if didSelect, selectedPath := m.FilePicker.DidSelectFile(msg); didSelect {
 		m.UIState = StateNormal
-		m.Loading = true
-		return m, ImportWireGuardFileCmd(m.Client, selectedPath)
+		return m, ImportWireGuardFileCmd(selectedPath)
 	}
 
 	return m, cmd
@@ -165,11 +132,10 @@ func (m Model) handleActionsMenuState(msg tea.Msg) (Model, tea.Cmd) {
 			case 0: // Toggle Activation State
 				cmd = ToggleTunnelCmd(m.Client, targetTunnel, !targetTunnel.Active)
 			case 1: // Delete Profile State
-				cmd = DeleteTunnelCmd(m.Client, targetTunnel)
+				cmd = DeleteTunnelCmd(targetTunnel)
 			}
 			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
-			m.Loading = true
 			return m, cmd
 		}
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/Wifx/gonetworkmanager/v3"
 )
 
-func GetVPNConnections(client *DBusClient) ([]TunnelProfile, error) {
+func GetVPNConnections(client gonetworkmanager.NetworkManager) ([]TunnelProfile, error) {
 	settings, err := gonetworkmanager.NewSettings()
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func GetVPNConnections(client *DBusClient) ([]TunnelProfile, error) {
 		return nil, err
 	}
 
-	activeConns, err := client.NM.GetPropertyActiveConnections()
+	activeConns, err := client.GetPropertyActiveConnections()
 	activeUUIDs := make(map[string]bool)
 	if err == nil {
 		for _, aConn := range activeConns {
@@ -69,7 +69,7 @@ func generateUUID() string {
 	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func CreateWireGuardProfileCmd(client *DBusClient, inputs map[FormField]string) tea.Cmd {
+func CreateWireGuardProfileCmd(inputs map[FormField]string) tea.Cmd {
 	return func() tea.Msg {
 		settings, err := gonetworkmanager.NewSettings()
 		if err != nil {
@@ -109,7 +109,7 @@ func CreateWireGuardProfileCmd(client *DBusClient, inputs map[FormField]string) 
 }
 
 // ImportWireGuardFileCmd reads a local config file and submits it to NetworkManager
-func ImportWireGuardFileCmd(client *DBusClient, path string) tea.Cmd {
+func ImportWireGuardFileCmd(path string) tea.Cmd {
 	return func() tea.Msg {
 		file, err := os.Open(path)
 		if err != nil {
@@ -157,6 +157,6 @@ func ImportWireGuardFileCmd(client *DBusClient, path string) tea.Cmd {
 		}
 
 		// Re-use standard profile writer logic using extracted configurations
-		return CreateWireGuardProfileCmd(client, inputs)()
+		return CreateWireGuardProfileCmd(inputs)()
 	}
 }

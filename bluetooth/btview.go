@@ -11,7 +11,7 @@ import (
 
 func (m Model) View() string {
 	if m.Client == nil {
-		return "Bluez client is nil"
+		return config.Styles.LogBox.Render("Bluez client is nil")
 	}
 
 	var segments []string
@@ -35,6 +35,10 @@ func (m Model) View() string {
 
 	segments = append(segments, m.AdapterBlock())
 	segments = append(segments, m.HintsBlock())
+
+	if m.Err != nil {
+		segments = append(segments, config.LogBlock(m.Err.Error()))
+	}
 
 	// V2: Layout compositions use enum alignment methods
 	return lipgloss.JoinVertical(lipgloss.Left, segments...)
@@ -123,7 +127,7 @@ func (m Model) HintsBlock() string {
 // PasskeyPromptBlock builds a clean terminal layout block for the confirmation window
 // PasskeyPromptBlock builds a clean terminal layout block for the confirmation window
 func (m Model) PasskeyPromptBlock() string {
-	// 👇 FIX: Swap hardcoded '123456' with your live state property 'm.CurrentPasskey'
+	// Swap hardcoded '123456' with your live state property 'm.CurrentPasskey'
 	promptText := fmt.Sprintf("Pairing request from %s\nConfirm Passkey: %06d?", m.SelectedDev.Name, m.CurrentPasskey)
 
 	var yesOpt, noOpt string

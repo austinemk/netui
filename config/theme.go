@@ -11,8 +11,7 @@ type CustomStyles struct {
 	Container     lipgloss.Style
 	Title         lipgloss.Style
 	Heading       lipgloss.Style
-	SuccessLog    lipgloss.Style
-	ErrorLog      lipgloss.Style
+	LogBox        lipgloss.Style
 	ActiveTab     lipgloss.Style
 	InactiveTab   lipgloss.Style
 	BodyText      lipgloss.Style
@@ -50,17 +49,11 @@ func init() {
 		BorderBottom(true).
 		Italic(true)
 
-	Styles.SuccessLog = lipgloss.NewStyle().
-		Background(lipgloss.Color("#a6e3a1")).
-		Padding(0, 1).
-		Foreground(lipgloss.Color("#1e1e2e")).
-		Bold(true)
-
-	Styles.ErrorLog = lipgloss.NewStyle().
+	Styles.LogBox = lipgloss.NewStyle().
 		Background(lipgloss.Color("#eba0ac")).
 		Padding(0, 1).
 		Foreground(lipgloss.Color("#1e1e2e")).
-		Bold(true)
+		Bold(true).Width(TabBodyWidth).AlignHorizontal(lipgloss.Center)
 
 	// Tab structures
 	Styles.ActiveTab = lipgloss.NewStyle().

@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/Wifx/gonetworkmanager/v3"
 )
 
-func FetchTunnelsCmd(client *DBusClient) tea.Cmd {
+func FetchTunnelsCmd(client gonetworkmanager.NetworkManager) tea.Cmd {
 	return func() tea.Msg {
 		t, err := GetVPNConnections(client)
 		if err != nil {
@@ -16,20 +17,20 @@ func FetchTunnelsCmd(client *DBusClient) tea.Cmd {
 	}
 }
 
-func ToggleTunnelCmd(client *DBusClient, tunnel TunnelProfile, activate bool) tea.Cmd {
+func ToggleTunnelCmd(client gonetworkmanager.NetworkManager, tunnel TunnelProfile, activate bool) tea.Cmd {
 	return func() tea.Msg {
 		if activate {
-			_, err := client.NM.ActivateConnection(tunnel.Connection, nil, nil)
+			_, err := client.ActivateConnection(tunnel.Connection, nil, nil)
 			if err != nil {
 				return ErrMsg(err)
 			}
 		} else {
-			activeConns, err := client.NM.GetPropertyActiveConnections()
+			activeConns, err := client.GetPropertyActiveConnections()
 			if err == nil {
 				for _, aConn := range activeConns {
 					uuid, _ := aConn.GetPropertyUUID()
 					if uuid == tunnel.UUID {
-						err = client.NM.DeactivateConnection(aConn)
+						err = client.DeactivateConnection(aConn)
 						if err != nil {
 							return ErrMsg(err)
 						}
@@ -42,7 +43,7 @@ func ToggleTunnelCmd(client *DBusClient, tunnel TunnelProfile, activate bool) te
 	}
 }
 
-func DeleteTunnelCmd(client *DBusClient, tunnel TunnelProfile) tea.Cmd {
+func DeleteTunnelCmd(tunnel TunnelProfile) tea.Cmd {
 	return func() tea.Msg {
 		// Ensure connection object exists before calling methods on it
 		if tunnel.Connection == nil {

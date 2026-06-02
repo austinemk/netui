@@ -12,3 +12,9 @@ func DividerBorder() string {
 
 	return lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Render(divider)
 }
+
+func LogBlock(content string) string {
+	truncated := Truncate(content, TabBodyWidth-4)
+
+	return Styles.LogBox.Render(truncated)
+}

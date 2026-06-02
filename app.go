@@ -41,9 +41,6 @@ func (m AppModel) Init() tea.Cmd {
 	case BluetoothTab:
 		return m.BtView.Init()
 	case VpnTab:
-		if m.VpnView.Client == nil {
-			m.VpnView.Client = &vpn.DBusClient{}
-		}
 		return m.VpnView.Init()
 	}
 	return nil
@@ -70,10 +67,6 @@ func (m *AppModel) lazyLoadTab(tab Tab) tea.Cmd {
 		return m.BtView.Init()
 
 	case VpnTab:
-		// Make sure the Client struct wrapper pointer exists BEFORE calling Init()
-		if m.VpnView.Client == nil {
-			m.VpnView.Client = &vpn.DBusClient{}
-		}
 		return m.VpnView.Init()
 	}
 	return nil

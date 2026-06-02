@@ -45,6 +45,7 @@ type (
 	ScanFinishedMsg   []AccessPoint
 	TickMsg           time.Time
 	ErrMsg            error
+	ClearLogMsg       struct{ ID uint64 }
 	AdapterToggledMsg struct{}
 	ActionSuccessMsg  string
 )
@@ -76,8 +77,9 @@ type Model struct {
 	MenuCursor int
 	UIState    UIState
 	Scanning   bool
-	Loading    bool
-	Err        error
+	// Loading    bool
+	Err   error
+	LogID uint64
 
 	// Password handling for secured lines
 	SelectedAP    AccessPoint

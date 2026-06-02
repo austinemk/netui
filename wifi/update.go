@@ -2,6 +2,7 @@ package wifi
 
 import (
 	"math"
+	"time"
 
 	"corntui/config"
 
@@ -34,7 +35,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	case ErrMsg:
 		m.Err = msg
-		m.Scanning = false
+		m.LogID++
+		return m, func() tea.Msg {
+			time.Sleep(4 * time.Second) // Display duration before auto-removal
+			return ClearLogMsg{ID: m.LogID}
+		}
+	case ClearLogMsg:
+		if msg.ID == m.LogID {
+			m.Err = nil
+		}
 		return m, nil
 
 	// V2 Change: KeyMsg is now KeyPressMsg

@@ -10,11 +10,8 @@ import (
 )
 
 func (m Model) View() string {
-	if m.Loading {
-		return "Connecting to System Bus Interfaces..."
-	}
-	if m.Err != nil {
-		return fmt.Sprintf("\n  ❌ Error: %v", m.Err)
+	if m.Client == nil {
+		return config.Styles.LogBox.Render("Client not loaded yet")
 	}
 
 	var segments []string
@@ -37,6 +34,10 @@ func (m Model) View() string {
 
 	segments = append(segments, m.adapterBlock())
 	segments = append(segments, m.HintsBlock())
+
+	if m.Err != nil {
+		segments = append(segments, config.LogBlock(m.Err.Error()))
+	}
 
 	// V2: Join lines now use alignment positioning directly
 	return lipgloss.JoinVertical(lipgloss.Left,
