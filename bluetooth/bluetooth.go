@@ -13,6 +13,7 @@ type UIState int
 const (
 	StateNormal UIState = iota
 	StateActionsMenu
+	StatePasskeyPrompt // New state for your popup
 )
 
 type Device struct {
@@ -28,6 +29,13 @@ type AdapterInfo struct {
 	Powered      bool
 	Discoverable bool
 	Pairable     bool
+}
+
+// PasskeyRequestMsg holds the pairing challenge data needing user input
+type PasskeyRequestMsg struct {
+	Device       Device
+	Passkey      uint32
+	ResponseChan chan bool // Used to signal back to your D-Bus Agent loop
 }
 
 const (
@@ -69,4 +77,8 @@ type Model struct {
 	SelectedMac string
 	SelectedDev Device
 	MenuOptions []string
+
+	// NEW: Track passkey state inside memory
+	CurrentPasskey uint32
+	ActiveRespChan chan bool
 }

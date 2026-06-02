@@ -40,10 +40,15 @@ type TunnelProfile struct {
 }
 
 type (
-	TunnelsLoadedMsg []TunnelProfile
+	TunnelsLoadedMsg TunnelsLoadedData
 	ActionSuccessMsg string
 	ErrMsg           error
 )
+
+type TunnelsLoadedData struct {
+	Tunnels []TunnelProfile
+	Client  *DBusClient
+}
 
 type Model struct {
 	Client     *DBusClient

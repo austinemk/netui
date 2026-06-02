@@ -114,7 +114,7 @@ func (m Model) handleAdapterOrActionSuccess() (Model, tea.Cmd) {
 		a, _ := GetAdapterSettings(m.Client)
 		s, _ := GetSavedProfiles(m.Client)
 		aps, _ := GetActiveAccessPoints(m.Client)
-		return InfoLoadedMsg(InfoLoadedData{Adapter: a, Saved: s, APs: aps})
+		return InfoLoadedMsg(InfoLoadedData{Client: m.Client, Adapter: a, Saved: s, APs: aps})
 	}
 }
 

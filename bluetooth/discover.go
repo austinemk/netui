@@ -105,7 +105,18 @@ func FetchAllBlueZObjects(client *BlueZClient) ([]Device, error) {
 			dev.Name = "Unknown Device"
 		}
 
-		dev.Icon = "󰂯"
+		// Set a default icon fallback string using a Nerd Font symbol directly
+		dev.Icon = ""
+
+		// Correctly map icons from BlueZ properties using your icons.go mapping functions
+		if iconName, ok := props["Icon"].Value().(string); ok {
+			dev.Icon = FromString(iconName).String()
+		} else if cod, ok := props["Class"].Value().(uint32); ok {
+			dev.Icon = FromClassOfDevice(cod).String()
+		} else if codInt, ok := props["Class"].Value().(int32); ok {
+			// BlueZ often sends 'Class' as a signed int32 variant over D-Bus
+			dev.Icon = FromClassOfDevice(uint32(codInt)).String()
+		}
 
 		if paired, ok := props["Paired"].Value().(bool); ok {
 			dev.Paired = paired
@@ -158,7 +169,7 @@ func DiscoverDevices(client *BlueZClient) ([]Device, error) {
 
 	var discoveredOnly []Device
 	for _, d := range devices {
-		if !d.Paired && !d.Trusted {
+		if !d.Paired {
 			discoveredOnly = append(discoveredOnly, d)
 		}
 	}

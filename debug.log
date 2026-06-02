@@ -2036,3 +2036,545 @@
 [01:37:42] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
 [01:37:42] 📦 Total devices loaded into memory from scan block: 2
 [01:37:42] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:02:17] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:02:17] 📬 Received 4 total DBus object paths from ObjectManager
+[11:02:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:02:17] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:02:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:02:17] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:02:17] 📦 Total devices loaded into memory from scan block: 2
+[11:02:17] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:02:26] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:02:26] 📬 Received 4 total DBus object paths from ObjectManager
+[11:02:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:02:26] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:02:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:02:26] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:02:26] 📦 Total devices loaded into memory from scan block: 2
+[11:02:26] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:05:01] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:05:01] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:01] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:01] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:01] 📦 Total devices loaded into memory from scan block: 2
+[11:05:01] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:05:05] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:05:05] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:05] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:05] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:05] 📦 Total devices loaded into memory from scan block: 2
+[11:05:05] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:05:07] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:07] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:07] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:07] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:07] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:07] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:07] 📦 Total devices loaded into memory from scan block: 2
+[11:05:07] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:11] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:11] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:11] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:11] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:11] 📦 Total devices loaded into memory from scan block: 2
+[11:05:11] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:15] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:15] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:15] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:15] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:15] 📦 Total devices loaded into memory from scan block: 2
+[11:05:15] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:19] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:19] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:19] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:19] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:19] 📦 Total devices loaded into memory from scan block: 2
+[11:05:19] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:23] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:23] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:23] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:23] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:23] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:23] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:23] 📦 Total devices loaded into memory from scan block: 2
+[11:05:23] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:24] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:05:24] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:24] 📦 Total devices loaded into memory from scan block: 2
+[11:05:24] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:05:27] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:05:27] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:27] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:27] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:27] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:27] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:27] 📦 Total devices loaded into memory from scan block: 2
+[11:05:27] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:05:29] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:29] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:29] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:29] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:29] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:29] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:29] 📦 Total devices loaded into memory from scan block: 2
+[11:05:29] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:33] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:33] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:33] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:33] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:33] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:33] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:33] 📦 Total devices loaded into memory from scan block: 2
+[11:05:33] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:37] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:37] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:37] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:37] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:37] 📦 Total devices loaded into memory from scan block: 2
+[11:05:37] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:41] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:41] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:41] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:41] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:41] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:41] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:41] 📦 Total devices loaded into memory from scan block: 2
+[11:05:41] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:45] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:45] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:45] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:45] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:45] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:45] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:45] 📦 Total devices loaded into memory from scan block: 2
+[11:05:45] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:49] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:49] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:49] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:49] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:49] 📦 Total devices loaded into memory from scan block: 2
+[11:05:49] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:53] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:53] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:53] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:53] 📦 Total devices loaded into memory from scan block: 2
+[11:05:53] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:05:57] 📡 Command Triggered: DiscoverDevicesCmd
+[11:05:57] 📬 Received 4 total DBus object paths from ObjectManager
+[11:05:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:05:57] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:05:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:05:57] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:05:57] 📦 Total devices loaded into memory from scan block: 2
+[11:05:57] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:01] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:01] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:01] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:01] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:01] 📦 Total devices loaded into memory from scan block: 2
+[11:06:01] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:05] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:05] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:05] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:05] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:05] 📦 Total devices loaded into memory from scan block: 2
+[11:06:05] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:09] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:09] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:09] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:09] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:09] 📦 Total devices loaded into memory from scan block: 2
+[11:06:09] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:13] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:13] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:13] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:13] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:13] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:13] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:13] 📦 Total devices loaded into memory from scan block: 2
+[11:06:13] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:17] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:17] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:17] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:17] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:17] 📦 Total devices loaded into memory from scan block: 2
+[11:06:17] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:21] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:21] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:21] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:21] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:21] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:21] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:21] 📦 Total devices loaded into memory from scan block: 2
+[11:06:21] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[11:06:30] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:06:30] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:30] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:30] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:30] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:30] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:30] 📦 Total devices loaded into memory from scan block: 2
+[11:06:30] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:06:32] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:32] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:32] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:32] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:32] 📦 Total devices loaded into memory from scan block: 2
+[11:06:32] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[11:06:36] 📡 Command Triggered: DiscoverDevicesCmd
+[11:06:36] 📬 Received 4 total DBus object paths from ObjectManager
+[11:06:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:06:36] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:06:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:06:36] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:06:36] 📦 Total devices loaded into memory from scan block: 2
+[11:06:36] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[11:07:00] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:07:00] 📬 Received 4 total DBus object paths from ObjectManager
+[11:07:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:07:00] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=true
+[11:07:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:07:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:07:00] 📦 Total devices loaded into memory from scan block: 2
+[11:07:00] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:07:15] 📡 Command Triggered: DiscoverDevicesCmd
+[11:07:15] 📬 Received 4 total DBus object paths from ObjectManager
+[11:07:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:07:15] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:07:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:07:15] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:07:15] 📦 Total devices loaded into memory from scan block: 2
+[11:07:15] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[11:23:11] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:23:11] 📬 Received 4 total DBus object paths from ObjectManager
+[11:23:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:23:11] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:23:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:23:11] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:23:11] 📦 Total devices loaded into memory from scan block: 2
+[11:23:11] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[11:25:59] 📡 Command Triggered: DiscoverDevicesCmd
+[11:25:59] 📬 Received 4 total DBus object paths from ObjectManager
+[11:25:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:25:59] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:25:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:25:59] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:25:59] 📦 Total devices loaded into memory from scan block: 2
+[11:25:59] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[11:26:00] 📥 Command Triggered: LoadPairedDevicesCmd
+[11:26:00] 📬 Received 5 total DBus object paths from ObjectManager
+[11:26:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_19_A9_ED_1B_7C_FA
+[11:26:00] ✅ Successfully parsed: Name='19-A9-ED-1B-7C-FA' MAC='19:A9:ED:1B:7C:FA' Paired=false Connected=false
+[11:26:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[11:26:00] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[11:26:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[11:26:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[11:26:00] 📦 Total devices loaded into memory from scan block: 3
+[11:26:00] 💾 Filtering SAVED table: showing 1 paired out of 3 total devices
+[16:27:30] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:27:30] 📬 Received 4 total DBus object paths from ObjectManager
+[16:27:30] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:27:30] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:27:30] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:27:30] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[16:27:30] 📦 Total devices loaded into memory from scan block: 2
+[16:27:30] 💾 Filtering SAVED table: showing 1 paired out of 2 total devices
+[16:27:49] 📡 Command Triggered: DiscoverDevicesCmd
+[16:27:49] 📬 Received 4 total DBus object paths from ObjectManager
+[16:27:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:27:49] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[16:27:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:27:49] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:27:49] 📦 Total devices loaded into memory from scan block: 2
+[16:27:49] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[16:27:53] 📡 Command Triggered: DiscoverDevicesCmd
+[16:27:53] 📬 Received 4 total DBus object paths from ObjectManager
+[16:27:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:27:53] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:27:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:27:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[16:27:53] 📦 Total devices loaded into memory from scan block: 2
+[16:27:53] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[16:38:41] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:38:41] 📬 Received 4 total DBus object paths from ObjectManager
+[16:38:41] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:38:41] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:38:41] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:38:41] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:38:41] 📦 Total devices loaded into memory from scan block: 2
+[16:38:41] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[16:38:41] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[16:39:40] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:39:40] 📬 Received 3 total DBus object paths from ObjectManager
+[16:39:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:39:40] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:39:40] 📦 Total devices loaded into memory from scan block: 1
+[16:39:40] 💾 Filtering SAVED table: showing 1 paired out of 1 total devices
+[16:39:40] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[16:40:00] 📡 Command Triggered: DiscoverDevicesCmd
+[16:40:00] 📬 Received 3 total DBus object paths from ObjectManager
+[16:40:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:40:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:40:00] 📦 Total devices loaded into memory from scan block: 1
+[16:40:00] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 1 total devices
+[16:40:04] 📡 Command Triggered: DiscoverDevicesCmd
+[16:40:04] 📬 Received 4 total DBus object paths from ObjectManager
+[16:40:04] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:40:04] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[16:40:04] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:40:04] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:40:04] 📦 Total devices loaded into memory from scan block: 2
+[16:40:04] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[16:40:08] 📡 Command Triggered: DiscoverDevicesCmd
+[16:40:08] 📬 Received 4 total DBus object paths from ObjectManager
+[16:40:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:40:08] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[16:40:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:40:08] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:40:08] 📦 Total devices loaded into memory from scan block: 2
+[16:40:08] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 2 total devices
+[16:40:09] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A, passkey: 534991
+[16:40:13] ✅ User accepted the passkey confirmation
+[16:40:37] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:40:37] 📬 Received 4 total DBus object paths from ObjectManager
+[16:40:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:40:37] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:40:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:40:37] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:40:37] 📦 Total devices loaded into memory from scan block: 2
+[16:40:37] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[16:46:12] 📡 Command Triggered: DiscoverDevicesCmd
+[16:46:12] 📬 Received 4 total DBus object paths from ObjectManager
+[16:46:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:46:12] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:46:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:46:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:46:12] 📦 Total devices loaded into memory from scan block: 2
+[16:46:12] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[16:46:16] 📡 Command Triggered: DiscoverDevicesCmd
+[16:46:16] 📬 Received 4 total DBus object paths from ObjectManager
+[16:46:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:46:16] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:46:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:46:16] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:46:16] 📦 Total devices loaded into memory from scan block: 2
+[16:46:16] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[16:46:20] 📡 Command Triggered: DiscoverDevicesCmd
+[16:46:20] 📬 Received 4 total DBus object paths from ObjectManager
+[16:46:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:46:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:46:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:46:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:46:20] 📦 Total devices loaded into memory from scan block: 2
+[16:46:20] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[16:46:24] 📡 Command Triggered: DiscoverDevicesCmd
+[16:46:24] 📬 Received 5 total DBus object paths from ObjectManager
+[16:46:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:46:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:46:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_4F_F5_BE_04_4E_8D
+[16:46:24] ✅ Successfully parsed: Name='4F-F5-BE-04-4E-8D' MAC='4F:F5:BE:04:4E:8D' Paired=false Connected=false
+[16:46:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:46:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:46:24] 📦 Total devices loaded into memory from scan block: 3
+[16:46:24] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[16:46:56] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:46:56] 📬 Received 6 total DBus object paths from ObjectManager
+[16:46:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_4F_F5_BE_04_4E_8D
+[16:46:56] ✅ Successfully parsed: Name='4F-F5-BE-04-4E-8D' MAC='4F:F5:BE:04:4E:8D' Paired=false Connected=false
+[16:46:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:46:56] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:46:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:46:56] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:46:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_98_B7_1E_31_D7_3A
+[16:46:56] ✅ Successfully parsed: Name='98-B7-1E-31-D7-3A' MAC='98:B7:1E:31:D7:3A' Paired=false Connected=false
+[16:46:56] 📦 Total devices loaded into memory from scan block: 4
+[16:46:56] 💾 Filtering SAVED table: showing 2 paired out of 4 total devices
+[16:46:56] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[16:53:53] 📥 Command Triggered: LoadPairedDevicesCmd
+[16:53:53] 📬 Received 4 total DBus object paths from ObjectManager
+[16:53:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[16:53:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[16:53:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[16:53:53] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[16:53:53] 📦 Total devices loaded into memory from scan block: 2
+[16:53:53] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[16:53:53] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[17:41:24] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:41:24] 📬 Received 4 total DBus object paths from ObjectManager
+[17:41:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[17:41:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[17:41:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[17:41:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[17:41:24] 📦 Total devices loaded into memory from scan block: 2
+[17:41:24] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[17:41:24] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[17:43:44] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:43:44] 📬 Received 4 total DBus object paths from ObjectManager
+[17:43:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[17:43:44] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[17:43:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[17:43:44] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[17:43:44] 📦 Total devices loaded into memory from scan block: 2
+[17:43:44] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[17:43:44] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[17:43:56] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:43:56] 📬 Received 4 total DBus object paths from ObjectManager
+[17:43:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[17:43:56] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[17:43:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[17:43:56] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[17:43:56] 📦 Total devices loaded into memory from scan block: 2
+[17:43:56] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[17:43:58] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:43:58] 📬 Received 4 total DBus object paths from ObjectManager
+[17:43:58] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[17:43:58] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[17:43:58] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[17:43:58] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[17:43:58] 📦 Total devices loaded into memory from scan block: 2
+[17:43:58] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[17:43:59] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:43:59] 📬 Received 4 total DBus object paths from ObjectManager
+[17:43:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[17:43:59] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[17:43:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[17:43:59] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[17:43:59] 📦 Total devices loaded into memory from scan block: 2
+[17:43:59] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[17:44:42] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:44:42] 📬 Received 2 total DBus object paths from ObjectManager
+[17:44:42] 📦 Total devices loaded into memory from scan block: 0
+[17:44:42] 💾 Filtering SAVED table: showing 0 paired out of 0 total devices
+[17:44:42] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[17:52:43] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:52:43] 📬 Received 2 total DBus object paths from ObjectManager
+[17:52:43] 📦 Total devices loaded into memory from scan block: 0
+[17:52:43] 💾 Filtering SAVED table: showing 0 paired out of 0 total devices
+[17:53:54] 📡 Command Triggered: DiscoverDevicesCmd
+[17:53:54] 📬 Received 2 total DBus object paths from ObjectManager
+[17:53:54] 📦 Total devices loaded into memory from scan block: 0
+[17:53:54] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 0 total devices
+[17:53:58] 📡 Command Triggered: DiscoverDevicesCmd
+[17:53:58] 📬 Received 2 total DBus object paths from ObjectManager
+[17:53:58] 📦 Total devices loaded into memory from scan block: 0
+[17:53:58] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 0 total devices
+[17:54:02] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:02] 📬 Received 2 total DBus object paths from ObjectManager
+[17:54:02] 📦 Total devices loaded into memory from scan block: 0
+[17:54:02] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 0 total devices
+[17:54:06] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:06] 📬 Received 2 total DBus object paths from ObjectManager
+[17:54:06] 📦 Total devices loaded into memory from scan block: 0
+[17:54:06] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 0 total devices
+[17:54:10] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:10] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:10] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[17:54:10] 📦 Total devices loaded into memory from scan block: 1
+[17:54:10] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[17:54:14] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:14] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:14] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:14] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[17:54:14] 📦 Total devices loaded into memory from scan block: 1
+[17:54:14] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[17:54:18] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:18] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:18] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:18] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[17:54:18] 📦 Total devices loaded into memory from scan block: 1
+[17:54:18] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[17:54:22] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:22] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:22] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[17:54:22] 📦 Total devices loaded into memory from scan block: 1
+[17:54:22] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[17:54:26] 📡 Command Triggered: DiscoverDevicesCmd
+[17:54:26] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:26] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[17:54:26] 📦 Total devices loaded into memory from scan block: 1
+[17:54:26] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[17:54:32] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2, passkey: 530079
+[17:54:35] ✅ User accepted the passkey confirmation
+[17:54:53] 📥 Command Triggered: LoadPairedDevicesCmd
+[17:54:53] 📬 Received 3 total DBus object paths from ObjectManager
+[17:54:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[17:54:53] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[17:54:53] 📦 Total devices loaded into memory from scan block: 1
+[17:54:53] 💾 Filtering SAVED table: showing 1 paired out of 1 total devices
+[17:54:59] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2, passkey: 328737
+[17:55:02] ✅ User accepted the passkey confirmation
+[18:03:57] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:03:57] 📬 Received 8 total DBus object paths from ObjectManager
+[18:03:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:03:57] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=true
+[18:03:57] 📦 Total devices loaded into memory from scan block: 1
+[18:03:57] 💾 Filtering SAVED table: showing 1 paired out of 1 total devices
+[18:03:57] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:04:02] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:04:02] 📬 Received 2 total DBus object paths from ObjectManager
+[18:04:02] 📦 Total devices loaded into memory from scan block: 0
+[18:04:02] 💾 Filtering SAVED table: showing 0 paired out of 0 total devices
+[18:04:26] 📡 Command Triggered: DiscoverDevicesCmd
+[18:04:26] 📬 Received 2 total DBus object paths from ObjectManager
+[18:04:26] 📦 Total devices loaded into memory from scan block: 0
+[18:04:26] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 0 total devices
+[18:04:30] 📡 Command Triggered: DiscoverDevicesCmd
+[18:04:30] 📬 Received 3 total DBus object paths from ObjectManager
+[18:04:30] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:04:30] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=false Connected=false
+[18:04:30] 📦 Total devices loaded into memory from scan block: 1
+[18:04:30] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 1 total devices
+[18:04:40] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2, passkey: 708656
+[18:04:43] ✅ User accepted the passkey confirmation
+[18:04:43] 📡 Command Triggered: DiscoverDevicesCmd
+[18:04:43] 📬 Received 3 total DBus object paths from ObjectManager
+[18:04:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:04:43] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=true
+[18:04:43] 📦 Total devices loaded into memory from scan block: 1
+[18:04:43] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 1 total devices
+[18:04:47] 📡 Command Triggered: DiscoverDevicesCmd
+[18:04:47] 📬 Received 3 total DBus object paths from ObjectManager
+[18:04:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:04:47] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=true
+[18:04:47] 📦 Total devices loaded into memory from scan block: 1
+[18:04:47] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 1 total devices
+[18:04:50] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:04:50] 📬 Received 3 total DBus object paths from ObjectManager
+[18:04:50] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:04:50] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:04:50] 📦 Total devices loaded into memory from scan block: 1
+[18:04:50] 💾 Filtering SAVED table: showing 1 paired out of 1 total devices

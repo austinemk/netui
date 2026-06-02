@@ -16,16 +16,16 @@ import (
 func New() Model {
 	// 1. Initialize table view layout components
 	columns := []table.Column{
-		{Title: "Name", Width: 25},
-		{Title: "Type", Width: 15},
-		{Title: "Status", Width: 12},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.2))},
+		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.25))},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
 	)
 	t.SetWidth(int(config.TabBodyWidth))
-	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.7)))
+	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 	t.Focus()
 
 	// Apply theme defaults
@@ -79,7 +79,10 @@ func (m Model) Init() tea.Cmd {
 				return ErrMsg(err)
 			}
 
-			return TunnelsLoadedMsg(t)
+			return TunnelsLoadedMsg(TunnelsLoadedData{
+				Tunnels: t,
+				Client:  tempClient,
+			})
 		},
 	)
 }

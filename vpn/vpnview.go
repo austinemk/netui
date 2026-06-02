@@ -96,7 +96,7 @@ func (m Model) OptionsPopupBlock() string {
 	if target.Active {
 		actLabel = "Deactivate Link"
 	}
-	options := []string{actLabel, "Cancel Operation"}
+	options := []string{actLabel, "Delete Profile"}
 
 	var menuLines []string
 	menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#EF4444")).Render(fmt.Sprintf("── Actions: %s ──", target.Name)))
@@ -108,11 +108,7 @@ func (m Model) OptionsPopupBlock() string {
 		}
 	}
 
-	return lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("9")).
-		Padding(1, 3).
-		Render(strings.Join(menuLines, "\n"))
+	return config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
 }
 
 func (m Model) HintsBlock() string {

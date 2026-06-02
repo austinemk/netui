@@ -1,6 +1,10 @@
 package bluetooth
 
 import (
+	"math"
+
+	"corntui/config"
+
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
 )
@@ -10,6 +14,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch m.UIState {
 	case StateActionsMenu:
 		return m.handleActionsMenu(msg)
+	case StatePasskeyPrompt:
+		return m.handlePasskeyPrompt(msg)
 	}
 
 	// 3. Normal State Core Navigation Loop
@@ -26,11 +32,29 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case AdapterToggledMsg:
 		return m.handleAdapterOrActionSuccess()
 
-	/*case ActionSuccessMsg:
-	if m.Scanning {
-		return m, tea.Batch(tableCmd, DiscoverDevicesCmd(m.Client), FetchAdapterInfoCmd(m.Client))
-	}
-	return m, tea.Batch(tableCmd, LoadPairedDevicesCmd(m.Client), FetchAdapterInfoCmd(m.Client))*/
+	case PasskeyRequestMsg:
+		m.UIState = StatePasskeyPrompt
+		m.SelectedDev = msg.Device
+		m.CurrentPasskey = msg.Passkey
+		m.ActiveRespChan = msg.ResponseChan
+		m.MenuCursor = 0                                               // Default to highlight 'Yes'
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4))) // Shrink table layout to provide screen real estate
+		return m, nil
+
+	case ActionSuccessMsg:
+		if m.Scanning {
+			return m, tea.Batch(
+				ContinueDiscoveryCmd(m.Client),
+				FetchAdapterInfoCmd(m.Client),
+			)
+		}
+		return m, tea.Batch(
+			LoadPairedDevicesCmd(m.Client),
+			FetchAdapterInfoCmd(m.Client),
+		)
+	case AdapterInfoLoadedMsg:
+		m.Adapter = AdapterInfo(msg)
+		return m, nil
 
 	case ErrMsg:
 		m.Err = msg

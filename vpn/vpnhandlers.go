@@ -15,7 +15,8 @@ func (m Model) handleCoreLifecycle(msg tea.Msg) (Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case TunnelsLoadedMsg:
-		m.Tunnels = msg
+		m.Tunnels = msg.Tunnels
+		m.Client = msg.Client
 		m.Loading = false
 
 		// Map backend tunnels data cleanly to the UI table rows
@@ -59,6 +60,11 @@ func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	case "r":
 		m.Loading = true                    //[cite: 1]
 		return m, FetchTunnelsCmd(m.Client) //[cite: 1]
+	default:
+		var cmd tea.Cmd
+		m.Table, cmd = m.Table.Update(msg)
+		m.Cursor = m.Table.Cursor()
+		return m, cmd
 	}
 
 	return m, nil
@@ -91,6 +97,7 @@ func (m Model) handleFormState(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "enter":
 		if m.ActiveField == FieldDone {
+			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
 			m.Loading = true
 			return m, CreateWireGuardProfileCmd(m.Client, m.FormInputs)
@@ -144,29 +151,27 @@ func (m Model) handleActionsMenuState(msg tea.Msg) (Model, tea.Cmd) {
 			m.MenuCursor--
 		}
 	case "down", "j":
-		if m.MenuCursor < 1 {
+		if m.MenuCursor < 2 { // Changed from 1 to 2 to allow scrolling down to Delete
 			m.MenuCursor++
 		}
 	case "esc":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
-
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 		m.UIState = StateNormal
 	case "enter":
 		if len(m.Tunnels) > 0 {
 			targetTunnel := m.Tunnels[m.Table.Cursor()]
-			if m.MenuCursor == 0 {
+
+			switch m.MenuCursor {
+			case 0: // Toggle Activation State
 				cmd = ToggleTunnelCmd(m.Client, targetTunnel, !targetTunnel.Active)
+			case 1: // Delete Profile State
+				cmd = DeleteTunnelCmd(m.Client, targetTunnel)
 			}
+			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
 			m.Loading = true
 			return m, cmd
 		}
-	default:
-		var cmd tea.Cmd
-		m.Table, cmd = m.Table.Update(msg)
-		m.Cursor = m.Table.Cursor()
-		return m, cmd
-
 	}
 	return m, nil
 }

@@ -46,6 +46,38 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	return m, nil
 }
 
+func (m Model) handlePasskeyPrompt(msg tea.Msg) (Model, tea.Cmd) {
+	keyMsg, ok := msg.(tea.KeyPressMsg)
+	if !ok {
+		// If another asynchronous background update occurs, don't drop the context
+		return m, nil
+	}
+
+	switch keyMsg.String() {
+	case "left", "h":
+		m.MenuCursor = 0 // Yes
+	case "right", "l":
+		m.MenuCursor = 1 // No
+	case "enter":
+		if m.ActiveRespChan != nil {
+			if m.MenuCursor == 0 {
+				m.ActiveRespChan <- true // Signals "Accept" back to Agent.RequestConfirmation
+			} else {
+				m.ActiveRespChan <- false // Signals "Reject"
+			}
+		}
+
+		// Reset state frame back to normal layout view
+		m.UIState = StateNormal
+		m.ActiveRespChan = nil
+		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+
+		// Keep listening for future incoming agent challenges
+		return m, ListenForAgentRequests()
+	}
+	return m, nil
+}
+
 func (m Model) handleInfoLoaded(msg InfoLoadedMsg) (Model, tea.Cmd) {
 	m.Client = msg.Client
 	m.Adapter = msg.Adapter
@@ -78,12 +110,15 @@ func (m Model) handleAdapterOrActionSuccess() (Model, tea.Cmd) {
 	return m, func() tea.Msg {
 		a, _ := FetchAdapterInfo(m.Client)
 		d, _ := LoadPairedDevices(m.Client)
-		return InfoLoadedMsg(InfoLoadedData{Adapter: a, Devices: d})
+		return InfoLoadedMsg(InfoLoadedData{Client: m.Client, Adapter: a, Devices: d})
 	}
 }
 
 // handleNormalStateNavigation acts on user interaction strings inside primary frames
 func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
+	if m.Client == nil {
+		return m, nil
+	}
 	switch msg.String() {
 	case "s":
 		m.Scanning = !m.Scanning

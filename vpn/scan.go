@@ -1,6 +1,10 @@
 package vpn
 
-import tea "charm.land/bubbletea/v2"
+import (
+	"fmt"
+
+	tea "charm.land/bubbletea/v2"
+)
 
 func FetchTunnelsCmd(client *DBusClient) tea.Cmd {
 	return func() tea.Msg {
@@ -8,7 +12,7 @@ func FetchTunnelsCmd(client *DBusClient) tea.Cmd {
 		if err != nil {
 			return ErrMsg(err)
 		}
-		return TunnelsLoadedMsg(t)
+		return TunnelsLoadedMsg(TunnelsLoadedData{Tunnels: t, Client: client})
 	}
 }
 
@@ -35,5 +39,21 @@ func ToggleTunnelCmd(client *DBusClient, tunnel TunnelProfile, activate bool) te
 			}
 		}
 		return ActionSuccessMsg("VPN Activation/Deactivation State updated!")
+	}
+}
+
+func DeleteTunnelCmd(client *DBusClient, tunnel TunnelProfile) tea.Cmd {
+	return func() tea.Msg {
+		// Ensure connection object exists before calling methods on it
+		if tunnel.Connection == nil {
+			return ErrMsg(fmt.Errorf("cannot delete: connection reference is missing"))
+		}
+
+		err := tunnel.Connection.Delete()
+		if err != nil {
+			return ErrMsg(fmt.Errorf("failed to delete profile: %v", err))
+		}
+
+		return ActionSuccessMsg("WireGuard Profile deleted successfully!")
 	}
 }
