@@ -138,7 +138,7 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	case "enter":
 		idx := m.Table.Cursor()
 		if m.Scanning {
-			if len(m.ActiveAPs) == 0 || idx >= len(m.ActiveAPs) {
+			if idx < 0 || len(m.ActiveAPs) == 0 || idx >= len(m.ActiveAPs) {
 				return m, nil
 			}
 			m.SelectedAP = m.ActiveAPs[idx]
@@ -148,13 +148,12 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 			}
 			m.UIState = StatePasswordInput
 		} else {
-			if len(m.Saved) > 0 && idx < len(m.Saved) {
+			if idx >= 0 && len(m.Saved) > 0 && idx < len(m.Saved) {
 				m.UIState = StateSavedActionsMenu
 				m.SelectedSaved = m.Saved[idx]
 				m.MenuCursor = 0
 			}
 		}
-		//m.Table.SetHeight(config.ListHeightHalf)
 
 	default:
 		var cmd tea.Cmd

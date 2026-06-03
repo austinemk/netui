@@ -16,37 +16,28 @@ func (m Model) View() string {
 
 	var segments []string
 
-	// 1. Render table
-	if m.UIState == StateNormal {
+	switch m.UIState {
+	case StateAddForm:
+		segments = append(segments, m.AddFormBlock())
+	case StateImportFile:
+		segments = append(segments, m.ImportFileBlock())
+	default:
 		segments = append(segments, m.TableBlock())
 	}
 
-	// 2. Render Manual Config Input UI View Block
-	if m.UIState == StateAddForm {
-		segments = append(segments, m.AddFormBlock())
-	}
-
-	// 3. Render Native Bubble File Picker Frame View
-	if m.UIState == StateImportFile {
-		segments = append(segments, m.ImportFileBlock())
-	}
-
-	// 4. Modal Window Context Menu Overlays
-	if m.UIState == StateActionsMenu {
-		if len(m.Tunnels) > 0 {
-			segments = append(segments, m.OptionsPopupBlock())
-		}
-	}
-
-	// 5. Hints
 	segments = append(segments, m.HintsBlock())
 
-	// 6. Logs
 	if m.Err != nil {
 		segments = append(segments, config.LogBlock(m.Err.Error()))
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Left, segments...)
+	background := lipgloss.JoinVertical(lipgloss.Left, segments...)
+
+	if m.UIState == StateActionsMenu && len(m.Tunnels) > 0 {
+		return config.PlaceOverlay(background, m.OptionsPopupBlock())
+	}
+
+	return background
 }
 
 func (m Model) AddFormBlock() string {

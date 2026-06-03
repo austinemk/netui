@@ -89,7 +89,7 @@ func connectWithPassword(ctx context.Context, nm gonetworkmanager.NetworkManager
 			"id":          ap.SSID,
 			"type":        "802-11-wireless",
 			"uuid":        newUUID.String(),
-			"autoconnect": false, // stays false until password is confirmed good
+			"autoconnect": true,
 		},
 		"802-11-wireless": {
 			"ssid": []byte(ap.SSID),
@@ -103,57 +103,51 @@ func connectWithPassword(ctx context.Context, nm gonetworkmanager.NetworkManager
 		"ipv6": {"method": "ignore"},
 	}
 
+	// AddAndActivateConnection persists immediately — get the connection handle
 	activeConn, err := nm.AddAndActivateConnection(connectionSettings, device)
 	if err != nil {
 		return ErrMsg(err)
 	}
 
-	return monitorConnectionState(ctx, activeConn)
+	// Get the saved connection object before monitoring, so we can delete it on failure
+	conn, err := activeConn.GetPropertyConnection()
+	if err != nil {
+		return ErrMsg(err)
+	}
+
+	return monitorConnectionState(ctx, activeConn, conn, ap.SSID)
 }
 
 // monitorConnectionState polls NM until the connection activates, fails, or
 // times out — returning a tea.Msg so every outcome reaches Update().
 // On any failure it deletes the just-created profile so nothing is saved.
-func monitorConnectionState(ctx context.Context, activeConn gonetworkmanager.ActiveConnection) tea.Msg {
-	deleteProfile := func() {
-		if conn, err := activeConn.GetPropertyConnection(); err == nil {
-			_ = conn.Delete()
-		}
-	}
-
+func monitorConnectionState(ctx context.Context, activeConn gonetworkmanager.ActiveConnection, conn gonetworkmanager.Connection, ssid string) tea.Msg {
 	const maxAttempts = 15
 	for i := 0; i < maxAttempts; i++ {
 		select {
 		case <-ctx.Done():
-			deleteProfile()
+			_ = conn.Delete()
 			return nil
 		case <-time.After(1 * time.Second):
 		}
 
 		state, err := activeConn.GetPropertyState()
 		if err != nil {
-			deleteProfile()
+			_ = conn.Delete()
 			return ErrMsg(fmt.Errorf("lost connection to NetworkManager: %w", err))
 		}
 
 		switch state {
 		case gonetworkmanager.NmActiveConnectionStateActivated:
-			// Password confirmed — enable autoconnect so NM saves the profile.
-			if conn, err := activeConn.GetPropertyConnection(); err == nil {
-				if sMap, err := conn.GetSettings(); err == nil {
-					sMap["connection"]["autoconnect"] = true
-					_ = conn.Update(sMap)
-				}
-			}
 			return ActionSuccessMsg("Connected!")
 
 		case gonetworkmanager.NmActiveConnectionStateDeactivating,
 			gonetworkmanager.NmActiveConnectionStateDeactivated:
-			deleteProfile()
-			return ErrMsg(fmt.Errorf("wrong password for %q — profile not saved", activeConn))
+			_ = conn.Delete()
+			return ErrMsg(fmt.Errorf("wrong password for %q — profile not saved", ssid))
 		}
 	}
 
-	deleteProfile()
+	_ = conn.Delete()
 	return ErrMsg(fmt.Errorf("timed out connecting — check password and try again"))
 }

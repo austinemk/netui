@@ -44,7 +44,7 @@ func New() Model {
 	// Start at home directory; fall back to cwd if home is unavailabe
 	fp.CurrentDirectory, _ = os.UserHomeDir()
 	fp.AutoHeight = false
-	fp.SetHeight(config.ListHeight - config.ListHeightQuarter)
+	fp.SetHeight(config.ListHeight)
 
 	// Truncate file/dir names to max 30 chars
 	fp.Styles.File = fp.Styles.File.MaxWidth(30)
