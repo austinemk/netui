@@ -45,7 +45,6 @@ func New() Model {
 		Background(config.Styles.HighlightText.GetBackground()).
 		Bold(config.Styles.HighlightText.GetBold())
 	t.SetStyles(s)
-
 	// Create a cancellable context for background tasks
 	ctx, cancel := context.WithCancel(context.Background())
 
