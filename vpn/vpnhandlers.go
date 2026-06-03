@@ -1,10 +1,6 @@
 package vpn
 
 import (
-	"math"
-
-	"corntui/config"
-
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -16,16 +12,13 @@ func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 	case "enter":
 		if len(m.Tunnels) > 0 { //[cite: 1]
 			m.MenuCursor = 0
-			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4)))
 			m.UIState = StateActionsMenu //[cite: 1]
 		}
 	case "n":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.3)))
 		m.UIState = StateAddForm                  //[cite: 1]
 		m.ActiveField = FieldProfileName          //[cite: 1]
 		m.FormInputs = make(map[FormField]string) //[cite: 1]
 	case "i":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.3)))
 		m.UIState = StateImportFile //[cite: 1]
 	case "r": //[cite: 1]
 		return m, FetchTunnelsCmd(m.Client) //[cite: 1]
@@ -51,7 +44,6 @@ func (m Model) handleFormState(msg tea.Msg) (Model, tea.Cmd) {
 
 	switch keyMsg.String() {
 	case "esc":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 		m.UIState = StateNormal
 		return m, nil
 	case "up":
@@ -66,7 +58,6 @@ func (m Model) handleFormState(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "enter":
 		if m.ActiveField == FieldDone {
-			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
 			return m, CreateWireGuardProfileCmd(m.FormInputs)
 		}
@@ -90,7 +81,6 @@ func (m Model) handleFilePickerState(msg tea.Msg) (Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	if keyMsg, ok := msg.(tea.KeyPressMsg); ok && keyMsg.String() == "esc" {
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 		m.UIState = StateNormal
 		return m, nil
 	}
@@ -122,7 +112,6 @@ func (m Model) handleActionsMenuState(msg tea.Msg) (Model, tea.Cmd) {
 			m.MenuCursor++
 		}
 	case "esc":
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 		m.UIState = StateNormal
 	case "enter":
 		if len(m.Tunnels) > 0 {
@@ -134,7 +123,6 @@ func (m Model) handleActionsMenuState(msg tea.Msg) (Model, tea.Cmd) {
 			case 1: // Delete Profile State
 				cmd = DeleteTunnelCmd(targetTunnel)
 			}
-			m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
 			m.UIState = StateNormal
 			return m, cmd
 		}

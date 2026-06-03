@@ -1,10 +1,7 @@
 package bluetooth
 
 import (
-	"math"
 	"time"
-
-	"corntui/config"
 
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
@@ -38,8 +35,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.SelectedDev = msg.Device
 		m.CurrentPasskey = msg.Passkey
 		m.ActiveRespChan = msg.ResponseChan
-		m.MenuCursor = 0                                               // Default to highlight 'Yes'
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4))) // Shrink table layout to provide screen real estate
+		m.MenuCursor = 0 // Default to highlight 'Yes'
 		return m, nil
 
 	case ActionSuccessMsg:

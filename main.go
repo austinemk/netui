@@ -4,9 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"corntui/bluetooth"
+	"corntui/config" // Imported your local config package
 	"corntui/vpn"
 	"corntui/wifi"
 
@@ -14,6 +16,20 @@ import (
 )
 
 func main() {
+	// 0. Locate and attempt to load the ~/.config/corntui/config.toml file
+	userConfigDir, err := os.UserConfigDir()
+	if err == nil {
+		// Constructs ~/.config/corntui/config.toml cleanly across OS targets
+		configPath := filepath.Join(userConfigDir, "corntui", "config.toml")
+
+		// If it errors or doesn't exist, LoadConfig handles it internally
+		// and safely falls back to your built-in defaults.
+		_ = config.LoadConfig(configPath)
+	} else {
+		// Fallback to defaults if we can't fetch the user config directory profile
+		_ = config.LoadConfig("")
+	}
+
 	// 1. Define and parse terminal flags
 	tabFlag := flag.String("tab", "wifi", "Initial tab to open (wifi, bluetooth, vpn)")
 	flag.Parse()
@@ -28,22 +44,6 @@ func main() {
 	default:
 		initialTab = WifiTab // Fallback / default
 	}
-
-	// 3. Setup a pointer to hold the BlueZ client if needed right away
-	// var btClient *bluetooth.BlueZClient
-	var err error
-
-	// ONLY connect to BlueZ immediately if the user requested the Bluetooth tab on startup
-	/*if initialTab == BluetoothTab {
-		btClient, err = bluetooth.NewBlueZClient()
-	}
-
-	btView := bluetooth.New()
-	if err != nil {
-		btView.Err = err
-	} else if btClient != nil {
-		btView.Client = btClient
-	}*/
 
 	// 4. Initialize AppModel with tracked loaded states
 	initialAppModel := AppModel{

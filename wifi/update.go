@@ -1,7 +1,6 @@
 package wifi
 
 import (
-	"math"
 	"time"
 
 	"corntui/config"
@@ -65,10 +64,10 @@ func (m *Model) syncTableRows() {
 		m.Table.SetRows(nil)
 		// V2 Fix: Explicitly mapped table.Column keys
 		m.Table.SetColumns([]table.Column{
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.5))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.3))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.1))},
+			{Title: "", Width: config.ListWidthSixteenth},
+			{Title: "", Width: config.ListWidthHalf},
+			{Title: "", Width: config.ListWidthEigth},
+			{Title: "", Width: config.ListWidthSixteenth},
 		})
 
 		for _, ap := range m.ActiveAPs {
@@ -87,9 +86,9 @@ func (m *Model) syncTableRows() {
 		m.Table.SetRows(nil)
 		// V2 Fix: Explicitly mapped table.Column keys
 		m.Table.SetColumns([]table.Column{
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.15))},
-			{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
+			{Title: "", Width: config.ListWidthHalf},
+			{Title: "", Width: config.ListWidthSixteenth},
+			{Title: "", Width: (config.ListWidthHalf - config.ListWidthSixteenth)},
 		})
 
 		for _, prof := range m.Saved {

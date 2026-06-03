@@ -16,21 +16,10 @@ func (m Model) View() string {
 
 	var segments []string
 
-	// 1. Conditional Interface Settings Block Rendering
 	if m.Scanning {
 		segments = append(segments, m.ScanningBlock())
 	} else {
 		segments = append(segments, m.SavedBlock())
-	}
-
-	// 2. Structural Inline Context Popups
-	if m.UIState == StateActionsMenu {
-		segments = append(segments, m.ActionsMenuBlock())
-	}
-
-	// Add the Passkey Prompt popup view to your layout stack
-	if m.UIState == StatePasskeyPrompt {
-		segments = append(segments, m.PasskeyPromptBlock())
 	}
 
 	segments = append(segments, m.AdapterBlock())
@@ -40,8 +29,16 @@ func (m Model) View() string {
 		segments = append(segments, config.LogBlock(m.Err.Error()))
 	}
 
-	// V2: Layout compositions use enum alignment methods
-	return lipgloss.JoinVertical(lipgloss.Left, segments...)
+	background := lipgloss.JoinVertical(lipgloss.Left, segments...)
+
+	if m.UIState == StateActionsMenu {
+		return config.PlaceOverlay(background, m.ActionsMenuBlock())
+	}
+	if m.UIState == StatePasskeyPrompt {
+		return config.PlaceOverlay(background, m.PasskeyPromptBlock())
+	}
+
+	return background
 }
 
 // AdapterBlock for displaying adapter info
@@ -87,22 +84,25 @@ func (m Model) SavedBlock() string {
 	)
 }
 
-func (m Model) PasswordBlock() string {
-	return "me"
-}
-
 func (m Model) ActionsMenuBlock() string {
 	var menuLines []string
-	menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Render(fmt.Sprintf("%s Options Menu", m.SelectedDev.Name)), "")
+	//menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Render(fmt.Sprintf("%s Options Menu", m.SelectedDev.Name)), "")
 
 	for i, opt := range m.MenuOptions {
 		if m.MenuCursor == i {
-			menuLines = append(menuLines, config.Styles.HighlightText.Render(" > "+opt))
+			menuLines = append(menuLines, config.Styles.HighlightText.Render(opt))
 		} else {
-			menuLines = append(menuLines, "   "+opt)
+			menuLines = append(menuLines, " "+opt+" ")
 		}
 	}
-	return config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
+
+	return config.Styles.BoxStyle.Render(
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			strings.Join(menuLines, "\n"),
+			config.Styles.Hints.Render("\n\n esc/backspace: back up/down: nav"),
+		),
+	)
 }
 
 func (m Model) HintsBlock() string {

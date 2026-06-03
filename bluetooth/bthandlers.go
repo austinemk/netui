@@ -1,10 +1,6 @@
 package bluetooth
 
 import (
-	"math"
-
-	"corntui/config"
-
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -33,7 +29,6 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "esc", "backspace":
 		m.UIState = StateNormal
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 
 	case "enter":
 		if m.MenuCursor >= 0 && m.MenuCursor < len(m.MenuOptions) {
@@ -41,7 +36,6 @@ func (m Model) handleActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 			cmd = ExecuteActionCmd(m.Client, action, m.SelectedMac)
 		}
 		m.UIState = StateNormal
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 
 		return m, cmd
 	}
@@ -72,7 +66,6 @@ func (m Model) handlePasskeyPrompt(msg tea.Msg) (Model, tea.Cmd) {
 		// Reset state frame back to normal layout view
 		m.UIState = StateNormal
 		m.ActiveRespChan = nil
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
 
 		// Keep listening for future incoming agent challenges
 		return m, ListenForAgentRequests()
@@ -175,7 +168,6 @@ func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 
 		m.MenuOptions = opts
 		m.MenuCursor = 0
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4)))
 		m.UIState = StateActionsMenu
 
 	default:

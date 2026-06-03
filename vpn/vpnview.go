@@ -17,7 +17,9 @@ func (m Model) View() string {
 	var segments []string
 
 	// 1. Render table
-	segments = append(segments, m.TableBlock())
+	if m.UIState == StateNormal {
+		segments = append(segments, m.TableBlock())
+	}
 
 	// 2. Render Manual Config Input UI View Block
 	if m.UIState == StateAddForm {

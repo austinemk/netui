@@ -94,7 +94,8 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.SizeError != "" {
 		if keyMsg, ok := msg.(tea.KeyMsg); ok {
-			if keyMsg.String() == "q" || keyMsg.String() == "ctrl+c" {
+			switch keyMsg.String() {
+			case "q", "ctrl+c":
 				return m, tea.Quit
 			}
 		}
@@ -107,12 +108,21 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		oldTab := m.ActiveTab
 
 		switch msg.String() {
-		case "ctrl+c", "q":
+		case "ctrl+c":
+			// ctrl+c always forces an exit out of safety
 			return m, tea.Quit
-		// case "1", "2", "3":
-		//	m.ActiveTab = Tab(msg.String()[0] - '1')
+
+		case "q":
+			// ONLY quit if we are NOT currently focused on a text input form
+			isWifiInput := m.ActiveTab == WifiTab && m.WifiView.UIState == wifi.StatePasswordInput
+			isVpnInput := m.ActiveTab == VpnTab && m.VpnView.UIState == vpn.StateAddForm
+			if !isWifiInput && !isVpnInput {
+				return m, tea.Quit
+			}
+
 		case "tab", "pagedown", "pgdown":
 			m.ActiveTab = (m.ActiveTab + 1) % 3
+
 		case "shift+tab", "pageup", "pgup":
 			m.ActiveTab = (m.ActiveTab - 1 + 3) % 3
 		}
@@ -176,9 +186,7 @@ func (m AppModel) View() tea.View {
 	//footer := RenderFooter(int(m.ActiveTab), false)
 
 	mainLayout := lipgloss.JoinVertical(lipgloss.Left, header, body, logView)
-	appBorderStyle := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("8")).Padding(0, 1)
-	mainLayout = appBorderStyle.Render(mainLayout)
-
+	mainLayout = config.Styles.Container.Render(mainLayout)
 	v := tea.NewView(mainLayout)
 	v.AltScreen = true
 	return v

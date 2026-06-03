@@ -1,7 +1,6 @@
 package vpn
 
 import (
-	"math"
 	"os"
 
 	"corntui/config"
@@ -16,16 +15,16 @@ import (
 func New() Model {
 	// 1. Initialize table view layout components
 	columns := []table.Column{
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.4))},
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.2))},
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.25))},
+		{Title: "", Width: config.ListWidthHalf},
+		{Title: "", Width: config.ListWidthQuarter},
+		{Title: "", Width: config.ListWidthQuarter},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
 	)
-	t.SetWidth(int(config.TabBodyWidth))
-	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.85)))
+	t.SetWidth(config.ListWidth)
+	t.SetHeight(config.ListHeight)
 	t.Focus()
 
 	// Apply theme defaults
@@ -45,7 +44,7 @@ func New() Model {
 	// Start at home directory; fall back to cwd if home is unavailabe
 	fp.CurrentDirectory, _ = os.UserHomeDir()
 	fp.AutoHeight = false
-	fp.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4)))
+	fp.SetHeight(config.ListHeight - config.ListHeightQuarter)
 
 	// Truncate file/dir names to max 30 chars
 	fp.Styles.File = fp.Styles.File.MaxWidth(30)

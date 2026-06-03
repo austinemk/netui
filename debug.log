@@ -2844,3 +2844,977 @@
 [13:32:37] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
 [13:32:37] 📦 Total devices loaded into memory from scan block: 2
 [13:32:37] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[13:50:43] 📥 Command Triggered: LoadPairedDevicesCmd
+[13:50:43] 📬 Received 4 total DBus object paths from ObjectManager
+[13:50:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[13:50:43] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[13:50:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[13:50:43] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[13:50:43] 📦 Total devices loaded into memory from scan block: 2
+[13:50:43] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[13:50:43] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[13:50:53] 📡 Command Triggered: DiscoverDevicesCmd
+[13:50:53] 📬 Received 4 total DBus object paths from ObjectManager
+[13:50:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[13:50:53] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[13:50:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[13:50:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[13:50:53] 📦 Total devices loaded into memory from scan block: 2
+[13:50:53] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[13:50:54] 📥 Command Triggered: LoadPairedDevicesCmd
+[13:50:54] 📬 Received 4 total DBus object paths from ObjectManager
+[13:50:54] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[13:50:54] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[13:50:54] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[13:50:54] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[13:50:54] 📦 Total devices loaded into memory from scan block: 2
+[13:50:54] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[13:50:55] 📡 Command Triggered: DiscoverDevicesCmd
+[13:50:55] 📬 Received 4 total DBus object paths from ObjectManager
+[13:50:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[13:50:55] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[13:50:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[13:50:55] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[13:50:55] 📦 Total devices loaded into memory from scan block: 2
+[13:50:55] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[13:50:56] 📥 Command Triggered: LoadPairedDevicesCmd
+[13:50:56] 📬 Received 4 total DBus object paths from ObjectManager
+[13:50:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[13:50:56] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[13:50:56] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[13:50:56] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[13:50:56] 📦 Total devices loaded into memory from scan block: 2
+[13:50:56] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[18:02:33] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:02:33] 📬 Received 4 total DBus object paths from ObjectManager
+[18:02:33] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:33] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:33] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:33] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:33] 📦 Total devices loaded into memory from scan block: 2
+[18:02:33] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[18:02:33] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:02:40] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:40] 📬 Received 4 total DBus object paths from ObjectManager
+[18:02:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:40] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:40] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:40] 📦 Total devices loaded into memory from scan block: 2
+[18:02:40] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[18:02:44] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:44] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:44] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=false Connected=false
+[18:02:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:44] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:44] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:44] 📦 Total devices loaded into memory from scan block: 3
+[18:02:44] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[18:02:48] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:48] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:48] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:48] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=false Connected=true
+[18:02:48] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:48] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:48] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:48] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:48] 📦 Total devices loaded into memory from scan block: 3
+[18:02:48] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[18:02:49] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:49] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:49] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:02:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:49] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:49] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:49] 📦 Total devices loaded into memory from scan block: 3
+[18:02:49] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[18:02:52] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:52] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:52] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:52] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:02:52] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:52] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:52] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:52] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:52] 📦 Total devices loaded into memory from scan block: 3
+[18:02:52] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[18:02:53] 📡 Command Triggered: DiscoverDevicesCmd
+[18:02:53] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:53] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:02:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:53] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:53] 📦 Total devices loaded into memory from scan block: 3
+[18:02:53] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[18:02:55] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:02:55] 📬 Received 5 total DBus object paths from ObjectManager
+[18:02:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:55] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[18:02:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:55] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:55] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:55] 📦 Total devices loaded into memory from scan block: 3
+[18:02:55] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:02:59] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:02:59] 📬 Received 7 total DBus object paths from ObjectManager
+[18:02:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:02:59] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:02:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:02:59] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:02:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:02:59] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:02:59] 📦 Total devices loaded into memory from scan block: 3
+[18:02:59] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:04:46] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:04:46] 📬 Received 5 total DBus object paths from ObjectManager
+[18:04:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:04:46] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[18:04:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:04:46] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:04:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:04:46] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:04:46] 📦 Total devices loaded into memory from scan block: 3
+[18:04:46] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:05:08] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:05:08] 📬 Received 4 total DBus object paths from ObjectManager
+[18:05:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:08] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:08] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:08] 📦 Total devices loaded into memory from scan block: 2
+[18:05:08] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[18:05:10] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:10] 📬 Received 4 total DBus object paths from ObjectManager
+[18:05:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:10] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:10] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:10] 📦 Total devices loaded into memory from scan block: 2
+[18:05:10] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[18:05:14] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:14] 📬 Received 5 total DBus object paths from ObjectManager
+[18:05:14] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:14] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=false Connected=false
+[18:05:14] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:14] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:14] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:14] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:14] 📦 Total devices loaded into memory from scan block: 3
+[18:05:14] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[18:05:18] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:18] 📬 Received 6 total DBus object paths from ObjectManager
+[18:05:18] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:18] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:18] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:18] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:18] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:18] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=false Connected=false
+[18:05:18] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:18] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:18] 📦 Total devices loaded into memory from scan block: 4
+[18:05:18] 🌐 Filtering DISCOVERED table: showing 2 unpaired out of 4 total devices
+[18:05:20] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:20] 📬 Received 6 total DBus object paths from ObjectManager
+[18:05:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:20] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:20] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:05:20] 📦 Total devices loaded into memory from scan block: 4
+[18:05:20] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 4 total devices
+[18:05:22] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:22] 📬 Received 6 total DBus object paths from ObjectManager
+[18:05:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:22] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:22] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:05:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:22] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:22] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:22] 📦 Total devices loaded into memory from scan block: 4
+[18:05:22] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 4 total devices
+[18:05:24] 📡 Command Triggered: DiscoverDevicesCmd
+[18:05:24] 📬 Received 6 total DBus object paths from ObjectManager
+[18:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:24] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:24] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:05:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:24] 📦 Total devices loaded into memory from scan block: 4
+[18:05:24] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 4 total devices
+[18:05:26] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:05:26] 📬 Received 6 total DBus object paths from ObjectManager
+[18:05:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:26] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:26] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:26] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:26] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[18:05:26] 📦 Total devices loaded into memory from scan block: 4
+[18:05:26] 💾 Filtering SAVED table: showing 3 paired out of 4 total devices
+[18:05:32] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:05:32] 📬 Received 8 total DBus object paths from ObjectManager
+[18:05:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:05:32] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:05:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:05:32] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:05:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_18_3A_00_01_A3_E2
+[18:05:32] ✅ Successfully parsed: Name='TMD024_20860_v1.07' MAC='18:3A:00:01:A3:E2' Paired=false Connected=false
+[18:05:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:05:32] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:05:32] 📦 Total devices loaded into memory from scan block: 4
+[18:05:32] 💾 Filtering SAVED table: showing 3 paired out of 4 total devices
+[18:06:19] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:06:19] 📬 Received 7 total DBus object paths from ObjectManager
+[18:06:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:06:19] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:06:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:06:19] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:06:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:06:19] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:06:19] 📦 Total devices loaded into memory from scan block: 3
+[18:06:19] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:06:19] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:07:45] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:07:45] 📬 Received 7 total DBus object paths from ObjectManager
+[18:07:45] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:07:45] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:07:45] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:07:45] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:07:45] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:07:45] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:07:45] 📦 Total devices loaded into memory from scan block: 3
+[18:07:45] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:07:45] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:08:12] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:08:12] 📬 Received 7 total DBus object paths from ObjectManager
+[18:08:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:08:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:08:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:08:12] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:08:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:08:12] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:08:12] 📦 Total devices loaded into memory from scan block: 3
+[18:08:12] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:08:12] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:10:09] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:10:09] 📬 Received 7 total DBus object paths from ObjectManager
+[18:10:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:10:09] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:10:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:10:09] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:10:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:10:09] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:10:09] 📦 Total devices loaded into memory from scan block: 3
+[18:10:09] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:10:09] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:12:46] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:12:46] 📬 Received 7 total DBus object paths from ObjectManager
+[18:12:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:12:46] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:12:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:12:46] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:12:46] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:12:46] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:12:46] 📦 Total devices loaded into memory from scan block: 3
+[18:12:46] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:12:46] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:13:00] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:13:00] 📬 Received 7 total DBus object paths from ObjectManager
+[18:13:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:13:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=true
+[18:13:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:13:00] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:13:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:13:00] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:13:00] 📦 Total devices loaded into memory from scan block: 3
+[18:13:00] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:13:00] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[18:41:05] 📥 Command Triggered: LoadPairedDevicesCmd
+[18:41:05] 📬 Received 5 total DBus object paths from ObjectManager
+[18:41:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[18:41:05] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[18:41:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[18:41:05] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[18:41:05] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[18:41:05] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[18:41:05] 📦 Total devices loaded into memory from scan block: 3
+[18:41:05] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[18:41:05] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:12:43] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:12:43] 📬 Received 5 total DBus object paths from ObjectManager
+[20:12:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:12:43] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:12:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:12:43] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:12:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:12:43] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:12:43] 📦 Total devices loaded into memory from scan block: 3
+[20:12:43] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:12:43] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:14:55] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:14:55] 📬 Received 5 total DBus object paths from ObjectManager
+[20:14:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:14:55] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:14:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:14:55] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:14:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:14:55] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:14:55] 📦 Total devices loaded into memory from scan block: 3
+[20:14:55] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:14:55] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:17:08] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:17:08] 📬 Received 5 total DBus object paths from ObjectManager
+[20:17:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:17:08] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:17:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:17:08] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:17:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:17:08] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:17:08] 📦 Total devices loaded into memory from scan block: 3
+[20:17:08] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:17:08] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:17:24] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:17:24] 📬 Received 5 total DBus object paths from ObjectManager
+[20:17:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:17:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:17:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:17:24] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:17:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:17:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:17:24] 📦 Total devices loaded into memory from scan block: 3
+[20:17:24] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:17:24] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:18:02] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:18:02] 📬 Received 5 total DBus object paths from ObjectManager
+[20:18:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:18:02] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:18:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:18:02] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:18:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:18:02] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:18:02] 📦 Total devices loaded into memory from scan block: 3
+[20:18:02] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:18:02] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:18:15] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:18:15] 📬 Received 5 total DBus object paths from ObjectManager
+[20:18:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:18:15] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:18:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:18:15] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:18:15] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:18:15] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:18:15] 📦 Total devices loaded into memory from scan block: 3
+[20:18:15] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:18:15] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[20:19:53] 📡 Command Triggered: DiscoverDevicesCmd
+[20:19:53] 📬 Received 5 total DBus object paths from ObjectManager
+[20:19:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:19:53] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:19:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:19:53] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:19:53] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:19:53] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:19:53] 📦 Total devices loaded into memory from scan block: 3
+[20:19:53] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:19:57] 📡 Command Triggered: DiscoverDevicesCmd
+[20:19:57] 📬 Received 5 total DBus object paths from ObjectManager
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:19:57] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:19:57] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:19:57] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:19:57] 📦 Total devices loaded into memory from scan block: 3
+[20:19:57] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:19:57] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:19:57] 📬 Received 5 total DBus object paths from ObjectManager
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:19:57] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:19:57] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:19:57] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:19:57] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:19:57] 📦 Total devices loaded into memory from scan block: 3
+[20:19:57] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:20:01] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:20:01] 📬 Received 4 total DBus object paths from ObjectManager
+[20:20:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:01] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:01] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:01] 📦 Total devices loaded into memory from scan block: 2
+[20:20:01] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[20:20:12] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:12] 📬 Received 4 total DBus object paths from ObjectManager
+[20:20:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:12] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:12] 📦 Total devices loaded into memory from scan block: 2
+[20:20:12] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 2 total devices
+[20:20:16] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:16] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:16] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[20:20:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:16] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:16] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:16] 📦 Total devices loaded into memory from scan block: 3
+[20:20:16] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[20:20:20] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:20] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[20:20:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:20] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:20] 📦 Total devices loaded into memory from scan block: 3
+[20:20:20] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[20:20:24] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:24] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:24] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:24] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:24] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:24] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[20:20:24] 📦 Total devices loaded into memory from scan block: 3
+[20:20:24] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[20:20:28] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:28] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:28] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[20:20:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:28] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:28] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:28] 📦 Total devices loaded into memory from scan block: 3
+[20:20:28] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[20:20:32] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:32] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:32] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=false Connected=false
+[20:20:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:32] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:32] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:32] 📦 Total devices loaded into memory from scan block: 3
+[20:20:32] 🌐 Filtering DISCOVERED table: showing 1 unpaired out of 3 total devices
+[20:20:32] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A, passkey: 710253
+[20:20:35] ✅ User accepted the passkey confirmation
+[20:20:35] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:35] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:35] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=true
+[20:20:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:35] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:35] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:35] 📦 Total devices loaded into memory from scan block: 3
+[20:20:35] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:20:36] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:36] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:36] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=true
+[20:20:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:36] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:36] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:36] 📦 Total devices loaded into memory from scan block: 3
+[20:20:36] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:20:39] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:39] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:39] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:39] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:39] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:39] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=true
+[20:20:39] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:39] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:39] 📦 Total devices loaded into memory from scan block: 3
+[20:20:39] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:20:40] 📡 Command Triggered: DiscoverDevicesCmd
+[20:20:40] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:40] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:20:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:40] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:40] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:40] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:40] 📦 Total devices loaded into memory from scan block: 3
+[20:20:40] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[20:20:42] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:20:42] 📬 Received 5 total DBus object paths from ObjectManager
+[20:20:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:20:42] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:20:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:20:42] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:20:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:20:42] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:20:42] 📦 Total devices loaded into memory from scan block: 3
+[20:20:42] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:33:00] 📥 Command Triggered: LoadPairedDevicesCmd
+[20:33:00] 📬 Received 5 total DBus object paths from ObjectManager
+[20:33:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[20:33:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[20:33:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[20:33:00] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[20:33:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[20:33:00] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[20:33:00] 📦 Total devices loaded into memory from scan block: 3
+[20:33:00] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[20:33:00] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[23:50:42] 📥 Command Triggered: LoadPairedDevicesCmd
+[23:50:42] 📬 Received 5 total DBus object paths from ObjectManager
+[23:50:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[23:50:42] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[23:50:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[23:50:42] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[23:50:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[23:50:42] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[23:50:42] 📦 Total devices loaded into memory from scan block: 3
+[23:50:42] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[23:50:42] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[23:52:10] 📥 Command Triggered: LoadPairedDevicesCmd
+[23:52:10] 📬 Received 5 total DBus object paths from ObjectManager
+[23:52:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[23:52:10] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[23:52:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[23:52:10] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[23:52:10] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[23:52:10] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[23:52:10] 📦 Total devices loaded into memory from scan block: 3
+[23:52:10] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[23:52:10] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[23:56:19] 📥 Command Triggered: LoadPairedDevicesCmd
+[23:56:19] 📬 Received 5 total DBus object paths from ObjectManager
+[23:56:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[23:56:19] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[23:56:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[23:56:19] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[23:56:19] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[23:56:19] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[23:56:19] 📦 Total devices loaded into memory from scan block: 3
+[23:56:19] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[23:56:19] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[23:56:38] 📥 Command Triggered: LoadPairedDevicesCmd
+[23:56:38] 📬 Received 5 total DBus object paths from ObjectManager
+[23:56:38] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[23:56:38] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[23:56:38] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[23:56:38] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[23:56:38] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[23:56:38] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[23:56:38] 📦 Total devices loaded into memory from scan block: 3
+[23:56:38] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[23:56:38] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[23:59:26] 📥 Command Triggered: LoadPairedDevicesCmd
+[23:59:26] 📬 Received 5 total DBus object paths from ObjectManager
+[23:59:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[23:59:26] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[23:59:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[23:59:26] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[23:59:26] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[23:59:26] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[23:59:26] 📦 Total devices loaded into memory from scan block: 3
+[23:59:26] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[23:59:26] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:01:47] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:01:47] 📬 Received 5 total DBus object paths from ObjectManager
+[00:01:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:01:47] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:01:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:01:47] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:01:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:01:47] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:01:47] 📦 Total devices loaded into memory from scan block: 3
+[00:01:47] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:01:47] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:03:28] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:03:28] 📬 Received 5 total DBus object paths from ObjectManager
+[00:03:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:03:28] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:03:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:03:28] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:03:28] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:03:28] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:03:28] 📦 Total devices loaded into memory from scan block: 3
+[00:03:28] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:03:28] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:20:12] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:20:12] 📬 Received 5 total DBus object paths from ObjectManager
+[00:20:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:20:12] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:20:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:20:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:20:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:20:12] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:20:12] 📦 Total devices loaded into memory from scan block: 3
+[00:20:12] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:20:12] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:21:59] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:21:59] 📬 Received 5 total DBus object paths from ObjectManager
+[00:21:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:21:59] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:21:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:21:59] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:21:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:21:59] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:21:59] 📦 Total devices loaded into memory from scan block: 3
+[00:21:59] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:21:59] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:22:44] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:22:44] 📬 Received 5 total DBus object paths from ObjectManager
+[00:22:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:22:44] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:22:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:22:44] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:22:44] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:22:44] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:22:44] 📦 Total devices loaded into memory from scan block: 3
+[00:22:44] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:22:44] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:23:32] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:23:32] 📬 Received 5 total DBus object paths from ObjectManager
+[00:23:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:23:32] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:23:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:23:32] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:23:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:23:32] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:23:32] 📦 Total devices loaded into memory from scan block: 3
+[00:23:32] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:23:32] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:25:22] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:25:22] 📬 Received 5 total DBus object paths from ObjectManager
+[00:25:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:25:22] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:25:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:25:22] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:25:22] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:25:22] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:25:22] 📦 Total devices loaded into memory from scan block: 3
+[00:25:22] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:25:22] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:25:37] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:25:37] 📬 Received 5 total DBus object paths from ObjectManager
+[00:25:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:25:37] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:25:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:25:37] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:25:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:25:37] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:25:37] 📦 Total devices loaded into memory from scan block: 3
+[00:25:37] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:25:37] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:25:49] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:25:49] 📬 Received 5 total DBus object paths from ObjectManager
+[00:25:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:25:49] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:25:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:25:49] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:25:49] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:25:49] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:25:49] 📦 Total devices loaded into memory from scan block: 3
+[00:25:49] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:25:49] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:26:02] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:26:02] 📬 Received 5 total DBus object paths from ObjectManager
+[00:26:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:26:02] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:26:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:26:02] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:26:02] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:26:02] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:26:02] 📦 Total devices loaded into memory from scan block: 3
+[00:26:02] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:26:02] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:26:20] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:26:20] 📬 Received 5 total DBus object paths from ObjectManager
+[00:26:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:26:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:26:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:26:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:26:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:26:20] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:26:20] 📦 Total devices loaded into memory from scan block: 3
+[00:26:20] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:26:20] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:26:36] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:26:36] 📬 Received 5 total DBus object paths from ObjectManager
+[00:26:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:26:36] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:26:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:26:36] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:26:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:26:36] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:26:36] 📦 Total devices loaded into memory from scan block: 3
+[00:26:36] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:26:36] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[00:59:12] 📥 Command Triggered: LoadPairedDevicesCmd
+[00:59:12] 📬 Received 5 total DBus object paths from ObjectManager
+[00:59:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[00:59:12] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[00:59:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[00:59:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[00:59:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[00:59:12] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[00:59:12] 📦 Total devices loaded into memory from scan block: 3
+[00:59:12] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[00:59:12] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:00:03] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:00:03] 📬 Received 5 total DBus object paths from ObjectManager
+[01:00:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:00:03] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:00:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:00:03] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:00:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:00:03] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:00:03] 📦 Total devices loaded into memory from scan block: 3
+[01:00:03] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:00:03] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:03:20] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:03:20] 📬 Received 5 total DBus object paths from ObjectManager
+[01:03:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:03:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:03:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:03:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:03:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:03:20] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:03:20] 📦 Total devices loaded into memory from scan block: 3
+[01:03:20] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:03:20] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:03:55] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:03:55] 📬 Received 5 total DBus object paths from ObjectManager
+[01:03:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:03:55] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:03:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:03:55] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:03:55] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:03:55] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:03:55] 📦 Total devices loaded into memory from scan block: 3
+[01:03:55] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:03:55] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:19:43] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:19:43] 📬 Received 5 total DBus object paths from ObjectManager
+[01:19:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:19:43] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:19:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:19:43] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:19:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:19:43] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:19:43] 📦 Total devices loaded into memory from scan block: 3
+[01:19:43] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:19:43] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:21:42] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:21:42] 📬 Received 5 total DBus object paths from ObjectManager
+[01:21:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:21:42] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:21:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:21:42] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:21:42] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:21:42] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:21:42] 📦 Total devices loaded into memory from scan block: 3
+[01:21:42] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:21:42] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:24:32] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:24:32] 📬 Received 5 total DBus object paths from ObjectManager
+[01:24:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:24:32] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:24:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:24:32] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:24:32] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:24:32] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:24:32] 📦 Total devices loaded into memory from scan block: 3
+[01:24:32] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:24:32] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:26:16] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:26:16] 📬 Received 5 total DBus object paths from ObjectManager
+[01:26:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:26:16] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:26:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:26:16] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:26:16] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:26:16] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:26:16] 📦 Total devices loaded into memory from scan block: 3
+[01:26:16] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:26:16] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:38:20] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:38:20] 📬 Received 5 total DBus object paths from ObjectManager
+[01:38:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:38:20] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:38:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:38:20] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:38:20] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:38:20] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:38:20] 📦 Total devices loaded into memory from scan block: 3
+[01:38:20] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:38:20] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:41:08] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:41:08] 📬 Received 5 total DBus object paths from ObjectManager
+[01:41:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:41:08] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:41:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:41:08] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:41:08] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:41:08] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:41:08] 📦 Total devices loaded into memory from scan block: 3
+[01:41:08] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:41:08] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:42:43] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:42:43] 📬 Received 5 total DBus object paths from ObjectManager
+[01:42:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:42:43] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:42:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:42:43] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:42:43] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:42:43] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:42:43] 📦 Total devices loaded into memory from scan block: 3
+[01:42:43] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:42:43] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:51:17] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:51:17] 📬 Received 5 total DBus object paths from ObjectManager
+[01:51:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:51:17] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:51:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:51:17] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:51:17] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:51:17] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:51:17] 📦 Total devices loaded into memory from scan block: 3
+[01:51:17] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:51:17] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:51:37] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:51:37] 📬 Received 5 total DBus object paths from ObjectManager
+[01:51:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:51:37] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:51:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:51:37] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:51:37] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:51:37] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:51:37] 📦 Total devices loaded into memory from scan block: 3
+[01:51:37] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[01:51:37] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:53:59] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:53:59] 📬 Received 4 total DBus object paths from ObjectManager
+[01:53:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:53:59] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:53:59] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:53:59] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:53:59] 📦 Total devices loaded into memory from scan block: 2
+[01:53:59] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:54:09] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:54:09] 📬 Received 4 total DBus object paths from ObjectManager
+[01:54:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:54:09] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:54:09] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:54:09] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:54:09] 📦 Total devices loaded into memory from scan block: 2
+[01:54:09] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:55:11] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:55:11] 📬 Received 4 total DBus object paths from ObjectManager
+[01:55:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:55:11] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:55:11] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:55:11] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:55:11] 📦 Total devices loaded into memory from scan block: 2
+[01:55:11] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:55:12] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:55:12] 📬 Received 4 total DBus object paths from ObjectManager
+[01:55:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:55:12] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:55:12] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:55:12] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:55:12] 📦 Total devices loaded into memory from scan block: 2
+[01:55:12] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:55:32] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A, passkey: 501752
+[01:55:40] ❌ User rejected the passkey confirmation
+[01:56:36] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:56:36] 📬 Received 4 total DBus object paths from ObjectManager
+[01:56:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:56:36] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:56:36] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:56:36] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:56:36] 📦 Total devices loaded into memory from scan block: 2
+[01:56:36] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:56:36] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[01:56:47] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:56:47] 📬 Received 4 total DBus object paths from ObjectManager
+[01:56:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:56:47] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:56:47] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:56:47] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:56:47] 📦 Total devices loaded into memory from scan block: 2
+[01:56:47] 💾 Filtering SAVED table: showing 2 paired out of 2 total devices
+[01:56:56] 📲 Agent received RequestConfirmation for device /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A, passkey: 907158
+[01:57:09] ✅ User accepted the passkey confirmation
+[01:58:00] 📡 Command Triggered: DiscoverDevicesCmd
+[01:58:00] 📬 Received 5 total DBus object paths from ObjectManager
+[01:58:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:58:00] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:58:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:58:00] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:58:00] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:58:00] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:58:00] 📦 Total devices loaded into memory from scan block: 3
+[01:58:00] 🌐 Filtering DISCOVERED table: showing 0 unpaired out of 3 total devices
+[01:58:01] 📥 Command Triggered: LoadPairedDevicesCmd
+[01:58:01] 📬 Received 5 total DBus object paths from ObjectManager
+[01:58:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[01:58:01] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[01:58:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[01:58:01] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[01:58:01] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[01:58:01] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[01:58:01] 📦 Total devices loaded into memory from scan block: 3
+[01:58:01] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[02:06:03] 📥 Command Triggered: LoadPairedDevicesCmd
+[02:06:03] 📬 Received 5 total DBus object paths from ObjectManager
+[02:06:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[02:06:03] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[02:06:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[02:06:03] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[02:06:03] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[02:06:03] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[02:06:03] 📦 Total devices loaded into memory from scan block: 3
+[02:06:03] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[02:06:03] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[02:14:35] 📥 Command Triggered: LoadPairedDevicesCmd
+[02:14:35] 📬 Received 5 total DBus object paths from ObjectManager
+[02:14:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[02:14:35] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[02:14:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[02:14:35] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[02:14:35] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[02:14:35] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[02:14:35] 📦 Total devices loaded into memory from scan block: 3
+[02:14:35] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[02:14:35] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent
+[02:18:50] 📥 Command Triggered: LoadPairedDevicesCmd
+[02:18:50] 📬 Received 5 total DBus object paths from ObjectManager
+[02:18:50] 🔍 Inspecting device path: /org/bluez/hci0/dev_78_D6_DC_CA_6D_C2
+[02:18:50] ✅ Successfully parsed: Name='Lenovo Tab M8' MAC='78:D6:DC:CA:6D:C2' Paired=true Connected=false
+[02:18:50] 🔍 Inspecting device path: /org/bluez/hci0/dev_AC_C4_BD_8D_38_6A
+[02:18:50] ✅ Successfully parsed: Name='austine' MAC='AC:C4:BD:8D:38:6A' Paired=true Connected=false
+[02:18:50] 🔍 Inspecting device path: /org/bluez/hci0/dev_12_11_EB_2F_83_10
+[02:18:50] ✅ Successfully parsed: Name='BT-SPEAKER' MAC='12:11:EB:2F:83:10' Paired=true Connected=false
+[02:18:50] 📦 Total devices loaded into memory from scan block: 3
+[02:18:50] 💾 Filtering SAVED table: showing 3 paired out of 3 total devices
+[02:18:50] 🛡️ BlueZ Agent registered successfully at path: /corntui/bluetooth/agent

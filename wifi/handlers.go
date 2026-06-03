@@ -1,8 +1,6 @@
 package wifi
 
 import (
-	"math"
-
 	"corntui/config"
 
 	tea "charm.land/bubbletea/v2"
@@ -23,7 +21,7 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	case "backspace", "esc":
 		m.UIState = StateNormal
 		m.PassInput.Reset()
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+		m.Table.SetHeight(config.ListHeight)
 		return m, nil
 
 	case "enter":
@@ -31,7 +29,7 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 		cmd := ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, passwordValue)
 
 		m.UIState = StateNormal
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+		m.Table.SetHeight(config.ListHeight)
 		m.PassInput.Reset()
 		return m, cmd
 
@@ -63,7 +61,7 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case "esc":
 		m.UIState = StateNormal
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+		m.Table.SetHeight(config.ListHeight)
 
 	case "enter":
 		idx := m.Table.Cursor()
@@ -76,7 +74,7 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		}
 		m.UIState = StateNormal
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+		m.Table.SetHeight(config.ListHeight)
 
 		return m, cmd
 	}
@@ -156,7 +154,7 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 				m.MenuCursor = 0
 			}
 		}
-		m.Table.SetHeight(int(math.Floor(config.TabBodyHeight * 0.4)))
+		//m.Table.SetHeight(config.ListHeightHalf)
 
 	default:
 		var cmd tea.Cmd

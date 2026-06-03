@@ -14,34 +14,33 @@ func (m Model) View() string {
 		return config.Styles.LogBox.Render("Client not loaded yet")
 	}
 
-	var segments []string
+	// 1. Build the base background (table + adapter + hints + errors)
+	var bgSegments []string
 
-	// 2. Conditional Interface Block Rendering
 	if m.Scanning {
-		segments = append(segments, m.ScanningBlock())
+		bgSegments = append(bgSegments, m.ScanningBlock())
 	} else {
-		segments = append(segments, m.SavedBlock())
+		bgSegments = append(bgSegments, m.SavedBlock())
 	}
 
-	// 3. Popup Overlay Processing
-	if m.UIState == StatePasswordInput {
-		segments = append(segments, m.PasswordBlock())
-	}
-
-	if m.UIState == StateSavedActionsMenu {
-		segments = append(segments, m.OptionsBlock())
-	}
-
-	segments = append(segments, m.adapterBlock())
-	segments = append(segments, m.HintsBlock())
+	bgSegments = append(bgSegments, m.adapterBlock())
+	bgSegments = append(bgSegments, m.HintsBlock())
 
 	if m.Err != nil {
-		segments = append(segments, config.LogBlock(m.Err.Error()))
+		bgSegments = append(bgSegments, config.LogBlock(m.Err.Error()))
 	}
 
-	// V2: Join lines now use alignment positioning directly
-	return lipgloss.JoinVertical(lipgloss.Left,
-		segments...)
+	background := lipgloss.JoinVertical(lipgloss.Left, bgSegments...)
+
+	// 2. Overlay popup on top of background (never appended to segments)
+	if m.UIState == StatePasswordInput {
+		return config.PlaceOverlay(background, m.PasswordBlock())
+	}
+	if m.UIState == StateSavedActionsMenu {
+		return config.PlaceOverlay(background, m.OptionsBlock())
+	}
+
+	return background
 }
 
 func (m Model) adapterBlock() string {
@@ -49,13 +48,13 @@ func (m Model) adapterBlock() string {
 	if m.Adapter.State == "Connected" {
 		linkStat = true
 	}
-	intface := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
+	intface := config.Styles.AdapterInfo.
 		Render(fmt.Sprintf("device: %s", m.Adapter.Interface))
-	connected := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
+	connected := config.Styles.AdapterInfo.
 		Render(fmt.Sprintf("  connected: %s", map[bool]string{true: "", false: ""}[linkStat]))
-	power := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
+	power := config.Styles.AdapterInfo.
 		Render(fmt.Sprintf("  power: %s", map[bool]string{true: "󰤨 ", false: "󰤭 "}[m.Adapter.Enabled]))
-	scan := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).Italic(true).
+	scan := config.Styles.AdapterInfo.
 		Render(fmt.Sprintf("  status: %s", map[bool]string{true: "scanning", false: "saved"}[m.Scanning]))
 
 	// V2: Horizontally combine block lines using Alignment

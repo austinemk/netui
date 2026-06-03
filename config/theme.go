@@ -14,83 +14,126 @@ type CustomStyles struct {
 	LogBox        lipgloss.Style
 	ActiveTab     lipgloss.Style
 	InactiveTab   lipgloss.Style
+	TabsBox       lipgloss.Style
 	BodyText      lipgloss.Style
 	BoxStyle      lipgloss.Style
-	InfoText      lipgloss.Style
 	HighlightText lipgloss.Style
 	CursorColor   lipgloss.Style
 	Hints         lipgloss.Style
-	TabHints      lipgloss.Style
+	AdapterInfo   lipgloss.Style
 }
 
 // Styles is the globally accessible style blueprint
 var Styles CustomStyles
 
-func init() {
+// Color variables that will be populated by defaults or TOML
+var (
+	ColorForeground          = ""
+	ColorBackground          = ""
+	ColorBorder              = "8"
+	ColorAccent              = "4"
+	ColorMuted               = "8"
+	ColorHighlight           = "1"
+	ColorHighlightBackground = ""
+	ColorTabBackground       = "8"
+	ColorPopupBackground     = ""
+	ColorLogBackground       = "#eba0ac"
+	ColorCursor              = "#3B82F6"
+)
+
+// InitStyles constructs the styles dynamically (Renamed from init)
+func InitStyles() {
 	// Base application boundaries
 	Styles.Container = lipgloss.NewStyle().
-		Margin(1, 2).
 		Italic(true).
+		Padding(0, 1).
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("8"))
+		Width(int(float64(WindowWidth))).
+		Height(int(float64(WindowHeight)))
+
+		// Apply foreground if provided
+	if ColorForeground != "" {
+		Styles.Container = Styles.Container.Foreground(lipgloss.Color(ColorForeground))
+	}
+	if ColorBorder != "" {
+		Styles.Container = Styles.Container.BorderForeground(lipgloss.Color(ColorBorder))
+	}
+
+	// Apply background if provided (otherwise remains transparent)
+	if ColorBackground != "" {
+		Styles.Container = Styles.Container.Background(lipgloss.Color(ColorBackground))
+	}
 
 	// Banner titles
 	Styles.Title = lipgloss.NewStyle().
-		Background(lipgloss.Color("#2563EB")).
-		Foreground(lipgloss.Color("#FFFFFF")).
+		Background(lipgloss.Color(ColorAccent)).
+		Foreground(lipgloss.Color(ColorForeground)).
 		Bold(true).
 		Padding(0, 1)
 
-	// Contextual Headers (New additions)
+	// Contextual Headers
 	Styles.Heading = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).
+		Foreground(lipgloss.Color(ColorMuted)).
 		Underline(true).
 		Bold(true).
 		BorderBottom(true).
 		Italic(true)
 
 	Styles.LogBox = lipgloss.NewStyle().
-		Background(lipgloss.Color("#eba0ac")).
+		Background(lipgloss.Color(ColorLogBackground)).
 		Padding(0, 1).
 		Foreground(lipgloss.Color("#1e1e2e")).
-		Bold(true).Width(TabBodyWidth).AlignHorizontal(lipgloss.Center)
+		Bold(true).
+		Width(WindowWidth - 2).
+		AlignHorizontal(lipgloss.Center)
 
 	// Tab structures
 	Styles.ActiveTab = lipgloss.NewStyle().
-		Background(lipgloss.Color("8")).
-		Foreground(lipgloss.Color("2")).
-		Padding(0, 1)
+		Foreground(lipgloss.Color(ColorAccent))
 
 	Styles.InactiveTab = lipgloss.NewStyle().
-		Background(lipgloss.Color("#1F2937")).
-		Foreground(lipgloss.Color("#9CA3AF")).
+		Foreground(lipgloss.Color(ColorMuted))
+		// Only apply background color to the Inactive Tab if configured
+	Styles.TabsBox = lipgloss.NewStyle().Padding(0).
+		AlignHorizontal(lipgloss.Center).
+		Width(WindowWidth - 2).
+		Height(1)
+
+	if ColorTabBackground != "" {
+		Styles.TabsBox = Styles.TabsBox.Background(lipgloss.Color(ColorTabBackground))
+	}
+
+	// popup  structures
+	Styles.BoxStyle = lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		Padding(1).
+		Width(int(math.Floor(float64(ListWidth)*0.6))).
+		Margin(0, int(math.Floor(float64(ListWidth)*0.15))).
+		Height(ListHeightHalf)
+
+	if ColorBorder != "" {
+		Styles.BoxStyle = Styles.BoxStyle.BorderForeground(lipgloss.Color(ColorBorder))
+	} else {
+		Styles.BoxStyle = Styles.BoxStyle.BorderForeground(lipgloss.Color("8"))
+	}
+
+	// highlight structures
+	Styles.HighlightText = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color(ColorHighlight)).
 		Padding(0, 1)
 
-	// BodyText
-	//Styles.BodyText = lipgloss.NewStyle().Foreground(lipgloss.Color())
-
-	// Subtabs structures
-	Styles.BoxStyle = lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("3")).
-		Padding(1).
-		Width(int(math.Floor(TabBodyWidth*0.6))).
-		Margin(0, int(math.Floor(TabBodyWidth*0.15))).
-		Height(int(math.Floor(TabBodyHeight * 0.4)))
-
-	Styles.InfoText = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).
-		Italic(true)
-
-	Styles.HighlightText = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("7")).Background(lipgloss.Color("8")).Padding(0, 1)
+	if ColorHighlightBackground != "" {
+		Styles.HighlightText = Styles.HighlightText.Background(lipgloss.Color(ColorHighlightBackground))
+	}
 
 	Styles.CursorColor = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#3B82F6"))
+		Foreground(lipgloss.Color(ColorCursor))
 
 	Styles.Hints = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).
+		Foreground(lipgloss.Color(ColorMuted)).
 		Bold(true)
-	Styles.TabHints = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).
-		Italic(true)
+
+	Styles.AdapterInfo = lipgloss.NewStyle().
+		Foreground(lipgloss.Color(ColorAccent))
 }

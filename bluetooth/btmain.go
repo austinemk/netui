@@ -2,7 +2,6 @@ package bluetooth
 
 import (
 	"fmt"
-	"math"
 
 	"corntui/config"
 
@@ -21,17 +20,17 @@ func NewBlueZClient() (*BlueZClient, error) {
 
 func New() Model {
 	columns := []table.Column{
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.05))},
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.5))},
-		{Title: "", Width: int(math.Floor(config.TabBodyWidth * 0.44))},
+		{Title: "", Width: config.ListWidthSixteenth},
+		{Title: "", Width: config.ListWidthHalf},
+		{Title: "", Width: (config.ListWidthQuarter + config.ListWidthSixteenth)},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
 		// table.WithHeight(int(math.Floor(config.TabBodyHeight*0.8))),
 	)
-	t.SetWidth(int(math.Floor(config.TabBodyWidth)))
-	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+	t.SetWidth(config.ListWidth)
+	t.SetHeight(config.ListHeight)
 	t.Focus()
 
 	s := table.DefaultStyles()

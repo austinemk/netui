@@ -2,7 +2,6 @@ package wifi
 
 import (
 	"context"
-	"math"
 
 	"corntui/config"
 
@@ -16,18 +15,18 @@ import (
 func New() Model {
 	// Initialize default columns structure
 	columns := []table.Column{
-		{Title: "Status", Width: int(math.Floor(config.TabBodyWidth * 0.05))},
-		{Title: "Network Name (SSID)", Width: int(math.Floor(config.TabBodyWidth * 0.5))}, // Cast explicitly for safety
-		{Title: "Signal", Width: int(math.Floor(config.TabBodyWidth * 0.2))},
-		{Title: "Security", Width: int(math.Floor(config.TabBodyWidth * 0.24))},
+		{Title: "Status", Width: config.ListWidthSixteenth},
+		{Title: "Network Name (SSID)", Width: config.ListWidthHalf}, // Cast explicitly for safety
+		{Title: "Signal", Width: config.ListWidthSixteenth},
+		{Title: "Security", Width: config.ListWidthEigth},
 	}
 
 	t := table.New(
 		table.WithColumns(columns),
 	)
 	// V2: Width and Height use explicit setter functions instead of direct structural fields
-	t.SetWidth(int(math.Floor(config.TabBodyWidth)))
-	t.SetHeight(int(math.Floor(config.TabBodyHeight * 0.8)))
+	t.SetWidth(config.ListWidth)
+	t.SetHeight(config.ListHeight)
 	t.Focus()
 
 	ti := textinput.New()
