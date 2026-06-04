@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"corntui/bluetooth"
-	"corntui/config" // Imported your local config package
-	"corntui/vpn"
-	"corntui/wifi"
+	"linktui/bluetooth"
+	"linktui/config" // Imported your local config package
+	"linktui/vpn"
+	"linktui/wifi"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -20,7 +20,7 @@ func main() {
 	userConfigDir, err := os.UserConfigDir()
 	if err == nil {
 		// Constructs ~/.config/corntui/config.toml cleanly across OS targets
-		configPath := filepath.Join(userConfigDir, "corntui", "config.toml")
+		configPath := filepath.Join(userConfigDir, "linktui", "config.toml")
 
 		// If it errors or doesn't exist, LoadConfig handles it internally
 		// and safely falls back to your built-in defaults.

@@ -3,7 +3,7 @@ package wifi
 import (
 	"time"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"

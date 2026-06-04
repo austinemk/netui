@@ -1,4 +1,4 @@
-module corntui
+module linktui
 
 go 1.26.3
 

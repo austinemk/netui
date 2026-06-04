@@ -3,7 +3,7 @@ package bluetooth
 import (
 	"fmt"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
@@ -11,10 +11,24 @@ import (
 )
 
 func NewBlueZClient() (*BlueZClient, error) {
+	// 1. Check if the D-Bus system bus is even accessible.
+	// If the system doesn't have D-Bus or the user lacks permissions, this fails immediately.
 	conn, err := dbus.ConnectSystemBus()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("system D-Bus is unavailable (are you running on Linux with proper permissions?): %w", err)
 	}
+
+	// 2. Explicitly ping the BlueZ daemon via D-Bus.
+	// This proves that the 'bluez' package is installed, running, and actively listening.
+	// We call a standard D-Bus peer Ping on the BlueZ service destination.
+	obj := conn.Object("org.bluez", dbus.ObjectPath("/"))
+	err = obj.Call("org.freedesktop.DBus.Peer.Ping", 0).Err
+	if err != nil {
+		// If D-Bus is working but BlueZ doesn't reply, it means the package/service is missing or stopped.
+		conn.Close() // Clean up the connection before leaving
+		return nil, fmt.Errorf("bluez service is not responding. Ensure 'bluez' is installed and the bluetooth service is running: %w", err)
+	}
+
 	return &BlueZClient{Conn: conn}, nil
 }
 

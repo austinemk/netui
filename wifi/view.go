@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/lipgloss/v2"
 )

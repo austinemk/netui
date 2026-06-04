@@ -21,6 +21,7 @@ type AppConfig struct {
 		HighlightBackground string `toml:"Highlight_background"`
 		Muted               string `toml:"muted"`
 		Border              string `toml:"border"`
+		PopupBackground     string `toml:"popup_background"`
 		LogBackground       string `toml:"log_background"`
 		Cursor              string `toml:"cursor"`
 	} `toml:"colors"`
@@ -39,6 +40,7 @@ func LoadConfig(filePath string) error {
 	cfg.Colors.Accent = ColorAccent
 	cfg.Colors.Highlight = ColorHighlight
 	cfg.Colors.HighlightBackground = ColorHighlightBackground
+	cfg.Colors.PopupBackground = ColorPopupBackground
 	cfg.Colors.Muted = ColorMuted
 	cfg.Colors.LogBackground = ColorLogBackground
 	cfg.Colors.Cursor = ColorCursor
@@ -76,6 +78,7 @@ func LoadConfig(filePath string) error {
 	ColorAccent = cfg.Colors.Accent
 	ColorHighlight = cfg.Colors.Highlight
 	ColorHighlightBackground = cfg.Colors.HighlightBackground
+	ColorPopupBackground = cfg.Colors.PopupBackground
 	ColorMuted = cfg.Colors.Muted
 	ColorCursor = cfg.Colors.Cursor
 

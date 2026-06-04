@@ -1,7 +1,7 @@
 package wifi
 
 import (
-	"corntui/config"
+	"linktui/config"
 
 	tea "charm.land/bubbletea/v2"
 )

@@ -3,16 +3,16 @@ package main
 import (
 	"strings"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/lipgloss/v2"
 )
 
 // RenderHeader draws the main app banner and menu selections
 func RenderHeader(activeTab int) string {
-	figure := `   __|   _ \  _ \   \ | 
-  (     (   |   /  .  | 
- \___| \___/ _|_\ _|\_| `
+	figure := `  |    _ _|   \ |  |  / 
+  |      |   .  |  . <  
+ ____| ___| _|\_| _|\_\ `
 
 	title := config.Styles.Title.Render(figure)
 

@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"corntui/bluetooth"
-	"corntui/config"
-	"corntui/vpn"
-	"corntui/wifi"
+	"linktui/bluetooth"
+	"linktui/config"
+	"linktui/vpn"
+	"linktui/wifi"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"

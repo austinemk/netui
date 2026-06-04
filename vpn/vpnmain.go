@@ -3,7 +3,7 @@ package vpn
 import (
 	"os"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/bubbles/v2/filepicker"
 	"charm.land/bubbles/v2/table"

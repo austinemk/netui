@@ -3,7 +3,7 @@ package wifi
 import (
 	"context"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/bubbles/v2/table"
 	"charm.land/bubbles/v2/textinput"

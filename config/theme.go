@@ -46,16 +46,15 @@ func InitStyles() {
 	Styles.Container = lipgloss.NewStyle().
 		Italic(true).
 		Padding(0, 1).
-		Border(lipgloss.RoundedBorder()).
 		Width(int(float64(WindowWidth))).
 		Height(int(float64(WindowHeight)))
 
 		// Apply foreground if provided
 	if ColorForeground != "" {
-		Styles.Container = Styles.Container.Foreground(lipgloss.Color(ColorForeground))
+		Styles.Container = Styles.Container.Border(lipgloss.NormalBorder()).Foreground(lipgloss.Color(ColorForeground))
 	}
 	if ColorBorder != "" {
-		Styles.Container = Styles.Container.BorderForeground(lipgloss.Color(ColorBorder))
+		Styles.Container = Styles.Container.Border(lipgloss.NormalBorder()).BorderForeground(lipgloss.Color(ColorBorder))
 	}
 
 	// Apply background if provided (otherwise remains transparent)
@@ -69,7 +68,7 @@ func InitStyles() {
 		Bold(true).
 		Padding(0, 1)
 
-	// Contextual Headers
+		// Contextual Headers
 	Styles.Heading = lipgloss.NewStyle().
 		Foreground(lipgloss.Color(ColorMuted)).
 		Underline(true).

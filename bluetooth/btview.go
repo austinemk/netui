@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"corntui/config"
+	"linktui/config"
 
 	"charm.land/lipgloss/v2"
 )
@@ -111,7 +111,6 @@ func (m Model) HintsBlock() string {
 	)
 }
 
-// PasskeyPromptBlock builds a clean terminal layout block for the confirmation window
 // PasskeyPromptBlock builds a clean terminal layout block for the confirmation window
 func (m Model) PasskeyPromptBlock() string {
 	// Swap hardcoded '123456' with your live state property 'm.CurrentPasskey'
