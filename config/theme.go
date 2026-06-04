@@ -31,7 +31,7 @@ var (
 	ColorForeground          = ""
 	ColorBackground          = ""
 	ColorBorder              = "8"
-	ColorAccent              = "5"
+	ColorAccent              = "6"
 	ColorMuted               = "8"
 	ColorHighlight           = "1"
 	ColorHighlightBackground = ""

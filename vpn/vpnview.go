@@ -98,7 +98,7 @@ func (m Model) OptionsPopupBlock() string {
 	options := []string{actLabel, "Delete Profile"}
 
 	var menuLines []string
-	menuLines = append(menuLines, lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#EF4444")).Render(fmt.Sprintf("── Actions: %s ──", target.Name)))
+	menuLines = append(menuLines, fmt.Sprintf("── Actions: %s ──", target.Name))
 	for i, opt := range options {
 		if m.MenuCursor == i {
 			menuLines = append(menuLines, fmt.Sprintf(" > %s", opt))
