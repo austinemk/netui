@@ -48,25 +48,14 @@ func (m Model) adapterBlock() string {
 	if m.Adapter.State == "Connected" {
 		linkStat = true
 	}
-	intface := config.Styles.AdapterInfo.
-		Render(fmt.Sprintf("device: %s", m.Adapter.Interface))
-	connected := config.Styles.AdapterInfo.
-		Render(fmt.Sprintf("  connected: %s", map[bool]string{true: "", false: ""}[linkStat]))
-	power := config.Styles.AdapterInfo.
-		Render(fmt.Sprintf("  power: %s", map[bool]string{true: "󰤨 ", false: "󰤭 "}[m.Adapter.Enabled]))
-	scan := config.Styles.AdapterInfo.
-		Render(fmt.Sprintf("  status: %s", map[bool]string{true: "scanning", false: "saved"}[m.Scanning]))
+
+	lines := []string{fmt.Sprintf("device: %s", m.Adapter.Interface)}
+	lines = append(lines, fmt.Sprintf("  connected: %s", map[bool]string{true: "", false: ""}[linkStat]))
+	lines = append(lines, fmt.Sprintf("  power: %s", map[bool]string{true: "󰤨 ", false: "󰤭 "}[m.Adapter.Enabled]))
+	lines = append(lines, fmt.Sprintf("  status: %s", map[bool]string{true: "scanning", false: "saved"}[m.Scanning]))
 
 	// V2: Horizontally combine block lines using Alignment
-	return lipgloss.NewStyle().Render(
-		lipgloss.JoinHorizontal(
-			lipgloss.Center,
-			intface,
-			connected,
-			power,
-			scan,
-		),
-	)
+	return config.Styles.AdapterInfo.Render(strings.Join(lines, " "))
 }
 
 func (m Model) ScanningBlock() string {
@@ -96,7 +85,7 @@ func (m Model) SavedBlock() string {
 
 func (m Model) PasswordBlock() string {
 	passContent := fmt.Sprintf("Enter Password for: %s\n\n %s", m.SelectedAP.SSID, m.PassInput.View())
-	return config.Styles.BoxStyle.Render(passContent)
+	return config.Styles.PopupStyle.Render(passContent)
 }
 
 func (m Model) OptionsBlock() string {
@@ -110,7 +99,7 @@ func (m Model) OptionsBlock() string {
 			menuLines = append(menuLines, opt)
 		}
 	}
-	popup := config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
+	popup := config.Styles.PopupStyle.Render(strings.Join(menuLines, "\n"))
 	return popup
 }
 

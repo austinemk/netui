@@ -28,11 +28,22 @@ const (
 )
 
 type TunnelProfile struct {
-	Name       string
-	UUID       string
-	Type       string
-	Active     bool
-	Connection gonetworkmanager.Connection
+	Name          string
+	UUID          string
+	Type          string
+	InterfaceName string // kernel interface name, e.g. "wg0", "vpn0", "proton"
+	Active        bool
+	Connection    gonetworkmanager.Connection
+}
+
+// IPInfo holds the public IP and optional location details.
+// Nil means not yet fetched. Location fields are empty until the user presses p.
+type IPInfo struct {
+	PublicIP string
+	Country  string
+	Region   string
+	City     string
+	ISP      string
 }
 
 type (
@@ -40,6 +51,7 @@ type (
 	ActionSuccessMsg string
 	ErrMsg           error
 	ClearLogMsg      struct{ ID uint64 }
+	IPInfoMsg        *IPInfo
 )
 
 type TunnelsLoadedData struct {
@@ -57,6 +69,9 @@ type Model struct {
 	Err        error
 	LogID      uint64
 	Cursor     int
+
+	// IP display
+	IPInfo *IPInfo
 
 	// Form input states
 	ActiveField    FormField

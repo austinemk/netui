@@ -15,13 +15,23 @@ func (m Model) handleKeyPress(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 			m.UIState = StateActionsMenu //[cite: 1]
 		}
 	case "n":
-		m.UIState = StateAddForm                  //[cite: 1]
-		m.ActiveField = FieldProfileName          //[cite: 1]
-		m.FormInputs = make(map[FormField]string) //[cite: 1]
+		if m.UIState == StateNormal {
+			m.UIState = StateAddForm                  //[cite: 1]
+			m.ActiveField = FieldProfileName          //[cite: 1]
+			m.FormInputs = make(map[FormField]string) //[cite: 1]
+		} else {
+			m.UIState = StateNormal
+		}
 	case "i":
-		m.UIState = StateImportFile //[cite: 1]
+		if m.UIState == StateNormal {
+			m.UIState = StateImportFile //[cite: 1]
+		} else {
+			m.UIState = StateNormal
+		}
 	case "r": //[cite: 1]
-		return m, FetchTunnelsCmd(m.Client) //[cite: 1]
+		return m, FetchTunnelsCmd(m.Client)
+	case "p":
+		return m, FetchIPWithGeoCmd(0)
 	default:
 		var cmd tea.Cmd
 		m.Table, cmd = m.Table.Update(msg)

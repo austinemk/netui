@@ -20,7 +20,6 @@ type AppConfig struct {
 		Highlight           string `toml:"highlight"`
 		HighlightBackground string `toml:"Highlight_background"`
 		Muted               string `toml:"muted"`
-		TabBackground       string `toml:"tab_active_background"`
 		Border              string `toml:"border"`
 		LogBackground       string `toml:"log_background"`
 		Cursor              string `toml:"cursor"`
@@ -37,7 +36,6 @@ func LoadConfig(filePath string) error {
 	cfg.Colors.Foreground = ColorForeground
 	cfg.Colors.Background = ColorBackground
 	cfg.Colors.Border = ColorBorder
-	cfg.Colors.TabBackground = ColorTabBackground
 	cfg.Colors.Accent = ColorAccent
 	cfg.Colors.Highlight = ColorHighlight
 	cfg.Colors.HighlightBackground = ColorHighlightBackground
@@ -74,7 +72,6 @@ func LoadConfig(filePath string) error {
 	ColorForeground = cfg.Colors.Foreground
 	ColorBackground = cfg.Colors.Background
 	ColorBorder = cfg.Colors.Border
-	ColorTabBackground = cfg.Colors.TabBackground
 	ColorLogBackground = cfg.Colors.LogBackground
 	ColorAccent = cfg.Colors.Accent
 	ColorHighlight = cfg.Colors.Highlight

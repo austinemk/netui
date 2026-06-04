@@ -16,7 +16,7 @@ type CustomStyles struct {
 	InactiveTab   lipgloss.Style
 	TabsBox       lipgloss.Style
 	BodyText      lipgloss.Style
-	BoxStyle      lipgloss.Style
+	PopupStyle    lipgloss.Style
 	HighlightText lipgloss.Style
 	CursorColor   lipgloss.Style
 	Hints         lipgloss.Style
@@ -31,11 +31,10 @@ var (
 	ColorForeground          = ""
 	ColorBackground          = ""
 	ColorBorder              = "8"
-	ColorAccent              = "4"
+	ColorAccent              = "5"
 	ColorMuted               = "8"
 	ColorHighlight           = "1"
 	ColorHighlightBackground = ""
-	ColorTabBackground       = "8"
 	ColorPopupBackground     = ""
 	ColorLogBackground       = "#eba0ac"
 	ColorCursor              = "#3B82F6"
@@ -66,8 +65,7 @@ func InitStyles() {
 
 	// Banner titles
 	Styles.Title = lipgloss.NewStyle().
-		Background(lipgloss.Color(ColorAccent)).
-		Foreground(lipgloss.Color(ColorForeground)).
+		Foreground(lipgloss.Color(ColorAccent)).
 		Bold(true).
 		Padding(0, 1)
 
@@ -89,22 +87,21 @@ func InitStyles() {
 
 	// Tab structures
 	Styles.ActiveTab = lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorAccent))
+		Foreground(lipgloss.Color(ColorAccent)).
+		Bold(true)
 
 	Styles.InactiveTab = lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorMuted))
-		// Only apply background color to the Inactive Tab if configured
-	Styles.TabsBox = lipgloss.NewStyle().Padding(0).
-		AlignHorizontal(lipgloss.Center).
-		Width(WindowWidth - 2).
-		Height(1)
+		Foreground(lipgloss.Color(ColorMuted)).
+		Bold(true)
 
-	if ColorTabBackground != "" {
-		Styles.TabsBox = Styles.TabsBox.Background(lipgloss.Color(ColorTabBackground))
-	}
+	Styles.TabsBox = lipgloss.NewStyle().Padding(0, 1).
+		AlignHorizontal(lipgloss.Center).
+		Height(1).Border(lipgloss.NormalBorder()).
+		BorderBottom(true).BorderTop(true).BorderLeft(false).BorderRight(false).
+		BorderForeground(lipgloss.Color(ColorBorder))
 
 	// popup  structures
-	Styles.BoxStyle = lipgloss.NewStyle().
+	Styles.PopupStyle = lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder()).
 		Padding(1).
 		Width(int(math.Floor(float64(ListWidth)*0.6))).
@@ -112,9 +109,13 @@ func InitStyles() {
 		Height(ListHeightHalf)
 
 	if ColorBorder != "" {
-		Styles.BoxStyle = Styles.BoxStyle.BorderForeground(lipgloss.Color(ColorBorder))
+		Styles.PopupStyle = Styles.PopupStyle.BorderForeground(lipgloss.Color(ColorBorder))
 	} else {
-		Styles.BoxStyle = Styles.BoxStyle.BorderForeground(lipgloss.Color("8"))
+		Styles.PopupStyle = Styles.PopupStyle.BorderForeground(lipgloss.Color("8"))
+	}
+
+	if ColorPopupBackground != "" {
+		Styles.PopupStyle = Styles.PopupStyle.Background(lipgloss.Color(ColorPopupBackground))
 	}
 
 	// highlight structures

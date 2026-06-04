@@ -18,7 +18,7 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	}
 
 	switch keyMsg.String() {
-	case "backspace", "esc":
+	case "esc":
 		m.UIState = StateNormal
 		m.PassInput.Reset()
 		m.Table.SetHeight(config.ListHeight)

@@ -43,27 +43,14 @@ func (m Model) View() string {
 
 // AdapterBlock for displaying adapter info
 func (m Model) AdapterBlock() string {
-	powStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("power: %s", map[bool]string{true: "", false: ""}[m.Adapter.Powered]))
-	discStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("   discoverable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Discoverable]))
+	lines := []string{fmt.Sprintf("power: %s", map[bool]string{true: "", false: ""}[m.Adapter.Powered])}
+	lines = append(lines, fmt.Sprintf("   discoverable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Discoverable]))
 
-	pairStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).
-		Render(fmt.Sprintf("   pairable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Pairable]))
+	lines = append(lines, fmt.Sprintf("   pairable: %s", map[bool]string{true: "", false: ""}[m.Adapter.Pairable]))
 
-	scanStatus := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).Italic(true).
-		Render(fmt.Sprintf("   state: %s", map[bool]string{true: "discovering", false: "saved"}[m.Scanning]))
+	lines = append(lines, fmt.Sprintf("   state: %s", map[bool]string{true: "discovering", false: "saved"}[m.Scanning]))
 
-	// V2: Join strings using direct horizontal alignment methods
-	adapterBlock := lipgloss.JoinHorizontal(
-		lipgloss.Center,
-		powStatus,
-		discStatus,
-		pairStatus,
-		scanStatus,
-	)
-
-	return adapterBlock
+	return config.Styles.AdapterInfo.Render(strings.Join(lines, " "))
 }
 
 func (m Model) ScanningBlock() string {
@@ -96,7 +83,7 @@ func (m Model) ActionsMenuBlock() string {
 		}
 	}
 
-	return config.Styles.BoxStyle.Render(
+	return config.Styles.PopupStyle.Render(
 		lipgloss.JoinVertical(
 			lipgloss.Center,
 			strings.Join(menuLines, "\n"),
@@ -151,5 +138,5 @@ func (m Model) PasskeyPromptBlock() string {
 	)
 
 	// Wrap inside your structural config BoxStyle
-	return config.Styles.BoxStyle.Render(popupContent)
+	return config.Styles.PopupStyle.Render(popupContent)
 }

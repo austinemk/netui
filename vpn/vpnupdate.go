@@ -27,6 +27,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.syncTableRows()
 		return m, nil
 
+	case IPInfoMsg:
+		m.IPInfo = msg
+		return m, nil
+
 	case ActionSuccessMsg:
 		return m, FetchTunnelsCmd(m.Client)
 

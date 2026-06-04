@@ -1,37 +1,39 @@
 package main
 
 import (
+	"strings"
+
 	"corntui/config"
 
 	"charm.land/lipgloss/v2"
-	//"github.com/common-nighthawk/go-figure"
 )
 
 // RenderHeader draws the main app banner and menu selections
 func RenderHeader(activeTab int) string {
-	//banner := figure.NewFigure("netui", "larry3d", true).String()
-	//title := config.Styles.Title.Render("NETUI") + "\n"
+	figure := `   __|   _ \  _ \   \ | 
+  (     (   |   /  .  | 
+ \___| \___/ _|_\ _|\_| `
 
-	var t1, t2, t3 string
+	title := config.Styles.Title.Render(figure)
+
+	var tabs []string
 	if activeTab == 0 {
-		t1 = config.Styles.ActiveTab.Render("WiFi")
+		tabs = append(tabs, config.Styles.ActiveTab.Render("wifi"))
 	} else {
-		t1 = config.Styles.InactiveTab.Render("WiFi")
+		tabs = append(tabs, config.Styles.InactiveTab.Render("wifi"))
 	}
 
 	if activeTab == 1 {
-		t2 = config.Styles.ActiveTab.Render("BlUETOOTH")
+		tabs = append(tabs, config.Styles.ActiveTab.Render("bluetooth"))
 	} else {
-		t2 = config.Styles.InactiveTab.Render("BlUETOOTH")
+		tabs = append(tabs, config.Styles.InactiveTab.Render("bluetooth"))
 	}
 
 	if activeTab == 2 {
-		t3 = config.Styles.ActiveTab.Render("VPN")
+		tabs = append(tabs, config.Styles.ActiveTab.Render("vpn"))
 	} else {
-		t3 = config.Styles.InactiveTab.Render("VPN")
+		tabs = append(tabs, config.Styles.InactiveTab.Render("vpn"))
 	}
-
-	divider := "|"
 
 	spacing := " "
 	for i := 1; i < config.HeaderSpacing; i++ {
@@ -39,15 +41,12 @@ func RenderHeader(activeTab int) string {
 	}
 
 	// V2 Change: Horizontally align using layout position method
-	tabs := config.Styles.TabsBox.Render(lipgloss.JoinHorizontal(lipgloss.Center,
-		t1, spacing, divider, spacing, t2, spacing, divider, spacing, t3))
+	tabBox := config.Styles.TabsBox.Render(strings.Join(tabs, " | "))
 
 	// V2 Change: Vertically align layers using layout position method
 	return lipgloss.JoinVertical(
-		lipgloss.Left,
-		// title,
-		"\n",
-		tabs,
+		lipgloss.Center,
+		lipgloss.JoinHorizontal(lipgloss.Bottom, title, tabBox),
 		config.DividerBorder(),
 	)
 }

@@ -25,6 +25,10 @@ func (m Model) View() string {
 		segments = append(segments, m.TableBlock())
 	}
 
+	if m.IPInfo != nil {
+		segments = append(segments, m.IPInfoBlock())
+	}
+
 	segments = append(segments, m.HintsBlock())
 
 	if m.Err != nil {
@@ -103,7 +107,26 @@ func (m Model) OptionsPopupBlock() string {
 		}
 	}
 
-	return config.Styles.BoxStyle.Render(strings.Join(menuLines, "\n"))
+	return config.Styles.PopupStyle.Render(strings.Join(menuLines, "\n"))
+}
+
+func (m Model) IPInfoBlock() string {
+	lines := []string{"IP:"}
+	lines = append(lines, m.IPInfo.PublicIP+",")
+
+	if m.IPInfo.ISP != "" {
+		lines = append(lines, config.Truncate(m.IPInfo.ISP, 10)+",")
+	}
+
+	if m.IPInfo.City != "" {
+		lines = append(lines, config.Truncate(m.IPInfo.City, 10)+",")
+	}
+
+	if m.IPInfo.Country != "" {
+		lines = append(lines, config.Truncate(m.IPInfo.Country, 10))
+	}
+
+	return config.Styles.AdapterInfo.Render(strings.Join(lines, " "))
 }
 
 func (m Model) HintsBlock() string {
@@ -117,7 +140,7 @@ func (m Model) HintsBlock() string {
 	case StateImportFile:
 		actionsHints = "left/right: nav | backspace: back"
 	case StateNormal:
-		actionsHints = "n: new | i: import | enter: actions | r: refresh"
+		actionsHints = "n: new | i: import | enter: actions | p: IPinfo"
 	}
 
 	hints := actionsHints + " | q: quit"
