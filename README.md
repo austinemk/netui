@@ -194,6 +194,73 @@ cursor               = "#F5E0DC"
 
 ---
 
+## Ricing
+
+### Hyprland
+
+linktui can be launched as a floating overlay window anchored to the top-right corner of your screen — useful as a quick-access panel triggered from a keybind or Waybar click.
+
+Add this window rule to your `hyprland.conf`:
+
+```lua
+-- ### LINKTUI TOP RIGHT WINDOW RULE ###
+hl.window_rule({
+    name  = "linktui-top-right",
+    match = { title = "^(linktui)$" },
+    float = true,
+    size  = "630 520",
+    move  = { "monitor_w - window_w - 10", 50 },
+})
+```
+
+> **Note on font rendering:** The `size` values above assume a standard monospace font at a typical size (e.g. JetBrains Mono / Nerd Font at 12–13pt). If your terminal font is larger or smaller, the window may clip content or leave excess space. Tune `width`/`height` in your `config.toml` and the `size` rule together until the fit is clean. A good starting point: each character cell is roughly `8×16px` at 12pt — so a 80×28 terminal canvas needs approximately `640×450px`.
+
+---
+
+### Waybar
+
+The recommended setup uses a small toggle script so clicking a Waybar module opens linktui in a floating terminal and a second click closes it.
+
+**1. Create the toggle script**
+
+Save this to `~/.config/waybar/scripts/toggle-linktui.sh` and make it executable:
+
+```sh
+chmod +x ~/.config/waybar/scripts/toggle-linktui.sh
+```
+
+```bash
+#!/bin/bash
+# ~/.config/waybar/scripts/toggle-linktui.sh
+if pgrep -f "kitty.*linktui" >/dev/null; then
+  pkill -f "kitty.*linktui"
+else
+  kitty --title "linktui" -e linktui "$1"
+fi
+```
+
+> Replace `kitty` with your terminal emulator. The `--title "linktui"` flag is what the Hyprland window rule matches on — keep it consistent.
+
+**2. Wire up the Waybar modules**
+
+Add `on-click` to your existing `network` and `bluetooth` module entries. Only the relevant lines are shown — merge these into your full module config:
+
+```jsonc
+"network": {
+    // ... your existing format/icon config ...
+    "on-click": "~/.config/waybar/scripts/toggle-linktui.sh --tab=wifi"
+},
+
+"bluetooth": {
+    // ... your existing format/icon config ...
+    "on-click": "~/.config/waybar/scripts/toggle-linktui.sh --tab=bluetooth"
+}
+```
+
+Clicking the network widget opens linktui on the Wi-Fi tab; clicking again closes it. The bluetooth widget does the same on the Bluetooth tab.
+
+---
+
 ## Permissions
 
 linktui communicates with system daemons over D-Bus and does not require `sudo`. Your user must be in the appropriate groups or have polkit policies that allow NetworkManager and BlueZ interactions.
