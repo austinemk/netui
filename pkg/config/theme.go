@@ -136,5 +136,5 @@ func InitStyles() {
 		Bold(true)
 
 	Styles.AdapterInfo = lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorAccent))
+		Foreground(lipgloss.Color(ColorAccent)).Width(WindowWidth - 4).AlignHorizontal(lipgloss.Center)
 }

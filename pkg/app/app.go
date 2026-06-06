@@ -1,9 +1,10 @@
+// Package app the pkg entry
 package app
 
 import (
-	"linktui/pkg/bluetooth"
-	"linktui/pkg/vpn"
-	"linktui/pkg/wifi"
+	"github.com/austinemk/linktui/pkg/bluetooth"
+	"github.com/austinemk/linktui/pkg/vpn"
+	"github.com/austinemk/linktui/pkg/wifi"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -24,6 +25,7 @@ type AppModel struct {
 	LogMessage string
 	SizeError  string
 	LoadedTabs map[Tab]bool
+	BusReady   bool // true once bus.Init() succeeds and D-Bus is available
 }
 
 func (m AppModel) Init() tea.Cmd {

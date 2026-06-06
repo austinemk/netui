@@ -1,6 +1,6 @@
 package main
 
-import "linktui/pkg/app"
+import "github.com/austinemk/linktui/pkg/app"
 
 func main() {
 	app.RunApp()

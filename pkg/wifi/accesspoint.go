@@ -1,106 +1,85 @@
 package wifi
 
 import (
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
 	"github.com/godbus/dbus/v5"
 )
 
-func ToggleAutoConnectCmd(nm gonetworkmanager.NetworkManager, uuid string, auto bool) tea.Cmd {
+const (
+	nmConnSettingsIface = "org.freedesktop.NetworkManager.Settings.Connection"
+)
+
+func ToggleAutoConnectCmd(uuid string, auto bool) tea.Cmd {
 	return func() tea.Msg {
-		settings, err := gonetworkmanager.NewSettings()
+		conn := bus.Get()
+		cPath, sMap, err := findConnectionByUUID(conn, uuid)
 		if err != nil {
 			return ErrMsg(err)
 		}
 
-		connections, err := settings.ListConnections()
-		if err != nil {
-			return ErrMsg(err)
+		cSettings := sMap["connection"]
+		patch := map[string]map[string]dbus.Variant{
+			"connection": {
+				"id":          cSettings["id"],
+				"uuid":        cSettings["uuid"],
+				"type":        cSettings["type"],
+				"autoconnect": dbus.MakeVariant(auto),
+			},
 		}
 
-		for _, conn := range connections {
-			sMap, err := conn.GetSettings()
-			if err != nil {
-				continue
-			}
-
-			cSettings, ok := sMap["connection"]
-			if !ok {
-				continue
-			}
-
-			if cSettings["uuid"] == uuid {
-				// Only send the sections we're touching — avoids dbus
-				// round-trip failures on complex types like ipv6.addresses
-				patch := map[string]map[string]interface{}{
-					"connection": {
-						"id":          cSettings["id"],
-						"uuid":        cSettings["uuid"],
-						"type":        cSettings["type"],
-						"autoconnect": dbus.MakeVariant(auto),
-					},
-				}
-				if err := conn.Update(patch); err != nil {
-					return ErrMsg(err)
-				}
-				break
-			}
+		cObj := conn.Object(nmDest, cPath)
+		call := cObj.Call(nmConnSettingsIface+".Update", 0, patch)
+		if call.Err != nil {
+			return ErrMsg(call.Err)
 		}
 
 		return ActionSuccessMsg("AutoConnect Updated")
 	}
 }
 
-func ForgetProfileCmd(nm gonetworkmanager.NetworkManager, uuid string) tea.Cmd {
+func ForgetProfileCmd(uuid string) tea.Cmd {
 	return func() tea.Msg {
-		settings, err := gonetworkmanager.NewSettings()
+		conn := bus.Get()
+		cPath, _, err := findConnectionByUUID(conn, uuid)
 		if err != nil {
 			return ErrMsg(err)
 		}
 
-		connections, err := settings.ListConnections()
-		if err != nil {
-			return ErrMsg(err)
-		}
-
-		for _, conn := range connections {
-			sMap, err := conn.GetSettings()
-			if err != nil {
-				continue
-			}
-
-			cSettings, ok := sMap["connection"]
-			if !ok {
-				continue
-			}
-
-			if cSettings["uuid"] == uuid {
-				if err := conn.Delete(); err != nil {
-					return ErrMsg(err)
-				}
-				break
-			}
+		cObj := conn.Object(nmDest, cPath)
+		call := cObj.Call(nmConnSettingsIface+".Delete", 0)
+		if call.Err != nil {
+			return ErrMsg(call.Err)
 		}
 
 		return ActionSuccessMsg("Profile Removed")
 	}
 }
 
-func GetSavedProfiles(nm gonetworkmanager.NetworkManager) ([]SavedProfile, error) {
-	settings, err := gonetworkmanager.NewSettings()
-	if err != nil {
-		return nil, err
-	}
+func GetSavedProfiles() ([]SavedProfile, error) {
+	conn := bus.Get()
+	settings := conn.Object(nmDest, nmSettingsPath)
 
-	connections, err := settings.ListConnections()
-	if err != nil {
+	var connPaths []dbus.ObjectPath
+	call := settings.Call(nmSettingsSvc+".ListConnections", 0)
+	if call.Err != nil {
+		return nil, call.Err
+	}
+	if err := call.Store(&connPaths); err != nil {
 		return nil, err
 	}
 
 	var saved []SavedProfile
-	for _, conn := range connections {
-		sMap, err := conn.GetSettings()
-		if err != nil {
+	for _, cPath := range connPaths {
+		cObj := conn.Object(nmDest, cPath)
+
+		var sMap map[string]map[string]dbus.Variant
+		call := cObj.Call(nmConnSettingsIface+".GetSettings", 0)
+		if call.Err != nil {
+			continue
+		}
+		if err := call.Store(&sMap); err != nil {
 			continue
 		}
 
@@ -109,25 +88,63 @@ func GetSavedProfiles(nm gonetworkmanager.NetworkManager) ([]SavedProfile, error
 			continue
 		}
 
-		if connSettings["type"] == "802-11-wireless" {
-			auto := true
-			if val, ok := connSettings["autoconnect"]; ok {
-				// GetSettings returns dbus.Variant — unwrap it
-				if v, ok := val.(dbus.Variant); ok {
-					if bVal, ok := v.Value().(bool); ok {
-						auto = bVal
-					}
-				} else if bVal, ok := val.(bool); ok {
-					auto = bVal
-				}
-			}
-			saved = append(saved, SavedProfile{
-				Name:        connSettings["id"].(string),
-				UUID:        connSettings["uuid"].(string),
-				AutoConnect: auto,
-				Settings:    conn,
-			})
+		cType, _ := connSettings["type"].Value().(string)
+		if cType != "802-11-wireless" {
+			continue
 		}
+
+		auto := true
+		if v, ok := connSettings["autoconnect"]; ok {
+			if bVal, ok := v.Value().(bool); ok {
+				auto = bVal
+			}
+		}
+
+		id, _ := connSettings["id"].Value().(string)
+		uid, _ := connSettings["uuid"].Value().(string)
+
+		saved = append(saved, SavedProfile{
+			Name:           id,
+			UUID:           uid,
+			AutoConnect:    auto,
+			ConnectionPath: cPath,
+		})
 	}
 	return saved, nil
+}
+
+// findConnectionByUUID returns the object path and settings map for a connection by UUID.
+func findConnectionByUUID(conn *dbus.Conn, uuid string) (dbus.ObjectPath, map[string]map[string]dbus.Variant, error) {
+	settings := conn.Object(nmDest, nmSettingsPath)
+
+	var connPaths []dbus.ObjectPath
+	call := settings.Call(nmSettingsSvc+".ListConnections", 0)
+	if call.Err != nil {
+		return "", nil, call.Err
+	}
+	if err := call.Store(&connPaths); err != nil {
+		return "", nil, err
+	}
+
+	for _, cPath := range connPaths {
+		cObj := conn.Object(nmDest, cPath)
+		var sMap map[string]map[string]dbus.Variant
+		call := cObj.Call(nmConnSettingsIface+".GetSettings", 0)
+		if call.Err != nil {
+			continue
+		}
+		if err := call.Store(&sMap); err != nil {
+			continue
+		}
+
+		connSettings, ok := sMap["connection"]
+		if !ok {
+			continue
+		}
+
+		if u, _ := connSettings["uuid"].Value().(string); u == uuid {
+			return cPath, sMap, nil
+		}
+	}
+	return "", nil, nil
 }

@@ -3,61 +3,94 @@ package vpn
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
+	"os/exec"
 	"strings"
 	"time"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 )
 
-func FetchTunnelsCmd(client gonetworkmanager.NetworkManager) tea.Cmd {
+const (
+	nmDest          = "org.freedesktop.NetworkManager"
+	nmPath          = "/org/freedesktop/NetworkManager"
+	nmIface         = "org.freedesktop.NetworkManager"
+	nmConnIface     = "org.freedesktop.NetworkManager.Connection.Active"
+	nmSettingsIface = "org.freedesktop.NetworkManager.Settings.Connection"
+	nmPropIface     = "org.freedesktop.DBus.Properties"
+)
+
+func FetchTunnelsCmd() tea.Cmd {
 	return func() tea.Msg {
-		t, err := GetVPNConnections(client)
+		t, err := GetVPNConnections()
 		if err != nil {
 			return ErrMsg(err)
 		}
-		return TunnelsLoadedMsg(TunnelsLoadedData{Tunnels: t, Client: client})
+		return TunnelsLoadedMsg(TunnelsLoadedData{Tunnels: t})
 	}
 }
 
-func ToggleTunnelCmd(client gonetworkmanager.NetworkManager, tunnel TunnelProfile, activate bool) tea.Cmd {
+func ToggleTunnelCmd(tunnel TunnelProfile, activate bool) tea.Cmd {
 	return func() tea.Msg {
+		conn := bus.Get()
+		nm := conn.Object(nmDest, nmPath)
+
 		if activate {
-			_, err := client.ActivateConnection(tunnel.Connection, nil, nil)
-			if err != nil {
-				return ErrMsg(err)
+			call := nm.Call(
+				nmIface+".ActivateConnection", 0,
+				tunnel.ConnectionPath,
+				dbus.ObjectPath("/"),
+				dbus.ObjectPath("/"),
+			)
+			if call.Err != nil {
+				return ErrMsg(call.Err)
 			}
 		} else {
-			activeConns, err := client.GetPropertyActiveConnections()
-			if err == nil {
-				for _, aConn := range activeConns {
-					uuid, _ := aConn.GetPropertyUUID()
-					if uuid == tunnel.UUID {
-						err = client.DeactivateConnection(aConn)
-						if err != nil {
-							return ErrMsg(err)
-						}
-						break
+			// Find the active connection with matching UUID and deactivate it
+			var activeConns []dbus.ObjectPath
+			if err := nm.Call(nmPropIface+".Get", 0, nmIface, "ActiveConnections").Store(&activeConns); err != nil {
+				// try direct property
+				v, err := nm.GetProperty(nmIface + ".ActiveConnections")
+				if err != nil {
+					return ErrMsg(err)
+				}
+				activeConns, _ = v.Value().([]dbus.ObjectPath)
+			}
+
+			for _, aPath := range activeConns {
+				aObj := conn.Object(nmDest, aPath)
+				v, err := aObj.GetProperty(nmConnIface + ".Uuid")
+				if err != nil {
+					continue
+				}
+				uuid, _ := v.Value().(string)
+				if uuid == tunnel.UUID {
+					call := nm.Call(nmIface+".DeactivateConnection", 0, aPath)
+					if call.Err != nil {
+						return ErrMsg(call.Err)
 					}
+					break
 				}
 			}
 		}
+
 		return ActionSuccessMsg("VPN Activation/Deactivation State updated!")
 	}
 }
 
 func DeleteTunnelCmd(tunnel TunnelProfile) tea.Cmd {
 	return func() tea.Msg {
-		// Ensure connection object exists before calling methods on it
-		if tunnel.Connection == nil {
+		if tunnel.ConnectionPath == "" {
 			return ErrMsg(fmt.Errorf("cannot delete: connection reference is missing"))
 		}
 
-		err := tunnel.Connection.Delete()
-		if err != nil {
-			return ErrMsg(fmt.Errorf("failed to delete profile: %v", err))
+		conn := bus.Get()
+		obj := conn.Object(nmDest, tunnel.ConnectionPath)
+		call := obj.Call(nmSettingsIface+".Delete", 0)
+		if call.Err != nil {
+			return ErrMsg(fmt.Errorf("failed to delete profile: %v", call.Err))
 		}
 
 		return ActionSuccessMsg("WireGuard Profile deleted successfully!")
@@ -65,31 +98,27 @@ func DeleteTunnelCmd(tunnel TunnelProfile) tea.Cmd {
 }
 
 // FetchIPWithGeoCmd fetches the public IP and location in one shot.
-// Only called when the user explicitly presses p.
+// Uses curl to avoid pulling in net/http + entire TLS stack.
 func FetchIPWithGeoCmd(settleDelay time.Duration) tea.Cmd {
 	return func() tea.Msg {
 		if settleDelay > 0 {
 			time.Sleep(settleDelay)
 		}
 		info := &IPInfo{}
-		httpClient := &http.Client{Timeout: 5 * time.Second}
 
 		// Public IP
-		resp, err := httpClient.Get("https://api.ipify.org")
+		out, err := exec.Command("curl", "-s", "--max-time", "5", "https://api.ipify.org").Output()
 		if err == nil {
-			defer resp.Body.Close()
-			body, _ := io.ReadAll(resp.Body)
-			info.PublicIP = strings.TrimSpace(string(body))
+			info.PublicIP = strings.TrimSpace(string(out))
 		}
 
-		// Geo — ip-api.com is free, no key, 45 req/min
+		// Geo lookup
 		if info.PublicIP != "" {
-			resp2, err := httpClient.Get(fmt.Sprintf(
-				"http://ip-api.com/json/%s?fields=country,regionName,city,isp,status",
-				info.PublicIP,
-			))
+			out2, err := exec.Command(
+				"curl", "-s", "--max-time", "5",
+				fmt.Sprintf("http://ip-api.com/json/%s?fields=country,regionName,city,isp,status", info.PublicIP),
+			).Output()
 			if err == nil {
-				defer resp2.Body.Close()
 				var result struct {
 					Status  string `json:"status"`
 					Country string `json:"country"`
@@ -97,7 +126,7 @@ func FetchIPWithGeoCmd(settleDelay time.Duration) tea.Cmd {
 					City    string `json:"city"`
 					ISP     string `json:"isp"`
 				}
-				if json.NewDecoder(resp2.Body).Decode(&result) == nil && result.Status == "success" {
+				if json.Unmarshal(out2, &result) == nil && result.Status == "success" {
 					info.Country = result.Country
 					info.Region = result.Region
 					info.City = result.City

@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 
-	"linktui/pkg/config"
-	"linktui/pkg/vpn"
-	"linktui/pkg/wifi"
+	"github.com/austinemk/linktui/pkg/config"
+	"github.com/austinemk/linktui/pkg/vpn"
+	"github.com/austinemk/linktui/pkg/wifi"
 
 	tea "charm.land/bubbletea/v2"
 )

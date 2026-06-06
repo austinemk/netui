@@ -3,55 +3,60 @@ package wifi
 import (
 	"fmt"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 )
 
-func GetAdapterSettings(nm gonetworkmanager.NetworkManager) (AdapterInfo, error) {
-	wirelessEnabled, err := nm.GetPropertyWirelessEnabled()
+func GetAdapterSettings() (AdapterInfo, error) {
+	conn := bus.Get()
+	nm := conn.Object(nmDest, nmPath)
+
+	// Wireless enabled
+	wev, err := nm.GetProperty(nmIface + ".WirelessEnabled")
 	if err != nil {
 		return AdapterInfo{}, err
 	}
+	wirelessEnabled, _ := wev.Value().(bool)
 
-	devices, err := nm.GetDevices()
-	if err != nil {
-		return AdapterInfo{}, err
+	wifiPath, err := findWifiDevicePath(conn)
+	if err != nil || wifiPath == "" {
+		return AdapterInfo{Interface: "Unknown", State: "Missing", Enabled: false},
+			fmt.Errorf("no wireless adapter found")
 	}
 
-	for _, dev := range devices {
-		devType, err := dev.GetPropertyDeviceType()
-		if err != nil {
-			continue
-		}
+	wDev := conn.Object(nmDest, wifiPath)
 
-		if devType == gonetworkmanager.NmDeviceTypeWifi {
-			wDev, err := gonetworkmanager.NewDeviceWireless(dev.GetPath())
-			if err != nil {
-				continue
-			}
+	ifaceV, _ := wDev.GetProperty(nmDeviceIface + ".Interface")
+	iface, _ := ifaceV.Value().(string)
 
-			iface, _ := wDev.GetPropertyInterface()
-			state, _ := wDev.GetPropertyState()
+	stateV, _ := wDev.GetProperty(nmDeviceIface + ".State")
+	state, _ := stateV.Value().(uint32)
 
-			stateStr := "Disconnected"
-			if state == gonetworkmanager.NmDeviceStateActivated {
-				stateStr = "Connected"
-			}
-			return AdapterInfo{
-				Interface: iface,
-				State:     stateStr,
-				Enabled:   wirelessEnabled,
-			}, nil
-		}
+	stateStr := "Disconnected"
+	if state == 100 { // NM_DEVICE_STATE_ACTIVATED = 100
+		stateStr = "Connected"
 	}
-	return AdapterInfo{Interface: "Unknown", State: "Missing", Enabled: false}, fmt.Errorf("no wireless adapter found")
+
+	return AdapterInfo{
+		Interface: iface,
+		State:     stateStr,
+		Enabled:   wirelessEnabled,
+	}, nil
 }
 
-func TogglePowerCmd(nm gonetworkmanager.NetworkManager, enable bool) tea.Cmd {
+func TogglePowerCmd(enable bool) tea.Cmd {
 	return func() tea.Msg {
-		err := nm.SetPropertyWirelessEnabled(enable)
-		if err != nil {
-			return ErrMsg(err)
+		conn := bus.Get()
+		nm := conn.Object(nmDest, nmPath)
+
+		call := nm.Call(
+			"org.freedesktop.DBus.Properties.Set", 0,
+			nmIface, "WirelessEnabled", dbus.MakeVariant(enable),
+		)
+		if call.Err != nil {
+			return ErrMsg(call.Err)
 		}
 		return AdapterToggledMsg{}
 	}

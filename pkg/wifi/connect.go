@@ -5,149 +5,158 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 	"github.com/google/uuid"
 )
 
-// ConnectToAccessPoint dispatches to the saved-profile or new-password path.
-func ConnectToAccessPoint(ctx context.Context, nm gonetworkmanager.NetworkManager, ap AccessPoint, password string) tea.Cmd {
+const (
+	nmActiveConnIface   = "org.freedesktop.NetworkManager.Connection.Active"
+	nmActiveStateActiv  = uint32(2) // NM_ACTIVE_CONNECTION_STATE_ACTIVATED
+	nmActiveStateDeactv = uint32(4) // NM_ACTIVE_CONNECTION_STATE_DEACTIVATED
+	nmActiveStateDeactg = uint32(3) // NM_ACTIVE_CONNECTION_STATE_DEACTIVATING
+)
+
+func ConnectToAccessPoint(ctx context.Context, ap AccessPoint, password string) tea.Cmd {
 	return func() tea.Msg {
-		device, err := findWifiDevice(nm)
-		if err != nil {
-			return ErrMsg(err)
+		conn := bus.Get()
+
+		wifiPath, err := findWifiDevicePath(conn)
+		if err != nil || wifiPath == "" {
+			return ErrMsg(fmt.Errorf("no Wi-Fi device found"))
 		}
 
 		if password == "" {
-			return connectSavedProfile(nm, ap, device)
+			return connectSavedProfile(conn, ap, wifiPath)
 		}
-		return connectWithPassword(ctx, nm, ap, password, device)
+		return connectWithPassword(ctx, conn, ap, password, wifiPath)
 	}
 }
 
-// findWifiDevice returns the first Wi-Fi device found, or an error.
-func findWifiDevice(nm gonetworkmanager.NetworkManager) (gonetworkmanager.Device, error) {
-	devices, err := nm.GetDevices()
-	if err != nil {
-		return nil, err
+func connectSavedProfile(conn *dbus.Conn, ap AccessPoint, devicePath dbus.ObjectPath) tea.Msg {
+	settings := conn.Object(nmDest, nmSettingsPath)
+
+	var connPaths []dbus.ObjectPath
+	call := settings.Call(nmSettingsSvc+".ListConnections", 0)
+	if call.Err != nil {
+		return ErrMsg(call.Err)
+	}
+	if err := call.Store(&connPaths); err != nil {
+		return ErrMsg(err)
 	}
 
-	for _, dev := range devices {
-		devType, _ := dev.GetPropertyDeviceType()
-		if devType == gonetworkmanager.NmDeviceTypeWifi {
-			return dev, nil
+	var matchedPath dbus.ObjectPath
+	for _, cPath := range connPaths {
+		cObj := conn.Object(nmDest, cPath)
+		var sMap map[string]map[string]dbus.Variant
+		call := cObj.Call(nmConnSettingsIface+".GetSettings", 0)
+		if call.Err != nil {
+			continue
 		}
-	}
-
-	return nil, fmt.Errorf("no Wi-Fi device found")
-}
-
-// connectSavedProfile activates an existing saved profile by SSID.
-func connectSavedProfile(nm gonetworkmanager.NetworkManager, ap AccessPoint, device gonetworkmanager.Device) tea.Msg {
-	settings, err := gonetworkmanager.NewSettings()
-	if err != nil {
-		return ErrMsg(err)
-	}
-
-	connections, err := settings.ListConnections()
-	if err != nil {
-		return ErrMsg(err)
-	}
-
-	var matched gonetworkmanager.Connection
-	for _, conn := range connections {
-		sMap, err := conn.GetSettings()
-		if err != nil {
+		if err := call.Store(&sMap); err != nil {
 			continue
 		}
 		if cSettings, ok := sMap["connection"]; ok {
-			if cSettings["id"] == ap.SSID {
-				matched = conn
+			if id, _ := cSettings["id"].Value().(string); id == ap.SSID {
+				matchedPath = cPath
 				break
 			}
 		}
 	}
 
-	if matched == nil {
+	if matchedPath == "" {
 		return ErrMsg(fmt.Errorf("no saved profile found for %q", ap.SSID))
 	}
 
-	if _, err = nm.ActivateConnection(matched, device, nil); err != nil {
-		return ErrMsg(err)
+	nm := conn.Object(nmDest, nmPath)
+	call = nm.Call(
+		nmIface+".ActivateConnection", 0,
+		matchedPath, devicePath, dbus.ObjectPath("/"),
+	)
+	if call.Err != nil {
+		return ErrMsg(call.Err)
 	}
 
 	return ActionSuccessMsg("Connecting to " + ap.SSID + "...")
 }
 
-// connectWithPassword creates a new profile, activates it, then monitors the
-// result — deleting the profile if authentication fails.
-func connectWithPassword(ctx context.Context, nm gonetworkmanager.NetworkManager, ap AccessPoint, password string, device gonetworkmanager.Device) tea.Msg {
+func connectWithPassword(ctx context.Context, conn *dbus.Conn, ap AccessPoint, password string, devicePath dbus.ObjectPath) tea.Msg {
 	newUUID, _ := uuid.NewUUID()
 
-	connectionSettings := map[string]map[string]interface{}{
+	connectionSettings := map[string]map[string]dbus.Variant{
 		"connection": {
-			"id":          ap.SSID,
-			"type":        "802-11-wireless",
-			"uuid":        newUUID.String(),
-			"autoconnect": true,
+			"id":          dbus.MakeVariant(ap.SSID),
+			"type":        dbus.MakeVariant("802-11-wireless"),
+			"uuid":        dbus.MakeVariant(newUUID.String()),
+			"autoconnect": dbus.MakeVariant(true),
 		},
 		"802-11-wireless": {
-			"ssid": []byte(ap.SSID),
-			"mode": "infrastructure",
+			"ssid": dbus.MakeVariant([]byte(ap.SSID)),
+			"mode": dbus.MakeVariant("infrastructure"),
 		},
 		"802-11-wireless-security": {
-			"key-mgmt": "wpa-psk",
-			"psk":      password,
+			"key-mgmt": dbus.MakeVariant("wpa-psk"),
+			"psk":      dbus.MakeVariant(password),
 		},
-		"ipv4": {"method": "auto"},
-		"ipv6": {"method": "ignore"},
+		"ipv4": {"method": dbus.MakeVariant("auto")},
+		"ipv6": {"method": dbus.MakeVariant("ignore")},
 	}
 
-	// AddAndActivateConnection persists immediately — get the connection handle
-	activeConn, err := nm.AddAndActivateConnection(connectionSettings, device)
-	if err != nil {
+	nm := conn.Object(nmDest, nmPath)
+	var activeConnPath dbus.ObjectPath
+	call := nm.Call(
+		nmIface+".AddAndActivateConnection", 0,
+		connectionSettings, devicePath, dbus.ObjectPath("/"),
+	)
+	if call.Err != nil {
+		return ErrMsg(call.Err)
+	}
+	// Returns (connection path, active connection path)
+	var savedConnPath dbus.ObjectPath
+	if err := call.Store(&savedConnPath, &activeConnPath); err != nil {
 		return ErrMsg(err)
 	}
 
-	// Get the saved connection object before monitoring, so we can delete it on failure
-	conn, err := activeConn.GetPropertyConnection()
-	if err != nil {
-		return ErrMsg(err)
-	}
-
-	return monitorConnectionState(ctx, activeConn, conn, ap.SSID)
+	return monitorConnectionState(ctx, conn, activeConnPath, savedConnPath, ap.SSID)
 }
 
-// monitorConnectionState polls NM until the connection activates, fails, or
-// times out — returning a tea.Msg so every outcome reaches Update().
-// On any failure it deletes the just-created profile so nothing is saved.
-func monitorConnectionState(ctx context.Context, activeConn gonetworkmanager.ActiveConnection, conn gonetworkmanager.Connection, ssid string) tea.Msg {
+func monitorConnectionState(ctx context.Context, conn *dbus.Conn, activeConnPath, savedConnPath dbus.ObjectPath, ssid string) tea.Msg {
+	deleteProfile := func() {
+		if savedConnPath == "" {
+			return
+		}
+		obj := conn.Object(nmDest, savedConnPath)
+		obj.Call(nmConnSettingsIface+".Delete", 0)
+	}
+
 	const maxAttempts = 15
 	for i := 0; i < maxAttempts; i++ {
 		select {
 		case <-ctx.Done():
-			_ = conn.Delete()
+			deleteProfile()
 			return nil
 		case <-time.After(1 * time.Second):
 		}
 
-		state, err := activeConn.GetPropertyState()
+		aObj := conn.Object(nmDest, activeConnPath)
+		sv, err := aObj.GetProperty(nmActiveConnIface + ".State")
 		if err != nil {
-			_ = conn.Delete()
+			deleteProfile()
 			return ErrMsg(fmt.Errorf("lost connection to NetworkManager: %w", err))
 		}
 
+		state, _ := sv.Value().(uint32)
 		switch state {
-		case gonetworkmanager.NmActiveConnectionStateActivated:
+		case nmActiveStateActiv:
 			return ActionSuccessMsg("Connected!")
-
-		case gonetworkmanager.NmActiveConnectionStateDeactivating,
-			gonetworkmanager.NmActiveConnectionStateDeactivated:
-			_ = conn.Delete()
+		case nmActiveStateDeactv, nmActiveStateDeactg:
+			deleteProfile()
 			return ErrMsg(fmt.Errorf("wrong password for %q — profile not saved", ssid))
 		}
 	}
 
-	_ = conn.Delete()
+	deleteProfile()
 	return ErrMsg(fmt.Errorf("timed out connecting — check password and try again"))
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/godbus/dbus/v5"
 )
@@ -13,68 +15,68 @@ func ConvertMacToPath(mac string) dbus.ObjectPath {
 	return dbus.ObjectPath(fmt.Sprintf("%s/dev_%s", adapterPath, safeMac))
 }
 
-func Connect(client *BlueZClient, mac string) error {
-	return callDeviceMethod(client, mac, "Connect")
+func Connect(mac string) error {
+	return callDeviceMethod(mac, "Connect")
 }
 
-func Disconnect(client *BlueZClient, mac string) error {
-	return callDeviceMethod(client, mac, "Disconnect")
+func Disconnect(mac string) error {
+	return callDeviceMethod(mac, "Disconnect")
 }
 
-func Pair(client *BlueZClient, mac string) error {
-	return callDeviceMethod(client, mac, "Pair")
+func Pair(mac string) error {
+	return callDeviceMethod(mac, "Pair")
 }
 
-func Trust(client *BlueZClient, mac string) error {
-	return setDeviceProperty(client, mac, "Trusted", true)
+func Trust(mac string) error {
+	return setDeviceProperty(mac, "Trusted", true)
 }
 
-func Distrust(client *BlueZClient, mac string) error {
-	return setDeviceProperty(client, mac, "Trusted", false)
+func Distrust(mac string) error {
+	return setDeviceProperty(mac, "Trusted", false)
 }
 
-func Remove(client *BlueZClient, mac string) error {
-	adapter := client.Conn.Object(bluezInterface, adapterPath)
+func Remove(mac string) error {
+	conn := bus.Get()
+	adapter := conn.Object(bluezInterface, adapterPath)
 	path := ConvertMacToPath(mac)
-
-	call := adapter.Call("org.bluez.Adapter1.RemoveDevice", 0, path)
-	return call.Err
+	return adapter.Call("org.bluez.Adapter1.RemoveDevice", 0, path).Err
 }
 
-func callDeviceMethod(client *BlueZClient, mac string, method string) error {
+func callDeviceMethod(mac string, method string) error {
+	conn := bus.Get()
 	path := ConvertMacToPath(mac)
-	obj := client.Conn.Object(bluezInterface, path)
-
-	call := obj.Call(fmt.Sprintf("org.bluez.Device1.%s", method), 0)
-	return call.Err
+	obj := conn.Object(bluezInterface, path)
+	return obj.Call(fmt.Sprintf("org.bluez.Device1.%s", method), 0).Err
 }
 
-func setDeviceProperty(client *BlueZClient, mac string, propName string, value bool) error {
+func setDeviceProperty(mac string, propName string, value bool) error {
+	conn := bus.Get()
 	path := ConvertMacToPath(mac)
-	obj := client.Conn.Object(bluezInterface, path)
-
-	call := obj.Call("org.freedesktop.DBus.Properties.Set", 0, "org.bluez.Device1", propName, dbus.MakeVariant(value))
-	return call.Err
+	obj := conn.Object(bluezInterface, path)
+	return obj.Call(
+		"org.freedesktop.DBus.Properties.Set", 0,
+		"org.bluez.Device1", propName, dbus.MakeVariant(value),
+	).Err
 }
 
-func ExecuteActionCmd(client *BlueZClient, action string, mac string) tea.Cmd {
+func ExecuteActionCmd(action string, mac string) tea.Cmd {
 	return func() tea.Msg {
 		var err error
 		switch action {
 		case "Connect":
-			_ = Trust(client, mac)
-			err = Connect(client, mac)
+			_ = Trust(mac)
+			err = Connect(mac)
 		case "Disconnect":
-			err = Disconnect(client, mac)
+			err = Disconnect(mac)
 		case "Pair":
-			_ = Trust(client, mac)
-			err = Pair(client, mac)
+			_ = Trust(mac)
+			err = Pair(mac)
 		case "Trust":
-			err = Trust(client, mac)
+			err = Trust(mac)
 		case "Distrust":
-			err = Distrust(client, mac)
+			err = Distrust(mac)
 		case "Remove":
-			err = Remove(client, mac)
+			err = Remove(mac)
 		}
 
 		if err != nil {

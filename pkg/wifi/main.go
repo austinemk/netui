@@ -3,28 +3,24 @@ package wifi
 import (
 	"context"
 
-	"linktui/pkg/config"
+	"github.com/austinemk/linktui/pkg/bus"
+	"github.com/austinemk/linktui/pkg/config"
 
 	"charm.land/bubbles/v2/table"
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
 )
 
 func New() Model {
-	// Initialize default columns structure
 	columns := []table.Column{
 		{Title: "Status", Width: config.ListWidthSixteenth},
-		{Title: "Network Name (SSID)", Width: config.ListWidthHalf}, // Cast explicitly for safety
+		{Title: "Network Name (SSID)", Width: config.ListWidthHalf},
 		{Title: "Signal", Width: config.ListWidthSixteenth},
 		{Title: "Security", Width: config.ListWidthEigth},
 	}
 
-	t := table.New(
-		table.WithColumns(columns),
-	)
-	// V2: Width and Height use explicit setter functions instead of direct structural fields
+	t := table.New(table.WithColumns(columns))
 	t.SetWidth(config.ListWidth)
 	t.SetHeight(config.ListHeight)
 	t.Focus()
@@ -35,20 +31,17 @@ func New() Model {
 	ti.EchoCharacter = '*'
 	ti.Focus()
 
-	// Apply theme defaults
 	s := table.DefaultStyles()
 	s.Header = lipgloss.NewStyle().Height(0).Padding(0, 0).MaxHeight(0)
-
 	s.Selected = s.Selected.
 		Foreground(config.Styles.HighlightText.GetForeground()).
 		Background(config.Styles.HighlightText.GetBackground()).
 		Bold(config.Styles.HighlightText.GetBold())
 	t.SetStyles(s)
-	// Create a cancellable context for background tasks
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	return Model{
-		Client:      nil, // Will be loaded dynamically inside Init()
 		Scanning:    false,
 		UIState:     StateNormal,
 		Table:       t,
@@ -59,49 +52,60 @@ func New() Model {
 	}
 }
 
-// Init that initializes the package
 func (m Model) Init() tea.Cmd {
-	return func() tea.Msg {
-		nm, err := gonetworkmanager.NewNetworkManager()
-		if err != nil {
-			return ErrMsg(err)
-		}
+	return tea.Batch(
+		// Command 1: Simple confirmation if NetworkManager is running on the system bus
+		func() tea.Msg {
+			conn := bus.Get()
+			if conn == nil {
+				return NMStatusMsg(false)
+			}
 
-		adapter, err := GetAdapterSettings(nm)
-		if err != nil {
-			return ErrMsg(err)
-		}
+			// Check if the org.freedesktop.NetworkManager name is currently active on the bus
+			var running bool
+			err := conn.Object("org.freedesktop.DBus", "/org/freedesktop/DBus").
+				Call("org.freedesktop.DBus.NameHasOwner", 0, "org.freedesktop.NetworkManager").
+				Store(&running)
 
-		saved, err := GetSavedProfiles(nm)
-		if err != nil {
-			return ErrMsg(err)
-		}
+			// If there's an error or running is false, NetworkManager is not alive/installed
+			if err != nil || !running {
+				return NMStatusMsg(false)
+			}
 
-		aps, err := GetActiveAccessPoints(nm)
-		if err != nil {
-			return ErrMsg(err)
-		}
+			return NMStatusMsg(true)
+		},
 
-		return InfoLoadedMsg(InfoLoadedData{
-			Client:  nm, // <-- Pass it along here
-			Adapter: adapter,
-			Saved:   saved,
-			APs:     aps,
-		})
-	}
+		// Command 2: Load adapter, saved profiles, and access points
+		func() tea.Msg {
+			adapter, err := GetAdapterSettings()
+			if err != nil {
+				return ErrMsg(err)
+			}
+
+			saved, err := GetSavedProfiles()
+			if err != nil {
+				return ErrMsg(err)
+			}
+
+			aps, err := GetActiveAccessPoints()
+			if err != nil {
+				return ErrMsg(err)
+			}
+
+			return InfoLoadedMsg(InfoLoadedData{
+				Adapter: adapter,
+				Saved:   saved,
+				APs:     aps,
+			})
+		},
+	)
 }
 
-// Clean gracefully halts background procedures, context loops, and stops leaks
 func (m Model) Clean() {
-	// 1. Cancel the background context to instantly terminate the monitor goroutine
 	if m.Cancel != nil {
 		m.Cancel()
 	}
-
-	// 2. Explicitly stop the hardware scanning loop state flag
 	m.Scanning = false
-
-	// 3. Clean up inner component state instances
 	m.PassInput.Reset()
 	m.Table.SetRows(nil)
 }

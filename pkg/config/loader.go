@@ -23,7 +23,7 @@ type AppConfig struct {
 		Border              string `toml:"border"`
 		PopupBackground     string `toml:"popup_background"`
 		LogBackground       string `toml:"log_background"`
-		DividerBackground   string `toml:"divider_background`
+		DividerBackground   string `toml:"divider_background"`
 		Cursor              string `toml:"cursor"`
 	} `toml:"colors"`
 }

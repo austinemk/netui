@@ -7,7 +7,7 @@ import (
 
 	"charm.land/bubbles/v2/table"
 	"charm.land/bubbles/v2/textinput"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 )
 
 type UIState int
@@ -29,18 +29,19 @@ type AccessPoint struct {
 	Strength uint8
 	Security string
 	IsActive bool
-	AP       gonetworkmanager.AccessPoint
+	APPath   dbus.ObjectPath
 }
 
 type SavedProfile struct {
-	Name        string
-	UUID        string
-	AutoConnect bool
-	Settings    gonetworkmanager.Connection
+	Name           string
+	UUID           string
+	AutoConnect    bool
+	ConnectionPath dbus.ObjectPath
 }
 
 // Bubble Tea Message Definitions
 type (
+	NMStatusMsg       bool
 	InfoLoadedMsg     InfoLoadedData
 	ScanFinishedMsg   []AccessPoint
 	TickMsg           time.Time
@@ -51,7 +52,6 @@ type (
 )
 
 type InfoLoadedData struct {
-	Client  gonetworkmanager.NetworkManager // <-- Add this field
 	Adapter AdapterInfo
 	Saved   []SavedProfile
 	APs     []AccessPoint
@@ -59,27 +59,26 @@ type InfoLoadedData struct {
 
 // model struct
 type Model struct {
-	Client    gonetworkmanager.NetworkManager
+	NMStatus  bool
 	Adapter   AdapterInfo
 	Saved     []SavedProfile
 	ActiveAPs []AccessPoint
 
 	// Context for graceful cleanup
 	Ctx    context.Context
-	Cancel context.CancelFunc // <-- Add this to track background tasks
+	Cancel context.CancelFunc
 
 	// Dynamic Layout Elements
 	Table     table.Model
 	PassInput textinput.Model
 
 	// Navigation & Component UI states
-	Cursor     int // Kept for backend array mapping compatibility
+	Cursor     int
 	MenuCursor int
 	UIState    UIState
 	Scanning   bool
-	// Loading    bool
-	Err   error
-	LogID uint64
+	Err        error
+	LogID      uint64
 
 	// Password handling for secured lines
 	SelectedAP    AccessPoint

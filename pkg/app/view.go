@@ -1,7 +1,7 @@
 package app
 
 import (
-	"linktui/pkg/config"
+	"github.com/austinemk/linktui/pkg/config"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
@@ -18,16 +18,20 @@ func (m *AppModel) View() tea.View {
 	header := config.RenderHeader(int(m.ActiveTab))
 
 	var body string
-	if !m.LoadedTabs[m.ActiveTab] {
-		body = "\n  Loading interface details..."
+	if !m.BusReady {
+		body = config.Styles.LogBox.Render("D-Bus client not loaded yet")
 	} else {
-		switch m.ActiveTab {
-		case WifiTab:
-			body = m.WifiView.View()
-		case BluetoothTab:
-			body = m.BtView.View()
-		case VpnTab:
-			body = m.VpnView.View()
+		if !m.LoadedTabs[m.ActiveTab] {
+			body = "\n  Loading interface details..."
+		} else {
+			switch m.ActiveTab {
+			case WifiTab:
+				body = m.WifiView.View()
+			case BluetoothTab:
+				body = m.BtView.View()
+			case VpnTab:
+				body = m.VpnView.View()
+			}
 		}
 	}
 

@@ -6,7 +6,6 @@ import (
 
 // --- Dedicated Handler Functions ---
 
-// V2 Fix: Changed parameter type and type assertion to tea.KeyPressMsg
 func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	keyMsg, ok := msg.(tea.KeyPressMsg)
 	if !ok {
@@ -23,7 +22,7 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 
 	case "enter":
 		passwordValue := m.PassInput.Value()
-		cmd := ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, passwordValue)
+		cmd := ConnectToAccessPoint(m.Ctx, m.SelectedAP, passwordValue)
 
 		m.UIState = StateNormal
 		m.PassInput.Reset()
@@ -36,7 +35,6 @@ func (m Model) handlePasswordInput(msg tea.Msg) (Model, tea.Cmd) {
 	}
 }
 
-// V2 Fix: Changed type assertion to tea.KeyPressMsg
 func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 	keyMsg, ok := msg.(tea.KeyPressMsg)
 	if !ok {
@@ -63,9 +61,9 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 		if idx >= 0 && idx < len(m.Saved) {
 			prof := m.Saved[idx]
 			if m.MenuCursor == 0 {
-				cmd = ToggleAutoConnectCmd(m.Client, prof.UUID, !prof.AutoConnect)
+				cmd = ToggleAutoConnectCmd(prof.UUID, !prof.AutoConnect)
 			} else {
-				cmd = ForgetProfileCmd(m.Client, prof.UUID)
+				cmd = ForgetProfileCmd(prof.UUID)
 			}
 		}
 		m.UIState = StateNormal
@@ -76,7 +74,6 @@ func (m Model) handleSavedActionsMenu(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) handleInfoLoaded(msg InfoLoadedMsg) (Model, tea.Cmd) {
-	m.Client = msg.Client // <-- Persist the initialized client to your state!
 	m.Adapter = msg.Adapter
 	m.Saved = msg.Saved
 	m.ActiveAPs = msg.APs
@@ -98,22 +95,25 @@ func (m Model) handleScanFinished(msg ScanFinishedMsg) (Model, tea.Cmd) {
 
 func (m Model) handleTick() (Model, tea.Cmd) {
 	if m.Scanning {
-		return m, TriggerHardwareScanCmd(m.Client)
+		return m, TriggerHardwareScanCmd()
 	}
 	return m, nil
 }
 
 func (m Model) handleAdapterOrActionSuccess() (Model, tea.Cmd) {
 	return m, func() tea.Msg {
-		a, _ := GetAdapterSettings(m.Client)
-		s, _ := GetSavedProfiles(m.Client)
-		aps, _ := GetActiveAccessPoints(m.Client)
-		return InfoLoadedMsg(InfoLoadedData{Client: m.Client, Adapter: a, Saved: s, APs: aps})
+		a, _ := GetAdapterSettings()
+		s, _ := GetSavedProfiles()
+		aps, _ := GetActiveAccessPoints()
+		return InfoLoadedMsg(InfoLoadedData{Adapter: a, Saved: s, APs: aps})
 	}
 }
 
-// V2 Fix: Changed argument type to tea.KeyPressMsg
 func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
+	if !m.NMStatus {
+		return m, nil
+	}
+
 	switch msg.String() {
 	case "s":
 		m.Scanning = !m.Scanning
@@ -121,12 +121,12 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 		m.syncTableRows()
 
 		if m.Scanning {
-			return m, TriggerHardwareScanCmd(m.Client)
+			return m, TriggerHardwareScanCmd()
 		}
 
 	case "p":
 		if !m.Scanning {
-			return m, TogglePowerCmd(m.Client, !m.Adapter.Enabled)
+			return m, TogglePowerCmd(!m.Adapter.Enabled)
 		}
 
 	case "enter":
@@ -138,7 +138,7 @@ func (m Model) handleKeyInput(msg tea.KeyPressMsg) (Model, tea.Cmd) {
 			m.SelectedAP = m.ActiveAPs[idx]
 
 			if m.SelectedAP.Security == "open" || IsProfileSaved(m.Saved, m.SelectedAP.SSID) {
-				return m, ConnectToAccessPoint(m.Ctx, m.Client, m.SelectedAP, "")
+				return m, ConnectToAccessPoint(m.Ctx, m.SelectedAP, "")
 			}
 			m.UIState = StatePasswordInput
 		} else {

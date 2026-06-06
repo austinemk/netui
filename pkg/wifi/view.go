@@ -2,18 +2,16 @@ package wifi
 
 import (
 	"fmt"
-	"strings"
 
-	"linktui/pkg/config"
+	"github.com/austinemk/linktui/pkg/config"
 
 	"charm.land/lipgloss/v2"
 )
 
 func (m Model) View() string {
-	if m.Client == nil {
-		return config.Styles.LogBox.Render("Client not loaded yet")
+	if !m.NMStatus {
+		return config.Styles.LogBox.Render("NewtorkManager service is not responding. Ensure 'NewtorkManager' is installed and bluetooth is running")
 	}
-
 	// 1. Build the base background (table + adapter + hints + errors)
 	var bgSegments []string
 
@@ -55,7 +53,7 @@ func (m Model) adapterBlock() string {
 	lines = append(lines, fmt.Sprintf("  status: %s", map[bool]string{true: "scanning", false: "saved"}[m.Scanning]))
 
 	// V2: Horizontally combine block lines using Alignment
-	return config.Styles.AdapterInfo.Render(strings.Join(lines, " "))
+	return config.Styles.AdapterInfo.Render(lipgloss.JoinHorizontal(lipgloss.Center, lines...))
 }
 
 func (m Model) ScanningBlock() string {
@@ -99,7 +97,7 @@ func (m Model) OptionsBlock() string {
 			menuLines = append(menuLines, opt)
 		}
 	}
-	popup := config.Styles.PopupStyle.Render(strings.Join(menuLines, "\n"))
+	popup := config.Styles.PopupStyle.Render(lipgloss.JoinVertical(lipgloss.Center, menuLines...))
 	return popup
 }
 

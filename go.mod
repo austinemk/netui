@@ -1,4 +1,4 @@
-module linktui
+module github.com/austinemk/linktui
 
 go 1.26.3
 
@@ -7,7 +7,6 @@ require (
 	charm.land/bubbletea/v2 v2.0.6
 	charm.land/lipgloss/v2 v2.0.3
 	github.com/BurntSushi/toml v1.6.0
-	github.com/Wifx/gonetworkmanager/v3 v3.2.0
 	github.com/godbus/dbus/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 )

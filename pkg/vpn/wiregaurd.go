@@ -7,55 +7,79 @@ import (
 	"os"
 	"strings"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 )
 
-func GetVPNConnections(client gonetworkmanager.NetworkManager) ([]TunnelProfile, error) {
-	settings, err := gonetworkmanager.NewSettings()
-	if err != nil {
+const (
+	nmSettingsDest = "org.freedesktop.NetworkManager"
+	nmSettingsPath = "/org/freedesktop/NetworkManager/Settings"
+	nmSettingsSvc  = "org.freedesktop.NetworkManager.Settings"
+)
+
+func GetVPNConnections() ([]TunnelProfile, error) {
+	conn := bus.Get()
+	settings := conn.Object(nmSettingsDest, nmSettingsPath)
+
+	// List all connection paths
+	var connPaths []dbus.ObjectPath
+	call := settings.Call(nmSettingsSvc+".ListConnections", 0)
+	if call.Err != nil {
+		return nil, call.Err
+	}
+	if err := call.Store(&connPaths); err != nil {
 		return nil, err
 	}
 
-	connections, err := settings.ListConnections()
-	if err != nil {
-		return nil, err
-	}
-
-	activeConns, err := client.GetPropertyActiveConnections()
+	// Get active connection UUIDs
+	nm := conn.Object(nmSettingsDest, nmPath)
 	activeUUIDs := make(map[string]bool)
+	v, err := nm.GetProperty(nmIface + ".ActiveConnections")
 	if err == nil {
-		for _, aConn := range activeConns {
-			uuid, err := aConn.GetPropertyUUID()
-			if err == nil && uuid != "" {
-				activeUUIDs[uuid] = true
+		if activePaths, ok := v.Value().([]dbus.ObjectPath); ok {
+			for _, aPath := range activePaths {
+				aObj := conn.Object(nmSettingsDest, aPath)
+				uv, err := aObj.GetProperty(nmConnIface + ".Uuid")
+				if err == nil {
+					if uuid, ok := uv.Value().(string); ok && uuid != "" {
+						activeUUIDs[uuid] = true
+					}
+				}
 			}
 		}
 	}
 
 	var tunnels []TunnelProfile
-	for _, conn := range connections {
-		sMap, err := conn.GetSettings()
-		if err != nil {
+	for _, cPath := range connPaths {
+		cObj := conn.Object(nmSettingsDest, cPath)
+
+		var sMap map[string]map[string]dbus.Variant
+		call := cObj.Call(nmSettingsIface+".GetSettings", 0)
+		if call.Err != nil {
+			continue
+		}
+		if err := call.Store(&sMap); err != nil {
 			continue
 		}
 
-		connSettings, hasConn := sMap["connection"]
-		if !hasConn {
+		connSettings, ok := sMap["connection"]
+		if !ok {
 			continue
 		}
 
-		cType, _ := connSettings["type"].(string)
-		cUUID, _ := connSettings["uuid"].(string)
-		cName, _ := connSettings["id"].(string)
+		cType, _ := connSettings["type"].Value().(string)
+		cUUID, _ := connSettings["uuid"].Value().(string)
+		cName, _ := connSettings["id"].Value().(string)
 
 		if cType == "wireguard" || cType == "vpn" {
 			tunnels = append(tunnels, TunnelProfile{
-				Name:       cName,
-				UUID:       cUUID,
-				Type:       strings.ToUpper(cType),
-				Active:     activeUUIDs[cUUID],
-				Connection: conn,
+				Name:           cName,
+				UUID:           cUUID,
+				Type:           strings.ToUpper(cType),
+				Active:         activeUUIDs[cUUID],
+				ConnectionPath: cPath,
 			})
 		}
 	}
@@ -71,37 +95,35 @@ func generateUUID() string {
 
 func CreateWireGuardProfileCmd(inputs map[FormField]string) tea.Cmd {
 	return func() tea.Msg {
-		settings, err := gonetworkmanager.NewSettings()
-		if err != nil {
-			return ErrMsg(err)
-		}
+		conn := bus.Get()
+		settings := conn.Object(nmSettingsDest, nmSettingsPath)
 
 		uuid := generateUUID()
-		connectionSettings := map[string]map[string]interface{}{
+		connectionSettings := map[string]map[string]dbus.Variant{
 			"connection": {
-				"id":             inputs[FieldProfileName],
-				"uuid":           uuid,
-				"type":           "wireguard",
-				"interface-name": inputs[FieldInterfaceName],
-				"autoconnect":    false,
+				"id":             dbus.MakeVariant(inputs[FieldProfileName]),
+				"uuid":           dbus.MakeVariant(uuid),
+				"type":           dbus.MakeVariant("wireguard"),
+				"interface-name": dbus.MakeVariant(inputs[FieldInterfaceName]),
+				"autoconnect":    dbus.MakeVariant(false),
 			},
 			"wireguard": {
-				"private-key": inputs[FieldPrivateKey],
-				"listen-port": uint32(51820),
+				"private-key": dbus.MakeVariant(inputs[FieldPrivateKey]),
+				"listen-port": dbus.MakeVariant(uint32(51820)),
 			},
 		}
 
 		if inputs[FieldPeerPublicKey] != "" && inputs[FieldPeerEndpoint] != "" {
-			peer := map[string]interface{}{
-				"public-key": inputs[FieldPeerPublicKey],
-				"endpoint":   inputs[FieldPeerEndpoint],
+			peer := map[string]dbus.Variant{
+				"public-key": dbus.MakeVariant(inputs[FieldPeerPublicKey]),
+				"endpoint":   dbus.MakeVariant(inputs[FieldPeerEndpoint]),
 			}
-			connectionSettings["wireguard"]["peers"] = []map[string]interface{}{peer}
+			connectionSettings["wireguard"]["peers"] = dbus.MakeVariant([]map[string]dbus.Variant{peer})
 		}
 
-		_, err = settings.AddConnection(connectionSettings)
-		if err != nil {
-			return ErrMsg(fmt.Errorf("profile write rejection: %v", err))
+		call := settings.Call(nmSettingsSvc+".AddConnection", 0, connectionSettings)
+		if call.Err != nil {
+			return ErrMsg(fmt.Errorf("profile write rejection: %v", call.Err))
 		}
 
 		return ActionSuccessMsg("WireGuard Profile Created successfully!")
@@ -118,7 +140,6 @@ func ImportWireGuardFileCmd(path string) tea.Cmd {
 		defer file.Close()
 
 		inputs := make(map[FormField]string)
-		// Extract profile name from filename without extension
 		info, err := file.Stat()
 		if err == nil {
 			name := info.Name()
@@ -156,7 +177,6 @@ func ImportWireGuardFileCmd(path string) tea.Cmd {
 			return ErrMsg(fmt.Errorf("invalid config file: missing PrivateKey"))
 		}
 
-		// Re-use standard profile writer logic using extracted configurations
 		return CreateWireGuardProfileCmd(inputs)()
 	}
 }

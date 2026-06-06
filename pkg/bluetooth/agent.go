@@ -21,14 +21,12 @@ type BluetoothAgent struct {
 
 // RequestConfirmation is called by BlueZ for Numeric Comparison pairing (e.g., "Is passkey 123456 correct?")
 func (a *BluetoothAgent) RequestConfirmation(device dbus.ObjectPath, passkey uint32) *dbus.Error {
-	logToFile("📲 Agent received RequestConfirmation for device %s, passkey: %06d", device, passkey)
-
 	// Create a channel to wait for the Bubble Tea UI response
 	responseChan := make(chan bool)
 
 	// Construct a minimal Device object to show in the UI popup
 	dev := Device{
-		MAC:  string(device), // You can parse this or match it from FetchAllBlueZObjects
+		MAC:  string(device),
 		Name: "Incoming Pairing Request",
 	}
 
@@ -43,11 +41,9 @@ func (a *BluetoothAgent) RequestConfirmation(device dbus.ObjectPath, passkey uin
 	accepted := <-responseChan
 
 	if !accepted {
-		logToFile("❌ User rejected the passkey confirmation")
 		return dbus.NewError("org.bluez.Error.Rejected", []interface{}{"Pairing rejected by user"})
 	}
 
-	logToFile("✅ User accepted the passkey confirmation")
 	return nil
 }
 

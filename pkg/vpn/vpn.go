@@ -4,7 +4,7 @@ package vpn
 import (
 	"charm.land/bubbles/v2/filepicker"
 	"charm.land/bubbles/v2/table"
-	"github.com/Wifx/gonetworkmanager/v3"
+	"github.com/godbus/dbus/v5"
 )
 
 type UIState int
@@ -28,16 +28,15 @@ const (
 )
 
 type TunnelProfile struct {
-	Name          string
-	UUID          string
-	Type          string
-	InterfaceName string // kernel interface name, e.g. "wg0", "vpn0", "proton"
-	Active        bool
-	Connection    gonetworkmanager.Connection
+	Name           string
+	UUID           string
+	Type           string
+	InterfaceName  string
+	Active         bool
+	ConnectionPath dbus.ObjectPath
 }
 
 // IPInfo holds the public IP and optional location details.
-// Nil means not yet fetched. Location fields are empty until the user presses p.
 type IPInfo struct {
 	PublicIP string
 	Country  string
@@ -47,6 +46,7 @@ type IPInfo struct {
 }
 
 type (
+	NMStatusMsg      bool
 	TunnelsLoadedMsg TunnelsLoadedData
 	ActionSuccessMsg string
 	ErrMsg           error
@@ -56,14 +56,13 @@ type (
 
 type TunnelsLoadedData struct {
 	Tunnels []TunnelProfile
-	Client  gonetworkmanager.NetworkManager
 }
 
 type Model struct {
-	Client     gonetworkmanager.NetworkManager
+	NMStatus   bool
 	Tunnels    []TunnelProfile
 	Table      table.Model
-	FilePicker filepicker.Model // Integrated Native File Picker Component
+	FilePicker filepicker.Model
 	MenuCursor int
 	UIState    UIState
 	Err        error

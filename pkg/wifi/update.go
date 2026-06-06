@@ -3,7 +3,7 @@ package wifi
 import (
 	"time"
 
-	"linktui/pkg/config"
+	"github.com/austinemk/linktui/pkg/config"
 
 	"charm.land/bubbles/v2/table"
 	tea "charm.land/bubbletea/v2"
@@ -20,6 +20,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// 2. Normal State Core Navigation Loop
 	switch msg := msg.(type) {
+	case NMStatusMsg:
+		m.NMStatus = bool(msg)
 	case InfoLoadedMsg:
 		return m.handleInfoLoaded(msg)
 

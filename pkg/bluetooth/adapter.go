@@ -3,41 +3,46 @@ package bluetooth
 import (
 	"fmt"
 
+	"github.com/austinemk/linktui/pkg/bus"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/godbus/dbus/v5"
 )
 
-func FetchAdapterInfoCmd(client *BlueZClient) tea.Cmd {
+const (
+	dBusPropertyDest = "org.freedesktop.DBus.Properties.Get"
+	adapterInterface = "org.bluez.Adapter1"
+)
+
+func FetchAdapterInfoCmd() tea.Cmd {
 	return func() tea.Msg {
-		if client == nil || client.Conn == nil {
-			return ErrMsg(fmt.Errorf("bluetooth adapter not available"))
-		}
-		info, err := FetchAdapterInfo(client)
+		info, err := FetchAdapterInfo()
 		if err != nil {
-			return ErrMsg(err)
+			return ErrMsg(fmt.Errorf("bluetooth adapter not available: %w", err))
 		}
 		return AdapterInfoLoadedMsg(info)
 	}
 }
 
-func FetchAdapterInfo(client *BlueZClient) (AdapterInfo, error) {
-	obj := client.Conn.Object(bluezInterface, adapterPath)
+func FetchAdapterInfo() (AdapterInfo, error) {
+	conn := bus.Get()
+	obj := conn.Object(bluezInterface, adapterPath)
 
 	var powered, discoverable, pairable bool
 
-	var pVariant dbus.Variant
-	if err := obj.Call("org.freedesktop.DBus.Properties.Get", 0, "org.bluez.Adapter1", "Powered").Store(&pVariant); err == nil {
-		powered, _ = pVariant.Value().(bool)
+	var pv dbus.Variant
+	if err := obj.Call(dBusPropertyDest, 0, adapterInterface, "Powered").Store(&pv); err == nil {
+		powered, _ = pv.Value().(bool)
 	}
 
-	var dVariant dbus.Variant
-	if err := obj.Call("org.freedesktop.DBus.Properties.Get", 0, "org.bluez.Adapter1", "Discoverable").Store(&dVariant); err == nil {
-		discoverable, _ = dVariant.Value().(bool)
+	var dv dbus.Variant
+	if err := obj.Call(dBusPropertyDest, 0, adapterInterface, "Discoverable").Store(&dv); err == nil {
+		discoverable, _ = dv.Value().(bool)
 	}
 
-	var prVariant dbus.Variant
-	if err := obj.Call("org.freedesktop.DBus.Properties.Get", 0, "org.bluez.Adapter1", "Pairable").Store(&prVariant); err == nil {
-		pairable, _ = prVariant.Value().(bool)
+	var prv dbus.Variant
+	if err := obj.Call(dBusPropertyDest, 0, adapterInterface, "Pairable").Store(&prv); err == nil {
+		pairable, _ = prv.Value().(bool)
 	}
 
 	return AdapterInfo{
@@ -47,13 +52,14 @@ func FetchAdapterInfo(client *BlueZClient) (AdapterInfo, error) {
 	}, nil
 }
 
-func ToggleAdapterPropertyCmd(client *BlueZClient, prop string, currentVal bool) tea.Cmd {
+func ToggleAdapterPropertyCmd(prop string, currentVal bool) tea.Cmd {
 	return func() tea.Msg {
-		obj := client.Conn.Object(bluezInterface, adapterPath)
-
-		typedValue := !currentVal
-		_ = obj.Call("org.freedesktop.DBus.Properties.Set", 0, "org.bluez.Adapter1", prop, dbus.MakeVariant(typedValue))
-
+		conn := bus.Get()
+		obj := conn.Object(bluezInterface, adapterPath)
+		_ = obj.Call(
+			"org.freedesktop.DBus.Properties.Set", 0,
+			"org.bluez.Adapter1", prop, dbus.MakeVariant(!currentVal),
+		)
 		return AdapterToggledMsg{}
 	}
 }

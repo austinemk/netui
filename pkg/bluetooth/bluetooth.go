@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"charm.land/bubbles/v2/table"
-	"github.com/godbus/dbus/v5"
 )
 
 type UIState int
@@ -43,11 +42,8 @@ const (
 	adapterPath    = "/org/bluez/hci0"
 )
 
-type BlueZClient struct {
-	Conn *dbus.Conn
-}
-
 type (
+	BluezStatusMsg       bool
 	InfoLoadedMsg        InfoLoadedData
 	DiscoveryStoppedMsg  struct{}
 	AdapterToggledMsg    struct{}
@@ -60,13 +56,12 @@ type (
 )
 
 type InfoLoadedData struct {
-	Client  *BlueZClient
 	Adapter AdapterInfo
 	Devices []Device
 }
 
 type Model struct {
-	Client      *BlueZClient
+	BluezStatus bool
 	Adapter     AdapterInfo
 	Devices     []Device
 	Table       table.Model
@@ -80,7 +75,7 @@ type Model struct {
 	SelectedDev Device
 	MenuOptions []string
 
-	// NEW: Track passkey state inside memory
+	// Track passkey state inside memory
 	CurrentPasskey uint32
 	ActiveRespChan chan bool
 }
