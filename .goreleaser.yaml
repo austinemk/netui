@@ -1,5 +1,7 @@
 version: 2
 
+project_name: linktui
+
 builds:
   - env:
       - CGO_ENABLED=0
@@ -10,15 +12,33 @@ builds:
       - arm64
     ldflags:
       - -s -w
+    binary: linktui
 
 archives:
   - formats: [tar.gz]
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
 
 checksum:
   name_template: "checksums.txt"
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
 
 release:
   github:
     owner: austinemk
     name: linktui
+  draft: false
+  prerelease: auto
+  name_template: "v{{ .Version }}"
