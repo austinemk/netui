@@ -20,5 +20,5 @@ checksum:
 
 release:
   github:
-    owner: your-github-username
+    owner: austinemk
     name: linktui
