@@ -1,7 +1,7 @@
 # linktui
 
 > A fast, minimal terminal UI for managing Wi-Fi, Bluetooth, and WireGuard VPN on Linux
-> ![Tea](./assets/tea.jpg)
+> <img src="./assets/tea.jpg" alt="Tea" width="120" />
 
 built with [BubbleTea](https://github.com/charmbracelet/bubbletea) and [godbus](https://github.com/godbus/dbus).
 
@@ -73,17 +73,19 @@ Download the latest binary from the [Releases page](https://github.com/yourusern
 
 ```sh
 # Download and install (replace VERSION and ARCH as needed)
-curl -Lo linktui https://github.com/yourusername/linktui/releases/latest/download/linktui-linux-amd64
+curl -Lo linktui https://github.com/austinemk/linktui/releases/latest/download/linktui-linux-amd64
 chmod +x linktui
 sudo mv linktui /usr/local/bin/
 ```
 
+###
+
 ### Build from source
 
-Requires Go 1.22+.
+Requires Go 1.26+.
 
 ```sh
-git clone https://github.com/yourusername/linktui.git
+git clone https://github.com/austinemk/linktui.git
 cd linktui
 go build -o linktui ./cmd/linktui
 sudo mv linktui /usr/local/bin/
