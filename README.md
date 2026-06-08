@@ -4,19 +4,9 @@
 
 ---
 
-## Screenshots
+## Demo
 
-<!-- Replace with actual screenshots or a demo GIF -->
-
-```
-📸 Place your screenshots or GIF here
-   Recommended: a single animated GIF (800×400px) showing tab switching
-   Tools: ttyrec + gif-tty, asciinema, or vhs (https://github.com/charmbracelet/vhs)
-```
-
-| Wi-Fi                      | Bluetooth                            | VPN                      |
-| -------------------------- | ------------------------------------ | ------------------------ |
-| ![wifi](./assets/wifi.png) | ![bluetooth](./assets/bluetooth.png) | ![vpn](./assets/vpn.png) |
+![TUI Demo](./assets/demo.gif)
 
 ---
 
@@ -36,11 +26,8 @@
 
 ### Runtime
 
-| Dependency                                    | Purpose                         |
-| --------------------------------------------- | ------------------------------- |
-| [NetworkManager](https://networkmanager.dev/) | Wi-Fi and WireGuard VPN backend |
-| [BlueZ](http://www.bluez.org/) (`bluetoothd`) | Bluetooth backend via D-Bus     |
-| D-Bus                                         | IPC for BlueZ communication     |
+[BlueZ](http://www.bluez.org/) (`bluetoothd`) - Bluetooth backend via D-Bus
+D-Bus - IPC for NetworkManager and BlueZ communication
 
 Ensure NetworkManager and BlueZ daemons are running:
 
@@ -110,50 +97,42 @@ sudo mv linktui /usr/local/bin/
 linktui
 
 # Open directly on a specific tab
-linktui --tab wifi
-linktui --tab bluetooth
-linktui --tab vpn
+linktui --tab=wifi
+linktui --tab=bluetooth
+linktui --tab=vpn
 ```
 
 ### Keybindings
 
-| Key                 | Action                |
-| ------------------- | --------------------- |
-| `Tab` / `Shift+Tab` | Switch tabs           |
-| `j` / `k`           | Navigate list up/down |
-| `q`                 | Quit                  |
-| `Ctrl+C`            | Force quit            |
+`Tab` / `Shift+Tab` - Switch tabs
+`j` / `k` / `arrows` - Navigate list up/down
+`q` - Quit
+`Ctrl+C` - Force quit
 
 **Wi-Fi tab**
 
-| Key     | Action                                     |
-| ------- | ------------------------------------------ |
-| `s`     | Toggle scan mode                           |
-| `Enter` | Connect (scan mode) / Options (saved mode) |
-| `p`     | Toggle adapter power                       |
+`s` - Toggle scan mode  
+`Enter` - Connect (scan mode) / Options (saved mode)
+`p` - Toggle adapter power
 
 **Bluetooth tab**
 
-| Key     | Action                    |
-| ------- | ------------------------- |
-| `s`     | Start/stop discovery scan |
-| `Enter` | Device actions menu       |
-| `p`     | Toggle power              |
-| `d`     | Toggle discoverable       |
-| `b`     | Toggle pairable           |
+`s` - Start/stop discovery scan
+`Enter` - Device actions menu  
+`p` - Toggle power  
+`d` - Toggle discoverable
+`b` - Toggle pairable
 
 **VPN tab**
 
-| Key     | Action                                    |
-| ------- | ----------------------------------------- |
-| `n`     | Create new WireGuard profile              |
-| `i`     | Import `.conf` file                       |
-| `Enter` | Actions menu (activate/deactivate/delete) |
-| `p`     | Fetch public IP info                      |
+`n` - Create new WireGuard profile
+`i` - Import `.conf` file
+`Enter` - Actions menu (activate/deactivate/delete)
+`p` - Fetch public IP info
 
 ---
 
-## Configuration
+## Ricing
 
 linktui looks for a config file at:
 
@@ -187,14 +166,10 @@ cursor               = "#F5E0DC"
 
 ### Minimum dimensions
 
-| Setting  | Minimum |
-| -------- | ------- |
-| `width`  | 70      |
-| `height` | 25      |
+`width` - 70
+`height` - 25
 
 ---
-
-## Ricing
 
 ### Hyprland
 
