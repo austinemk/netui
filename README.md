@@ -44,7 +44,6 @@ sudo systemctl enable --now bluetooth
 `charm.land/bubbletea/v2` - TUI framework
 `charm.land/lipgloss/v2` - Terminal styling
 `charm.land/bubbles/v2` - Table, text input, file picker components
-`github.com/Wifx/gonetworkmanager/v3` - NetworkManager Go bindings
 `github.com/godbus/dbus/v5` - D-Bus bindings for BlueZ
 `github.com/BurntSushi/toml` - Config file parsing
 
@@ -72,7 +71,7 @@ makepkg -si
 Download the latest binary from the [Releases page](https://github.com/yourusername/linktui/releases).
 
 ```sh
-# Download and install (replace VERSION and ARCH as needed)
+# Download and install
 curl -Lo linktui https://github.com/austinemk/linktui/releases/latest/download/linktui-linux-amd64
 chmod +x linktui
 sudo mv linktui /usr/local/bin/
@@ -107,9 +106,9 @@ linktui --tab=vpn
 
 ### Keybindings
 
-`Tab` / `Shift+Tab` - Switch tabs
-`j` / `k` / `arrows` - Navigate list up/down
-`q` - Quit
+`Tab` / `Shift+Tab` - Switch tabs.
+`j` / `k` / `arrows` - Navigate list up/down.
+`q` - Quit.
 `Ctrl+C` - Force quit
 
 **Wi-Fi tab**
