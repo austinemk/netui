@@ -1,6 +1,9 @@
 # linktui
 
-> A fast, minimal terminal UI for managing Wi-Fi, Bluetooth, and WireGuard VPN on Linux — built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
+> A fast, minimal terminal UI for managing Wi-Fi, Bluetooth, and WireGuard VPN on Linux
+> ![Tea](./assets/tea.jpg)
+
+built with [BubbleTea](https://github.com/charmbracelet/bubbletea) and [godbus](https://github.com/godbus/dbus).
 
 ---
 
@@ -38,14 +41,12 @@ sudo systemctl enable --now bluetooth
 
 ### Build (Go modules)
 
-| Module                                | Used for                                  |
-| ------------------------------------- | ----------------------------------------- |
-| `charm.land/bubbletea/v2`             | TUI framework                             |
-| `charm.land/lipgloss/v2`              | Terminal styling                          |
-| `charm.land/bubbles/v2`               | Table, text input, file picker components |
-| `github.com/Wifx/gonetworkmanager/v3` | NetworkManager Go bindings                |
-| `github.com/godbus/dbus/v5`           | D-Bus bindings for BlueZ                  |
-| `github.com/BurntSushi/toml`          | Config file parsing                       |
+`charm.land/bubbletea/v2` - TUI framework
+`charm.land/lipgloss/v2` - Terminal styling
+`charm.land/bubbles/v2` - Table, text input, file picker components
+`github.com/Wifx/gonetworkmanager/v3` - NetworkManager Go bindings
+`github.com/godbus/dbus/v5` - D-Bus bindings for BlueZ
+`github.com/BurntSushi/toml` - Config file parsing
 
 ---
 
