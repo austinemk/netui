@@ -99,5 +99,7 @@
           };
         }
       );
+
+      homeModules.default = import ./nix/hm.nix self;
     };
 }
