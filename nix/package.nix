@@ -1,5 +1,5 @@
-{ pkgs, go }:
-pkgs.buildGoApplication {
+{ buildGoApplication, go }:
+buildGoApplication {
   inherit go;
   pname = "linktui";
   version = "git";

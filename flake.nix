@@ -20,13 +20,13 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      overlays = [ go-overlay.overlays.default ];
+      overlays = [ (import go-overlay) ];
       forAllSystems =
         f:
         nixpkgs.lib.genAttrs systems (
-          systemValue:
-          f rec {
-            system = systemValue;
+          system:
+          f {
+            system = system;
             pkgs = import nixpkgs { inherit system overlays; };
           }
         );
