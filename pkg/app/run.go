@@ -56,7 +56,7 @@ func RunApp() {
 		BtView:     bluetooth.New(),
 		VpnView:    vpn.New(),
 		LoadedTabs: map[Tab]bool{initialTab: true},
-		BusReady:   true, // bus.Init() already succeeded above
+		BusReady:   true,
 	}
 
 	var finalModel tea.Model

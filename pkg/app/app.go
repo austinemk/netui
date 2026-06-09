@@ -25,7 +25,7 @@ type AppModel struct {
 	LogMessage string
 	SizeError  string
 	LoadedTabs map[Tab]bool
-	BusReady   bool // true once bus.Init() succeeds and D-Bus is available
+	BusReady   bool
 }
 
 func (m AppModel) Init() tea.Cmd {
