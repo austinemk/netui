@@ -44,6 +44,13 @@
         }
       );
 
+      overlays = {
+        default = final: _: {
+          linktui = self.packages.${final.stdenv.hostPlatform.system}.default;
+        };
+        linktui = self.overlays.default;
+      };
+
       formatter = forAllSystems (
         { pkgs, system }:
         let
