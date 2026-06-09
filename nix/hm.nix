@@ -16,7 +16,7 @@ in
   options.programs.linktui = {
     enable = mkEnableOption "linktui";
     package = mkOption {
-      type = types.package;
+      type = types.package or null;
       default = linktui;
       description = "The linktui package to use";
     };

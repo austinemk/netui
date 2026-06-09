@@ -100,6 +100,8 @@
         }
       );
 
+      nixosModules.default = import ./nix/nixos.nix self;
+
       homeModules.default = import ./nix/hm.nix self;
     };
 }
