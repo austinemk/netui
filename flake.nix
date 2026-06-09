@@ -20,7 +20,7 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      overlays = [ (import go-overlay) ];
+      overlays = [ go-overlay.overlays.default ];
       forAllSystems =
         f:
         nixpkgs.lib.genAttrs systems (
@@ -28,32 +28,24 @@
           f rec {
             system = systemValue;
             pkgs = import nixpkgs { inherit system overlays; };
-            go = pkgs.go-bin.fromGoMod ./go.mod;
           }
         );
+      mkLinktui = pkgs: pkgs.callPackage ./nix/package.nix { go = pkgs.go-bin.fromGoMod ./go.mod; };
     in
     {
       packages = forAllSystems (
         {
           pkgs,
           system,
-          go,
         }:
         {
-          default = pkgs.callPackage ./nix/package.nix { inherit go; };
+          default = mkLinktui pkgs;
           linktui = self.packages.${system}.default;
         }
       );
 
-      overlays = {
-        default = final: _prev: {
-          linktui = import ./nix/package.nix final.pkgs;
-        };
-        linktui = self.overlays.default;
-      };
-
       formatter = forAllSystems (
-        { pkgs, system, ... }:
+        { pkgs, system }:
         let
           config = self.checks.${system}.pre-commit-check.config;
           inherit (config) package configFile;
@@ -65,7 +57,7 @@
       );
 
       checks = forAllSystems (
-        { pkgs, system, ... }:
+        { pkgs, system }:
         {
           pre-commit-check = git-hooks.lib.${system}.run {
             src = ./.;
@@ -81,12 +73,9 @@
       );
 
       devShells = forAllSystems (
-        {
-          pkgs,
-          system,
-          go,
-        }:
+        { pkgs, system }:
         let
+          go = pkgs.go-bin.fromGoMod ./go.mod;
           inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
         in
         {
