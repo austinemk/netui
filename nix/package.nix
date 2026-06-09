@@ -2,7 +2,7 @@
 buildGoApplication {
   inherit go;
   pname = "linktui";
-  version = "0.1.0";
+  version = "git";
   src = ../.;
   modules = ../govendor.toml;
 }
